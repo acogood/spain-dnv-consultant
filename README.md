@@ -1,116 +1,141 @@
 # spain-dnv-consultant
 
-**A Claude Code template for self-filing the Spanish digital-nomad residence
-permit (*teletrabajo de carácter internacional*, Ley 14/2013) — initial and
-renewal.**
+**Шаблон Claude Code для самостоятельной подачи на ВНЖ цифрового кочевника в
+Испании (*teletrabajo de carácter internacional*, Ley 14/2013) — первичная
+подача и продление (*renovación*).**
 
-*Шаблон Claude Code для самостоятельной подачи на ВНЖ цифрового кочевника в
-Испании (teletrabajo internacional) — первичная подача и продление.*
+*A Claude Code template for self-filing the Spanish digital-nomad residence
+permit (teletrabajo internacional) — initial and renewal. Russian-primary; a
+short English summary is at the bottom.*
 
-> ⚠️ **This is not legal advice.** It produces **drafts that require independent
-> verification** against official sources and, where the stakes warrant, a
-> qualified lawyer. The engine never files, pays, or registers anything on your
-> behalf. **Read [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) before using this.**
-> — *Это не юридическая консультация. См. [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md).*
+> ⚠️ **Это не юридическая консультация.** Шаблон создаёт **черновики, которые
+> требуют самостоятельной проверки** по официальным источникам, а в спорных
+> случаях — консультации квалифицированного юриста. Движок никогда не подаёт,
+> не оплачивает и не регистрирует ничего от вашего имени.
+> **Прочитайте [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) перед использованием.**
+> — *This is not legal advice. See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md).*
 
 ---
 
-## What this is
+## Что это
 
-Fork it, open it in [Claude Code](https://claude.com/claude-code), and a set of
-bundled skills walks you through assembling a renewal (or initial) application:
-an intake interview, curated legal research, cross-checking your claims, filling
-the forms, two review passes, and a ready-to-file package. The content is
-**Russian-primary with Spanish legal terminology**, matching how the target
-applicant actually works.
+Форкните репозиторий, откройте его в [Claude Code](https://claude.com/claude-code),
+и набор встроенных навыков (*skills*) проведёт вас через сборку заявления на
+продление (или первичную подачу): интервью для сбора данных, курируемое
+юридическое исследование, перекрёстная проверка ваших утверждений, заполнение
+форм, два прохода ревью и готовый к подаче пакет. Контент — **на русском с
+испанской юридической терминологией**, как реально работает целевой заявитель.
 
-The skills and agents live in `.claude/` and **activate automatically** when you
-open the folder in Claude Code — there is nothing to install.
+Навыки и агенты лежат в `.claude/` и **активируются автоматически** при открытии
+папки в Claude Code — устанавливать ничего не нужно.
 
-## What it is *not*
+## Чем это *не* является
 
-- **Not a lawyer, not legal advice, no warranty.** See
+- **Не юрист, не юридическая консультация, без гарантий.** См.
   [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md).
-- **Not a filing bot.** It never submits an application, pays a *tasa*, or
-  registers an *expediente*. Every binding, irreversible step is yours.
-- **Not a substitute for official sources.** Thresholds (IPREM/SMI), forms, and
-  fees change by year; the engine flags what must be re-checked live.
-- **Not general.** It targets **one archetype** (see Scope). Other profiles need
-  adaptation.
+- **Не бот для подачи.** Никогда не отправляет заявление, не платит *tasa* и не
+  регистрирует *expediente*. Каждый обязывающий, необратимый шаг — за вами.
+- **Не замена официальным источникам.** Пороги (*IPREM/SMI*), формы и пошлины
+  меняются ежегодно; движок помечает то, что нужно перепроверить вживую.
+- **Не универсальный.** Рассчитан на **один архетип** (см. «Область применения»);
+  другие профили требуют адаптации.
 
-## Who it's for
+## Для кого
 
-A **technically comfortable self-filer** who wants an organized, well-researched
-draft they will then validate themselves — not someone looking to outsource the
-decision. Community chat experience surfaced here is **opinion, not law**, and is
-labeled as such.
+Для **технически уверенного самоподающего**, которому нужен организованный,
+хорошо проработанный черновик, который он затем проверит сам, — а не для того,
+кто хочет переложить решение на кого-то. Опыт из community-чатов здесь —
+**мнения, а не право**, и помечен соответствующе.
 
-## Scope (one archetype)
+## Область применения (один архетип)
 
-Autónomo / independent contractor for a foreign company, renewing the DNV permit,
-with a spouse (*cónyuge*) as a dependent family member. The framework is
-**Ley 14/2013** (as amended by Ley 28/2022), competent authority **UGE-CE**,
-electronic filing.
+*Autónomo* / независимый подрядчик иностранной компании, продлевающий ВНЖ DNV, с
+супругом/супругой (*cónyuge*) как зависимым членом семьи. Правовая основа —
+**Ley 14/2013** (в редакции Ley 28/2022), компетентный орган — **UGE-CE**, подача
+электронная.
 
-## How it works — the pipeline
+## Как это работает — конвейер (*pipeline*)
 
-Each step is a skill you invoke in Claude Code. Later steps check that their
-prerequisites ran (see `user/pipeline-state.schema.md`):
+Каждый шаг — навык, который вы вызываете в Claude Code. Поздние шаги проверяют,
+что их предпосылки выполнены (см. `user/pipeline-state.schema.md`):
 
 ```
-/dnv-intake        → your case profile (single source of truth, stored locally)
-   ├─ /dnv-research    → curated + live legal research  → notes
-   │     └─ /dnv-synthesis  → a working spec from your profile + research
-   │            └─ /dnv-verify   → adversarial claim-by-claim check (devils-advocate)
-   ├─ /dnv-chat-mining → (optional) mine your own Telegram exports, locally
-   └─ /dnv-documents   → fill the forms deterministically
-          └─ /dnv-review    → field-QA + re-derivation + "Spanish official" pass
-                 └─ /dnv-submission → ready-to-file checklist + monitoring + escalation
+/dnv-intake        → профиль вашего дела (единый источник правды, хранится локально)
+   ├─ /dnv-research    → курируемое + живое юридическое исследование → заметки
+   │     └─ /dnv-synthesis  → рабочая спецификация из профиля + исследования
+   │            └─ /dnv-verify   → состязательная проверка утверждений (devils-advocate)
+   ├─ /dnv-chat-mining → (опционально) майнинг ваших Telegram-экспортов, локально
+   └─ /dnv-documents   → детерминированное заполнение форм
+          └─ /dnv-review    → field-QA + повторный вывод + проход «испанский чиновник»
+                 └─ /dnv-submission → чек-лист к подаче + мониторинг + эскалация
 ```
 
-The `engine/` directory holds the deterministic Python behind the skills
-(form-filling, field QA, claim extraction, the local chat anonymizer).
+Каталог `engine/` содержит детерминированный Python за навыками (заполнение форм,
+field-QA, извлечение утверждений, локальный анонимизатор чатов).
 
-## Requirements
+## Требования
 
-- **Claude Code** (desktop, CLI, or IDE extension).
-- **Python 3** for the engine scripts — **standard library only**, nothing to
-  `pip install`.
-- **Optional:** a Perplexity MCP server for live research; without it, research
-  degrades gracefully to built-in web search and flags the degradation.
+- **Claude Code** (десктоп, CLI или расширение IDE).
+- **Python 3** для скриптов движка — **только стандартная библиотека**, ничего не
+  нужно `pip install`.
+- **Опционально:** MCP-сервер Perplexity для живого исследования; без него оно
+  корректно деградирует до встроенного веб-поиска и помечает деградацию.
 
-## Quick start
+## Быстрый старт
 
-1. Fork this repo and clone your fork.
-2. Open the folder in Claude Code.
-3. Run `/dnv-intake` and answer the interview. Your answers are written **only**
-   to your local `user/` workspace (gitignored) — never committed.
-4. Follow the pipeline above. Read every draft critically; the engine tells you
-   what still needs live verification or a professional's eyes.
+1. Форкните репозиторий и склонируйте свой форк.
+2. Откройте папку в Claude Code.
+3. Запустите `/dnv-intake` и ответьте на интервью. Ваши ответы пишутся **только**
+   в локальную папку `user/` (в `.gitignore`) — никогда не коммитятся.
+4. Следуйте конвейеру выше. Читайте каждый черновик критически; движок сам
+   говорит, что ещё требует живой проверки или взгляда специалиста.
 
-## Bring your own data — privacy model
+## Свои данные — модель приватности
 
-- Your personal data (profile, documents, chat exports) lives in `user/`, which
-  is **gitignored**. It stays on your machine.
-- The only community data shipped in this template is an **anonymized, aggregated
-  digest** (no per-author identifiers). You can mine your *own* fresh chat
-  exports locally with `/dnv-chat-mining`; the raw text never leaves `user/`.
-- This repository was assembled by copying only de-personalized assets and was
-  independently audited for PII before publication.
+- Ваши персональные данные (профиль, документы, экспорты чатов) лежат в `user/`,
+  который **в `.gitignore`**. Они остаются на вашей машине.
+- Единственные community-данные в шаблоне — **анонимизированный агрегированный
+  дайджест** (без идентификаторов авторов). Свои свежие экспорты чатов можно
+  майнить локально через `/dnv-chat-mining`; сырой текст никогда не покидает `user/`.
+- Репозиторий собран копированием только деперсонализированных ассетов и прошёл
+  независимый PII-аудит перед публикацией. Дополнительно **автоматический
+  fail-closed PII-гейт** (`engine/scripts/pii_scan.py`, pre-commit + CI) сканирует
+  рабочее дерево, всю историю и метаданные коммитов и не даёт занести персональные
+  данные в будущие коммиты — см. [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Status
+## Статус
 
-Early. Renewals under this regime are among the **first wave** (original permits
-date from 2023), so administrative precedent is thin and this template will keep
-evolving. Treat it as a well-organized starting point, not a finished authority.
+Ранний. Продления по этому режиму — среди **первой волны** (первичные разрешения
+с 2023 г.), поэтому административной практики мало и шаблон будет развиваться.
+Относитесь к нему как к хорошо организованной отправной точке, а не готовому
+авторитету.
 
-## Contributing
+## Как внести вклад
 
-Contributions are welcome, but note: an automated fail-closed PII gate
-(pre-commit + CI) is **planned but not yet wired in**. Until it lands, do not
-commit any real personal data — see [docs/PII_GATE_NOTES.md](docs/PII_GATE_NOTES.md).
+Вклад приветствуется. Обязательное правило: **никогда не коммитьте реальные
+персональные данные — ни свои, ни чужие.** Автоматический fail-closed PII-гейт
+(pre-commit + CI) сканирует дерево, всю историю и метаданные коммитов и блокирует
+занос PII; как включить хук локально и как он устроен — в
+[CONTRIBUTING.md](CONTRIBUTING.md) и
+[docs/PII_GATE_NOTES.md](docs/PII_GATE_NOTES.md).
 
-## License
+## Лицензия
 
-[MIT](LICENSE). The knowledge-base prose describes public legal norms; verify
-against primary sources (BOE, UGE-CE) before relying on it.
+[MIT](LICENSE). Тексты базы знаний описывают публичные правовые нормы; проверяйте
+по первоисточникам (*BOE*, *UGE-CE*) перед тем, как на них полагаться.
+
+---
+
+## In English (summary)
+
+A Claude Code template for **self-filing the Spanish digital-nomad (DNV) residence
+permit** — initial application and renewal — for one archetype: an *autónomo* /
+independent contractor for a foreign company with a spouse as a dependent. Fork it,
+open it in Claude Code, and bundled skills walk you through intake → research →
+verification → form-filling → two review passes → a ready-to-file package. It
+**never files, pays, or registers** anything; every draft needs your own
+independent verification. Content is Russian-primary with Spanish legal
+terminology. Not legal advice — see [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md).
+Contributing: never commit real personal data — a fail-closed PII gate (pre-commit
++ CI) enforces this across tree, history, and commit metadata; see
+[CONTRIBUTING.md](CONTRIBUTING.md).

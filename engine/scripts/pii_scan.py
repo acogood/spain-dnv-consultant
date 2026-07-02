@@ -73,9 +73,29 @@ try:
 except Exception:
     pass
 
-# --- the ONE identity every commit in the canonical repo must carry ----------
+# --- commit identities the gate accepts --------------------------------------
+# The template identity every hand-authored commit should carry...
 TEMPLATE_NAME = "DNV Template"
 TEMPLATE_EMAIL = "noreply@example.com"
+# ...plus GitHub's own reserved, NON-routable addresses, which a GitHub-side PR
+# merge unavoidably stamps onto the merge commit: the web-flow committer
+# `noreply@github.com` and the per-user privacy address `…@users.noreply.github.com`.
+# These are not real personal emails, so they are allowed — but a real routable
+# address (e.g. a personal Gmail) still FAILS. (Merging with GitHub email privacy
+# OFF is exactly how a real email leaked into history once; see CONTRIBUTING.md.)
+GITHUB_NOREPLY_EMAILS = ("noreply@github.com",)
+GITHUB_NOREPLY_SUFFIX = "@users.noreply.github.com"
+
+
+def identity_allowed(name: str, email: str) -> bool:
+    """True if a commit (name, email) is the template identity or a GitHub
+    reserved noreply address; False for any real, routable personal email."""
+    e = (email or "").strip().lower()
+    if (name, email) == (TEMPLATE_NAME, TEMPLATE_EMAIL):
+        return True
+    if e in GITHUB_NOREPLY_EMAILS:
+        return True
+    return e.endswith(GITHUB_NOREPLY_SUFFIX)
 
 # --- structural allowlists (denylist-blind checks must not flag these) --------
 # RFC 2606 / RFC 6761 reserved names + TLDs. An email or handle domain outside
@@ -263,6 +283,21 @@ def _domain_reserved(domain: str) -> bool:
     return tld in RESERVED_TLDS
 
 
+def _email_reserved(email: str) -> bool:
+    """An email is reserved (allowed) if its domain is RFC 2606 reserved OR it is
+    one of GitHub's non-routable addresses (`noreply@github.com`, the web-flow
+    committer, and the `…@users.noreply.github.com` privacy relays). Those show up
+    legitimately in CONTRIBUTING/notes and in GitHub merge-commit metadata; they
+    are not real contactable people (see identity_allowed())."""
+    e = email.strip().lower()
+    if e == "noreply@github.com":
+        return True
+    domain = e.rsplit("@", 1)[-1]
+    if domain == "users.noreply.github.com":
+        return True
+    return _domain_reserved(domain)
+
+
 def _phone_is_dummy(match: str) -> bool:
     digits = re.sub(r"\D", "", match)
     if digits in DUMMY_PHONE_DIGITS:
@@ -285,8 +320,7 @@ def structural_findings(path: str, text: str):
     in_example = _path_under(path, "example/")
     for i, line in enumerate(text.splitlines(), 1):
         for m in _EMAIL.finditer(line):
-            domain = m.group(0).rsplit("@", 1)[-1]
-            if not _domain_reserved(domain):
+            if not _email_reserved(m.group(0)):
                 yield ("non-reserved email", i)
         for m in _PHONE.finditer(line):
             if not _phone_is_dummy(m.group(0)):
@@ -538,7 +572,7 @@ def main(argv=None):
     if not args.tree_only:
         try:
             for name, email in sorted(metadata_identities(root)):
-                if (name, email) != (TEMPLATE_NAME, TEMPLATE_EMAIL):
+                if not identity_allowed(name, email):
                     meta_findings.append((name, email))
         except GitError as e:
             print(f"error: {e}", file=sys.stderr)
@@ -559,10 +593,10 @@ def main(argv=None):
             print(f"    [{surface}] {ref} — {cat}", file=sys.stderr)
     if meta_findings and not args.allow_any_identity:
         print(f"\n  commit-metadata findings ({len(meta_findings)}):", file=sys.stderr)
-        print("    one or more commits carry a non-template identity "
-              "(expected only 'DNV Template <noreply@example.com>').", file=sys.stderr)
-        print("    Squash/rewrite history or run with --allow-any-identity on a fork.",
-              file=sys.stderr)
+        print("    one or more commits carry a real personal identity (allowed: the "
+              "template identity or a GitHub reserved noreply address).", file=sys.stderr)
+        print("    Enable GitHub email privacy, then squash/rewrite history; or run "
+              "with --allow-any-identity on a fork.", file=sys.stderr)
     print("\n  (values are intentionally not printed — inspect the referenced "
           "locations locally.)", file=sys.stderr)
     return 1

@@ -129,6 +129,19 @@ class TestDenylistMatching(unittest.TestCase):
         self.assertNotIn("Zzztestname", cat)                        # value never in label
 
 
+class TestIdentityPolicy(unittest.TestCase):
+    def test_template_and_github_noreply_allowed(self):
+        self.assertTrue(p.identity_allowed(p.TEMPLATE_NAME, p.TEMPLATE_EMAIL))
+        self.assertTrue(p.identity_allowed("GitHub", "noreply@github.com"))
+        self.assertTrue(p.identity_allowed(
+            "somedev", J("12345+somedev@", "users.noreply.github.com")))
+
+    def test_real_personal_email_rejected(self):
+        # a GitHub-side merge with email privacy OFF stamps a routable address
+        self.assertFalse(p.identity_allowed("Some Dev", J("some.dev@", "gmail.com")))
+        self.assertFalse(p.identity_allowed("Some Dev", J("some.dev@", "company.io")))
+
+
 class TestCorpusDateAllowlist(unittest.TestCase):
     def _entries(self):
         # An invented ISO date standing in for LAST_COVERED_DATE.
@@ -207,10 +220,10 @@ class TestRealRepoIsClean(unittest.TestCase):
         findings = p.scan(self.root, entries, p.CORPUS_METADATA_PATHS, tree_only=False)
         self.assertEqual(findings, [], f"unexpected PII findings: {findings}")
 
-    def test_commit_metadata_is_template_identity_only(self):
+    def test_commit_metadata_all_identities_allowed(self):
         idents = p.metadata_identities(self.root)
-        self.assertEqual(idents, {(p.TEMPLATE_NAME, p.TEMPLATE_EMAIL)},
-                         f"non-template commit identities present: {idents}")
+        bad = sorted((n, e) for n, e in idents if not p.identity_allowed(n, e))
+        self.assertEqual(bad, [], f"disallowed commit identities present: {bad}")
 
 
 if __name__ == "__main__":

@@ -84,9 +84,30 @@ python engine/scripts/pii_scan.py --require-denylist
 
 - **structural** job — everywhere, incl. forks: scans tree **+ full history** for
   structural PII / secrets (checkout uses `fetch-depth: 0`).
-- **template-identity** job — canonical repo only (`github.repository ==` guard):
-  additionally requires every commit's identity to be `DNV Template
-  <noreply@example.com>`.
+- **template-identity** job — canonical repo only (`github.repository ==` guard),
+  and on **`push` events only**: requires every commit's identity to be an
+  *allowed* identity (see below). Skipped on `pull_request` (the checked-out ref is
+  a GitHub-generated merge commit with a bot identity) and on forks.
+
+### Commit identity (maintainers)
+
+The gate rejects any **real, routable personal email** in a commit's author or
+committer. Allowed identities are only:
+
+- the template identity `DNV Template <noreply@example.com>`, and
+- GitHub's own reserved addresses — `noreply@github.com` (web-flow committer) and
+  the `login@users.noreply.github.com` per-user privacy relays.
+
+**Merging a PR through the GitHub UI stamps the merger's identity onto the merge
+commit.** If your GitHub *email privacy is OFF*, that puts your real email into
+public history — a real leak. Before merging:
+
+1. Turn on **Settings → Emails → “Keep my email addresses private”** and **“Block
+   command line pushes that expose my email.”** Then merge commits use your
+   `login@users.noreply.github.com` address, which the gate allows.
+2. If a real email does land in history, it must be **removed by rewriting history**
+   (reset to the clean linear tip, force-push) — not patched forward. See
+   `docs/PII_GATE_NOTES.md` §7.
 
 ## Tests
 

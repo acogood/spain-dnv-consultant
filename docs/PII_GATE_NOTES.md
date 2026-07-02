@@ -104,3 +104,29 @@ NIE вида `X9999999R` / `X9999998T` и planted-bug `X9099999R` (заявит�
 - `knowledge_base/` (нормы + источники + дайджест) проверено денилистом = 0 и на
   фрагменты имён (все падежи, по основе) = 0. Ссылка: коммит U5.
 - Вывод: гейт U16 должен сканировать по основам, а не по литеральным формам.
+
+## 7. Merge-коммит GitHub тоже несёт identity — не только твои коммиты
+
+Урок из реального слияния PR #1 (2026-07): при слиянии PR **через веб-интерфейс
+GitHub** создаётся merge-коммит, у которого:
+
+- **committer** = `GitHub <noreply@github.com>` (веб-flow, зарезервированный адрес);
+- **author** = тот, кто нажал Merge. Если у него **выключена приватность email**,
+  в author попадает его **реальный routable-адрес** (напр. личный gmail) — и он
+  уезжает в **публичную** историю `main`, хотя ни в одном файле его нет.
+
+Это тот же класс, что и §4 (PII в метаданных), но source — не твой локальный
+`git config`, а серверное слияние. Одного `git config user.email` недостаточно.
+
+**Митигации (обе применены):**
+1. **Включить приватность email в GitHub** (Settings → Emails: *Keep my email
+   addresses private* + *Block command line pushes that expose my email*). Тогда
+   author merge-коммита станет `12345+login@users.noreply.github.com`, а не реальным.
+2. **Гейт различает** реальные и зарезервированные identity: `pii_scan.py`
+   пропускает только шаблонную identity **и** зарезервированные адреса GitHub
+   (`noreply@github.com`, `login@users.noreply.github.com`); любой реальный routable
+   email в `author`/`committer` любого коммита → **FAIL**. См. `identity_allowed()`.
+
+Если реальный email всё же попал в merge-коммит — это **реальная утечка**: history
+надо переписать (`reset --hard` на чистый линейный tip без merge-коммита +
+force-push), а не чинить fix-forward.

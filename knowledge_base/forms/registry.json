@@ -1,0 +1,80 @@
+{
+  "as_of": "2026-06",
+  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются (R23). origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge).",
+  "archetype": "autonomo_contractor + conyuge",
+  "controlled_vocabularies": {
+    "sexo": ["Hombre", "Mujer"],
+    "estado_civil": ["Soltero/a", "Casado/a", "Viudo/a", "Divorciado/a", "Separado/a"],
+    "tipo_solicitud": ["INICIAL", "RENOVADA"],
+    "parentesco": ["Cónyuge", "Pareja", "Hijo/a", "Ascendiente"]
+  },
+  "forms": {
+    "MI-T": {
+      "title": "Solicitud de autorización de residencia para teletrabajador de carácter internacional (titular)",
+      "applies_to": "titular",
+      "fields": [
+        {"name": "Primer apellido", "type": "text", "domain": "free", "profile_key": "applicant.last_name", "criticality": "alta", "common_errors": "транслитерация vs паспорт — должна совпадать с паспортом", "origin": "generic"},
+        {"name": "Segundo apellido", "type": "text", "domain": "free", "profile_key": "applicant.second_last_name", "criticality": "media", "common_errors": "у многих нет второй фамилии — оставить пустым, не дублировать первую", "origin": "generic"},
+        {"name": "Nombre", "type": "text", "domain": "free", "profile_key": "applicant.first_name", "criticality": "alta", "common_errors": "совпадение с паспортом", "origin": "generic"},
+        {"name": "Sexo", "type": "enum", "domain": "sexo", "profile_key": "applicant.sexo", "criticality": "alta", "common_errors": "ОСТАВЛЕНО ПУСТЫМ / 'indefinido' — реальная ошибка; ДОЛЖНО быть Hombre или Mujer", "origin": "generic"},
+        {"name": "Fecha de nacimiento", "type": "date", "domain": "free", "profile_key": "applicant.birth_date", "criticality": "alta", "common_errors": "формат DD/MM/AAAA", "origin": "generic"},
+        {"name": "Lugar de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_place", "criticality": "media", "common_errors": "город как в паспорте", "origin": "generic"},
+        {"name": "País de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_country", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "applicant.nationality", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Estado civil", "type": "enum", "domain": "estado_civil", "profile_key": "applicant.marital_status", "criticality": "media", "common_errors": "должно соответствовать семейному статусу (Casado/a при cónyuge)", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка", "origin": "generic"},
+        {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "applicant.passport_number", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Domicilio en España", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "alta", "common_errors": "совпадение с empadronamiento", "origin": "generic"},
+        {"name": "Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL", "type": "checkbox", "domain": "fixed_checked", "profile_key": "applicant.permit_type", "criticality": "alta", "common_errors": "должна стоять именно эта галочка", "origin": "case_derived"},
+        {"name": "INICIAL / RENOVADA", "type": "enum", "domain": "tipo_solicitud", "profile_key": "applicant.tipo_solicitud", "criticality": "alta", "common_errors": "при продлении — RENOVADA, не INICIAL", "origin": "generic"},
+        {"name": "Correo a efectos de notificaciones", "type": "text", "domain": "free", "profile_key": "applicant.email", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Teléfono", "type": "text", "domain": "free", "profile_key": "applicant.phone", "criticality": "baja", "common_errors": "", "origin": "generic"}
+      ]
+    },
+    "MI-F": {
+      "title": "Solicitud de autorización de residencia para familiar de teletrabajador (familiar)",
+      "applies_to": "familiar",
+      "fields": [
+        {"name": "Primer apellido", "type": "text", "domain": "free", "profile_key": "family.last_name", "criticality": "alta", "common_errors": "совпадение с паспортом", "origin": "generic"},
+        {"name": "Nombre", "type": "text", "domain": "free", "profile_key": "family.first_name", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Sexo", "type": "enum", "domain": "sexo", "profile_key": "family.sexo", "criticality": "alta", "common_errors": "не оставлять пустым; Hombre/Mujer", "origin": "generic"},
+        {"name": "Fecha de nacimiento", "type": "date", "domain": "free", "profile_key": "family.birth_date", "criticality": "alta", "common_errors": "DD/MM/AAAA", "origin": "generic"},
+        {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "family.nationality", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "family.passport_number", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Parentesco con el titular", "type": "enum", "domain": "parentesco", "profile_key": "family.relationship", "criticality": "alta", "common_errors": "Cónyuge vs Pareja — должно соответствовать актуальному статусу", "origin": "case_derived"},
+        {"name": "Nº de registro de la solicitud del titular", "type": "text", "domain": "free", "profile_key": "family.titular_regage", "criticality": "alta", "common_errors": "связка дел: вписать REGAGE titular после его подачи; НЕ выдумывать", "origin": "case_derived"},
+        {"name": "INICIAL / RENOVADA", "type": "enum", "domain": "tipo_solicitud", "profile_key": "family.tipo_solicitud", "criticality": "alta", "common_errors": "", "origin": "generic"}
+      ]
+    },
+    "tasa-790-052": {
+      "title": "Tasa Modelo 790 código 052 — autorización (epígrafe según tipo)",
+      "applies_to": "ambos",
+      "fields": [
+        {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "имя плательщика = заявитель", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_052", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую", "origin": "generic"},
+        {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_052", "criticality": "media", "common_errors": "сумма tasa меняется ежегодно — проверить актуальную", "origin": "generic"}
+      ]
+    },
+    "tasa-790-012": {
+      "title": "Tasa Modelo 790 código 012 — expedición de TIE (tras concesión)",
+      "applies_to": "ambos",
+      "fields": [
+        {"name": "Apellidos y nombre", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Importe (TIE)", "type": "number", "domain": "free", "profile_key": "tasa.importe_012", "criticality": "media", "common_errors": "сумма меняется — проверить вживую", "origin": "generic"}
+      ]
+    },
+    "memoria": {
+      "title": "Memoria / carta explicativa (свободный текст, питается из spec)",
+      "applies_to": "titular",
+      "fields": [
+        {"name": "Основание (teletrabajo, Ley 14/2013)", "type": "text", "domain": "free", "profile_key": "applicant.permit_type", "criticality": "alta", "common_errors": "сослаться на art. 74 bis–quinquies", "origin": "case_derived"},
+        {"name": "Описание работы и роли", "type": "text", "domain": "free", "profile_key": "work.role", "criticality": "media", "common_errors": "согласовать с Certificate of services", "origin": "case_derived"},
+        {"name": "Обоснование дохода (gross, EUR-эквивалент)", "type": "text", "domain": "free", "profile_key": "work.income_amount", "criticality": "alta", "common_errors": "USD: указать курс по каждому платежу и €-эквивалент; выше порога", "origin": "case_derived"},
+        {"name": "Работодатель/заказчик", "type": "text", "domain": "free", "profile_key": "work.company_name", "criticality": "alta", "common_errors": "при смене названия — пояснить amendment", "origin": "case_derived"}
+      ]
+    }
+  }
+}

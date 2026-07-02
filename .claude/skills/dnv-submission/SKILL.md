@@ -1,0 +1,97 @@
+---
+name: dnv-submission
+description: Доводит кейс DNV до пакета «готов к подаче» — финальный чеклист документов, каналы мониторинга (Carpeta Ciudadana, DEHú, sede inclusion), плейбук эскалации (silencio positivo → agilización → Defensor → recurso) с арифметикой окна из профиля. ЖЁСТКИЙ СТОП: движок НЕ подаёт, НЕ платит tasa, НЕ регистрирует expediente и не имитирует это. Требует dnv-review.
+---
+
+# dnv-submission — пакет «готов к подаче» (человек подаёт сам)
+
+Ты собираешь **пакет «готов к подаче»** и инструкции по мониторингу/эскалации.
+**Подаёт человек.**
+
+## 🚫 ЖЁСТКИЙ СТОП (R17 / KTD14) — необратимые действия не твои
+
+Движок **НИКОГДА**:
+- не подаёт заявление на sede;
+- не платит tasa (Modelo 790);
+- не регистрирует expediente и **не выдумывает** REGAGE/expediente/номер;
+- **не имитирует** факт подачи и не пишет статус «submitted».
+
+Все `{{REGAGE_*}}` / `{{EXPEDIENTE}}` в документах остаются **`[ТРЕБУЕТСЯ: …]`**,
+пока **вы** не подали лично и не получили настоящий номер. Твой конечный артефакт —
+чеклист + инструкции, не подача.
+
+## Предусловие (KTD12 — см. `user/pipeline-state.schema.md`)
+
+- Твёрдое: `dnv-review` = `completed` (есть `user/drafts/` + review_summary). Нет —
+  **остановись**: «Сначала `/dnv-review`».
+- Мягкое: `dnv-synthesis` (`user/spec.md`) — для дат окна, рисков и оснований.
+  Нет — работай, но пометь, что риски/основания не сверены со spec.
+
+## Шаг 1. Финальный чеклист пакета
+
+Собери `user/drafts/submission_checklist.md` из:
+- **реестра** `knowledge_base/forms/registry.md` (формы MI-T/MI-F, tasa);
+- **чеклиста документов** spec §3 (`user/spec.md`) — основной заявитель + семья;
+- **статусов** из `user/drafts/review_summary.md` (что OK / что WRONG/MISSING).
+
+По каждому документу: `[ ]` статус, критичность, «где взять/донести». Отметь
+`[ТРЕБУЕТСЯ]`-поля из черновиков, которые надо закрыть **до** подачи.
+
+## Шаг 2. Арифметика окна подачи (для renovación)
+
+Из профиля (`applicant.tie_expiry`, `applicant.first_approval_date`) и норм
+(`knowledge_base/norms/plazos-silencio.md`) посчитай **точные даты**:
+- начало окна (≈60 дней до истечения TIE), дата истечения TIE, поздний «хвост»;
+- рекомендуемая дата подачи в окне; оплатить tasa за 1–2 дня до.
+
+**Даты — арифметика из профиля, не выдумка.** Нет `tie_expiry` (initial) —
+пропусти окно, отметь «для initial окна нет».
+
+## Шаг 3. Каналы мониторинга (после ВАШЕЙ подачи)
+
+| Канал | URL | Что смотреть |
+|---|---|---|
+| Carpeta Ciudadana → Mis Expedientes | carpetaciudadana.gob.es | estado expediente |
+| DEHú | dehu.redsara.es | notificaciones (requerimiento + resolución); **срок ответа тикает отсюда** |
+| Sede inclusion (consulta) | sede.inclusion.gob.es | консультация по REGAGE |
+
+Напомни: **срок ответа на requerimiento тикает с уведомления в DEHú** — не пропустить.
+
+## Шаг 4. Плейбук эскалации (по нарастающей)
+
+Опирается на `knowledge_base/norms/plazos-silencio.md` (art. 76, silencio
+positivo) и шаблоны `templates/`. **Заполнять из профиля; REGAGE — только после
+вашей подачи (иначе `[ТРЕБУЕТСЯ]`).**
+
+| Ситуация | Действие | Шаблон |
+|---|---|---|
+| Приближается истечение TIE, ответа нет | `recordatorio` (мягко) | `templates/escrito_recordatorio.template.md` |
+| Срок рассмотрения истёк без requerimiento | запросить сертификат **silencio positivo** | `templates/escrito_silencio_positivo.template.md` |
+| Сертификат silencio не выдан в срок (~15 дней) | `agilización` + резерв права на recurso | `templates/escrito_agilizacion.template.md` |
+| Длительное бездействие администрации | **queja** в Defensor del Pueblo (portal-sac.defensordelpueblo.es) | `templates/queja_defensor.template.md` |
+| Отказ / исчерпаны меры | recurso (de alzada / contencioso) — **к юристу** | (вне v1: экспертная помощь) |
+
+Подставь `{{плейсхолдеры}}` из профиля; неизвестное/до-подачное → `[ТРЕБУЕТСЯ]`.
+Пиши заполненные escritos в `user/drafts/`.
+
+> **Silencio positivo — не автоматика:** сроки и точку отсчёта проверить (verify);
+> опираться на норму + свежий рисёрч, не только на практику сообществ.
+
+## Шаг 5. Опциональный вывод
+
+- **По умолчанию — markdown-чеклист** (`user/drafts/submission_checklist.md`).
+- Trello-доска и PDF-сборка — **опциональные** надстройки (`dnv-*` + `engine/
+  scripts/build_pdf.sh`), подключаются отдельно (см. U15); без них пайплайн
+  функционален.
+
+## Шаг 6. Обнови состояние
+
+`steps["dnv-submission"] = {status:"completed", last_run:"<сегодня>",
+output:"user/drafts/submission_checklist.md"}`.
+
+## Выход
+
+`user/drafts/submission_checklist.md` + заполненные (при необходимости) escritos.
+Явно: это **пакет для самостоятельной подачи**; движок **не подавал** и не платил
+tasa; актуальную процедуру/суммы/формы сверить вживую; при отказе/сложностях —
+независимая экспертная/юридическая помощь.

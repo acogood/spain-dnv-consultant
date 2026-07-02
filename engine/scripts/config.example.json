@@ -1,0 +1,17 @@
+{
+  "_comment": "Filter config for filter_chat.py. Keyword groups are case-insensitive regexes; a message matching any pattern in a group is tagged with that topic. Edit/extend for your case. Copy to config.json (gitignored) if you want local changes.",
+  "min_text_len": 40,
+  "keyword_groups": {
+    "продление": ["продлени[еяю]", "renovaci[oó]n", "renewal", "продлева[тю]"],
+    "документы": ["документ\\w*", "чеклист", "checklist", "комплект", "справк[аиу]", "certificado", "antecedentes", "padr[oó]n", "empadronamiento"],
+    "доход_IPREM": ["IPREM", "SMI", "дохо[дг]\\w*", "ingreso", "200%", "заработ\\w*", "порог\\w*", "рент[аы]"],
+    "UGE_подача": ["UGE", "Grandes Empresas", "sede electr[oó]nica", "подач[аиу]", "solicitud", "requerimiento", "дозапрос\\w*", "отказ\\w*", "denegaci", "одобрен\\w*", "aprobad", "resoluc", "силенси", "silencio"],
+    "autónomo_контракт": ["aut[oó]nom", "контракт\\w*", "contrat", "договор\\w*", "contractor", "freelanc", "cuenta propia", "invoice", "инвойс\\w*", "factura"],
+    "банк_Wise": ["\\bWise\\b", "Transferwise", "выписк[аиу]", "extracto", "банковск\\w*", "bancari", "BBVA", "перевод\\w* денег"],
+    "семья_жена": ["с[ъу]пруг\\w*", "жен[аыу]", "c[oó]nyuge", "pareja", "семь[яиюе]", "familia", "зависим\\w* член", "reagrupaci", "DA\\s*7", "disposici[oó]n adicional"],
+    "TIE_сроки": ["\\bTIE\\b", "tarjeta", "huellas", "отпечатк\\w*", "cita\\w*", "окн[оа] подач", "60 дн", "90 дн", "до истечени", "срок\\w* действ"],
+    "teletrabajo_nomad": ["teletrabaj\\w*", "n[oó]mada\\w*", "номад\\w*", "digital nomad", "кочевни[кч]\\w*", "Ley 14", "Ley 28", "art[íi]culo 74", "74\\s*bis", "74\\s*quinquies"],
+    "налоги": ["modelo\\s*\\d+", "IRPF", "IVA", "Beckham", "Бекх[еэ]м\\w*", "налог\\w*", "impuesto", "gestor\\w*", "декларац\\w*", "Seguridad Social", "RETA", "cotizaci"],
+    "практика_опыт": ["у меня (был|получил|одобрил|отказал|пришл)", "мне (одобрил|отказал|пришл|дали|прислали)", "нам (одобрил|отказал|пришл)", "мой (кейс|случай|опыт)", "получил\\w* (одобрени|отказ|TIE|карт)", "подавал\\w*\\s+(в|на|через)"]
+  }
+}

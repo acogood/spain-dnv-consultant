@@ -1,0 +1,308 @@
+{
+ "MI-T": [
+  {
+   "name": "Primer apellido",
+   "profile_key": "applicant.last_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Testovenko",
+   "present": true
+  },
+  {
+   "name": "Segundo apellido",
+   "profile_key": "applicant.second_last_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Segundo apellido]",
+   "present": false
+  },
+  {
+   "name": "Nombre",
+   "profile_key": "applicant.first_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Ivan",
+   "present": true
+  },
+  {
+   "name": "Sexo",
+   "profile_key": "applicant.sexo",
+   "domain": "sexo",
+   "criticality": "alta",
+   "value": "Mujer",
+   "present": true
+  },
+  {
+   "name": "Fecha de nacimiento",
+   "profile_key": "applicant.birth_date",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "1990-01-15",
+   "present": true
+  },
+  {
+   "name": "Lugar de nacimiento",
+   "profile_key": "applicant.birth_place",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Novgrad",
+   "present": true
+  },
+  {
+   "name": "País de nacimiento",
+   "profile_key": "applicant.birth_country",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Rusia",
+   "present": true
+  },
+  {
+   "name": "Nacionalidad",
+   "profile_key": "applicant.nationality",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Rusa",
+   "present": true
+  },
+  {
+   "name": "Estado civil",
+   "profile_key": "applicant.marital_status",
+   "domain": "estado_civil",
+   "criticality": "media",
+   "value": "Casado/a",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "applicant.nie",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9099999R",
+   "present": true
+  },
+  {
+   "name": "Nº pasaporte",
+   "profile_key": "applicant.passport_number",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "990000111",
+   "present": true
+  },
+  {
+   "name": "Domicilio en España",
+   "profile_key": "applicant.address_full",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Calle Ejemplo, 1, 28001 Madrid",
+   "present": true
+  },
+  {
+   "name": "Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL",
+   "profile_key": "applicant.permit_type",
+   "domain": "fixed_checked",
+   "criticality": "alta",
+   "value": "teletrabajador de carácter internacional",
+   "present": true
+  },
+  {
+   "name": "INICIAL / RENOVADA",
+   "profile_key": "applicant.tipo_solicitud",
+   "domain": "tipo_solicitud",
+   "criticality": "alta",
+   "value": "RENOVADA",
+   "present": true
+  },
+  {
+   "name": "Correo a efectos de notificaciones",
+   "profile_key": "applicant.email",
+   "domain": "free",
+   "criticality": "media",
+   "value": "ivan.test@example.com",
+   "present": true
+  },
+  {
+   "name": "Teléfono",
+   "profile_key": "applicant.phone",
+   "domain": "free",
+   "criticality": "baja",
+   "value": "600000000",
+   "present": true
+  }
+ ],
+ "MI-F": [
+  {
+   "name": "Primer apellido",
+   "profile_key": "family.last_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Testovenko",
+   "present": true
+  },
+  {
+   "name": "Nombre",
+   "profile_key": "family.first_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Maria",
+   "present": true
+  },
+  {
+   "name": "Sexo",
+   "profile_key": "family.sexo",
+   "domain": "sexo",
+   "criticality": "alta",
+   "value": "indefinido",
+   "present": true
+  },
+  {
+   "name": "Fecha de nacimiento",
+   "profile_key": "family.birth_date",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "1992-03-20",
+   "present": true
+  },
+  {
+   "name": "Nacionalidad",
+   "profile_key": "family.nationality",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Rusa",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "family.nie",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999998T",
+   "present": true
+  },
+  {
+   "name": "Nº pasaporte",
+   "profile_key": "family.passport_number",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "990000222",
+   "present": true
+  },
+  {
+   "name": "Parentesco con el titular",
+   "profile_key": "family.relationship",
+   "domain": "parentesco",
+   "criticality": "alta",
+   "value": "Cónyuge",
+   "present": true
+  },
+  {
+   "name": "Nº de registro de la solicitud del titular",
+   "profile_key": "family.titular_regage",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "ВЫДУМАННЫЙ-НОМЕР-000",
+   "present": false
+  },
+  {
+   "name": "INICIAL / RENOVADA",
+   "profile_key": "family.tipo_solicitud",
+   "domain": "tipo_solicitud",
+   "criticality": "alta",
+   "value": "RENOVADA",
+   "present": true
+  }
+ ],
+ "tasa-790-052": [
+  {
+   "name": "Apellidos y nombre / Razón social",
+   "profile_key": "applicant.full_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Ivan Testovenko",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "applicant.nie",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999999R",
+   "present": true
+  },
+  {
+   "name": "Epígrafe / autoliquidación",
+   "profile_key": "tasa.epigrafe_052",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación]",
+   "present": false
+  },
+  {
+   "name": "Importe",
+   "profile_key": "tasa.importe_052",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Importe]",
+   "present": false
+  }
+ ],
+ "tasa-790-012": [
+  {
+   "name": "Apellidos y nombre",
+   "profile_key": "applicant.full_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Ivan Testovenko",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "applicant.nie",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999999R",
+   "present": true
+  },
+  {
+   "name": "Importe (TIE)",
+   "profile_key": "tasa.importe_012",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Importe (TIE)]",
+   "present": false
+  }
+ ],
+ "memoria": [
+  {
+   "name": "Основание (teletrabajo, Ley 14/2013)",
+   "profile_key": "applicant.permit_type",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "teletrabajador de carácter internacional",
+   "present": true
+  },
+  {
+   "name": "Описание работы и роли",
+   "profile_key": "work.role",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Marketing Manager",
+   "present": true
+  },
+  {
+   "name": "Обоснование дохода (gross, EUR-эквивалент)",
+   "profile_key": "work.income_amount",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "6000",
+   "present": true
+  },
+  {
+   "name": "Работодатель/заказчик",
+   "profile_key": "work.company_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Acme Remote LLC",
+   "present": true
+  }
+ ]
+}

@@ -1,0 +1,62 @@
+{
+  "_comment": "СТРУКТУРА профиля кейса (показывает форму, без реальных значений). dnv-intake пишет настоящий user/case-profile.json (gitignored). Вложенные ключи эквивалентны dotted-ключам profile.schema.json.",
+  "case": {
+    "process_type": "renovacion",
+    "archetype_ok": true
+  },
+  "applicant": {
+    "first_name": "",
+    "last_name": "",
+    "second_last_name": null,
+    "sexo": "",
+    "birth_date": "",
+    "birth_place": "",
+    "birth_country": "",
+    "nationality": "",
+    "marital_status": "",
+    "nie": "",
+    "passport_number": "",
+    "passport_expiry": "",
+    "address_full": "",
+    "email": "",
+    "phone": null,
+    "permit_type": "teletrabajador de carácter internacional",
+    "tipo_solicitud": "RENOVADA",
+    "tie_expiry": "",
+    "first_approval_date": "",
+    "certificado_digital": true
+  },
+  "work": {
+    "company_name": "",
+    "company_country": "",
+    "contract_type": "",
+    "contract_number": null,
+    "contract_date": null,
+    "role": "",
+    "income_amount": 0,
+    "income_currency": "",
+    "income_eur_equiv": 0,
+    "bank": null,
+    "num_clients": 1
+  },
+  "family": {
+    "present": true,
+    "first_name": "",
+    "last_name": "",
+    "sexo": "",
+    "birth_date": "",
+    "nationality": "",
+    "nie": "",
+    "passport_number": "",
+    "relationship": "",
+    "tipo_solicitud": "RENOVADA",
+    "marriage_date": null,
+    "marriage_place": null,
+    "titular_regage": null
+  },
+  "tasa": {
+    "epigrafe_052": null,
+    "importe_052": null,
+    "importe_012": null
+  }
+}

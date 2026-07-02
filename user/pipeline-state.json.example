@@ -1,0 +1,14 @@
+{
+  "_comment": "СТРУКТУРА состояния пайплайна (показывает форму). dnv-intake создаёт настоящий user/pipeline-state.json (gitignored); каждый dnv-* навык на входе читает его и проверяет предусловия, на выходе обновляет свою запись (status: pending|completed; last_run; output).",
+  "schema_version": "1.0",
+  "steps": {
+    "dnv-intake":      {"status": "completed", "last_run": "YYYY-MM-DD", "output": "user/case-profile.json"},
+    "dnv-research":    {"status": "pending"},
+    "dnv-chat-mining": {"status": "pending"},
+    "dnv-synthesis":   {"status": "pending"},
+    "dnv-verify":      {"status": "pending"},
+    "dnv-documents":   {"status": "pending"},
+    "dnv-review":      {"status": "pending"},
+    "dnv-submission":  {"status": "pending"}
+  }
+}

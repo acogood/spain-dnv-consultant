@@ -1,0 +1,63 @@
+{
+  "_comment": "СИНТЕТИЧЕСКИЙ профиль (полностью вымышленные значения) для MVP-гейта U19. Архетип v1: autónomo/контрактор + cónyuge, renovación. НИ ОДНОГО реального значения.",
+  "case": {
+    "process_type": "renovacion",
+    "archetype_ok": true
+  },
+  "applicant": {
+    "first_name": "Ivan",
+    "last_name": "Testovenko",
+    "second_last_name": null,
+    "full_name": "Ivan Testovenko",
+    "sexo": "Hombre",
+    "birth_date": "1990-01-15",
+    "birth_place": "Novgrad",
+    "birth_country": "Rusia",
+    "nationality": "Rusa",
+    "marital_status": "Casado/a",
+    "nie": "X9999999R",
+    "passport_number": "990000111",
+    "passport_expiry": "2030-05-01",
+    "address_full": "Calle Ejemplo, 1, 28001 Madrid",
+    "email": "ivan.test@example.com",
+    "phone": "600000000",
+    "permit_type": "teletrabajador de carácter internacional",
+    "tipo_solicitud": "RENOVADA",
+    "tie_expiry": "2026-08-01",
+    "first_approval_date": "2023-08-01",
+    "certificado_digital": true
+  },
+  "work": {
+    "company_name": "Acme Remote LLC",
+    "company_country": "USA, Delaware",
+    "contract_type": "Independent Contractor Agreement",
+    "contract_number": "AR-2023-007",
+    "contract_date": "2023-03-01",
+    "role": "Marketing Manager",
+    "income_amount": 6000,
+    "income_currency": "USD",
+    "income_eur_equiv": 5500,
+    "bank": "Wise",
+    "num_clients": 1
+  },
+  "family": {
+    "present": true,
+    "first_name": "Maria",
+    "last_name": "Testovenko",
+    "sexo": "Mujer",
+    "birth_date": "1992-03-20",
+    "nationality": "Rusa",
+    "nie": "X9999998T",
+    "passport_number": "990000222",
+    "relationship": "Cónyuge",
+    "tipo_solicitud": "RENOVADA",
+    "marriage_date": "2026-01-10",
+    "marriage_place": "Consulado, Madrid",
+    "titular_regage": null
+  },
+  "tasa": {
+    "epigrafe_052": null,
+    "importe_052": null,
+    "importe_012": null
+  }
+}

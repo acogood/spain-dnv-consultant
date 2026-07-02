@@ -26,12 +26,15 @@ jobs:
       - name: Scan tree + history for structural PII / secrets
         run: python engine/scripts/pii_scan.py --allow-any-identity
 
-  # Canonical repo ONLY: additionally require every commit's author/committer to
-  # be the template identity. Skipped on forks (contributors legitimately commit
-  # under their own name), which is why the structural job carries the fork load.
+  # Canonical repo ONLY, and on `push` events ONLY: require every commit's
+  # author/committer to be the template identity. Skipped on forks (contributors
+  # legitimately commit under their own name — the structural job carries that
+  # load) and skipped on `pull_request` events, whose checked-out ref is a
+  # GitHub-generated MERGE commit with its own bot identity that would spuriously
+  # fail this check. Every real branch tip is still covered by its `push` event.
   template-identity:
-    name: Template-identity gate (canonical repo only)
-    if: github.repository == 'acogood/spain-dnv-consultant'
+    name: Template-identity gate (canonical repo, push only)
+    if: github.event_name == 'push' && github.repository == 'acogood/spain-dnv-consultant'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

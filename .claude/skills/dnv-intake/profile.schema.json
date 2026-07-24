@@ -11,7 +11,7 @@
   },
   "properties": {
     "case.process_type": {"type": "enum", "domain": "process_type", "required": true, "branch": "both", "label": "Первичная подача или продление?"},
-    "case.archetype_ok": {"type": "bool", "required": true, "branch": "both", "label": "Кейс подходит под архетип v1 (autónomo/контрактор + cónyuge)?"},
+    "case.archetype_ok": {"type": "bool", "required": true, "branch": "both", "label": "Кейс подходит под архетип v1 (autónomo/контрактор; cónyuge опционально)?"},
 
     "applicant.first_name": {"type": "text", "required": true, "branch": "both", "label": "Имя (как в паспорте)"},
     "applicant.last_name": {"type": "text", "required": true, "branch": "both", "label": "Первая фамилия"},

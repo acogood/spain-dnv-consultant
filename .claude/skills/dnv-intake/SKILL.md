@@ -1,6 +1,6 @@
 ---
 name: dnv-intake
-description: Онбординг-интервью для испанской DNV (teletrabajo de carácter internacional). Собирает анамнез кейса в структурированный профиль user/case-profile.json (единый источник правды), ветвит initial vs renovación, проверяет архетип v1 (autónomo/контрактор + cónyuge), инициализирует pipeline-state. Запускать ПЕРВЫМ.
+description: Онбординг-интервью для испанской DNV (teletrabajo de carácter internacional). Собирает анамнез кейса в структурированный профиль user/case-profile.json (единый источник правды), ветвит initial vs renovación, проверяет архетип v1 (autónomo/контрактор, cónyuge опционально), инициализирует pipeline-state. Запускать ПЕРВЫМ.
 ---
 
 # dnv-intake — интервью → профиль кейса

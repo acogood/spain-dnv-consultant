@@ -27,13 +27,7 @@ python engine/scripts/extract_claims.py user/spec.md user/claims.json
 `user/claims.json` — тегированные claim'ы (с уровнем достоверности, ссылками,
 секцией). Идемпотентно перегенерируется при изменении spec.
 
-## Шаг 2. Учти degraded-флаг синтеза
-
-Прочитай шапку `user/spec.md`. Если `degraded: true` (рисёрч падал на WebSearch) —
-**усиль внешние проверки**: пороги/сроки/формы, помеченные живым рисёрчем как
-деградированные, требуют явной ре-проверки; отметь это в отчёте.
-
-## Шаг 3. Запусти devils-advocate
+## Шаг 2. Запусти devils-advocate
 
 Вызови субагента **`devils-advocate`** (`.claude/agents/devils-advocate.md`). Он:
 - сам пре-загружает источники (`knowledge_base/norms|sources|practice`),
@@ -54,7 +48,7 @@ python engine/scripts/extract_claims.py user/spec.md user/claims.json
 
 Если запускаешь частично — передай агенту номер секции (он поддерживает partial).
 
-## Шаг 4. Обнови состояние
+## Шаг 3. Обнови состояние
 
 `steps["dnv-verify"] = {status:"completed", last_run:"<сегодня>",
 output:"user/verification_report.md"}`.

@@ -129,7 +129,6 @@ Write `user/verification_report.md`:
 **Дата верификации:** [today]
 **Версия spec:** [date from spec header]
 **Клеймов проверено:** [N]
-**Backend:** [Perplexity / WebSearch — degraded?]
 
 ## Сводка
 | Вердикт | Количество |

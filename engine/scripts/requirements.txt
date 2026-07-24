@@ -7,7 +7,7 @@
 #   * Python 3.8 or newer (any OS: Windows / macOS / Linux).
 #
 # Optional, NOT installed via pip (separate, opt-in):
-#   * Perplexity / Trello MCP servers  -> configured in .mcp.json (env-based)
+#   * Trello / Notion MCP servers (optional task board)  -> see dnv-submission
 #   * pandoc + lualatex                -> only for the optional PDF build step
 #
 # (Intentionally empty of pip packages.)

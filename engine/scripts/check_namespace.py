@@ -2,7 +2,7 @@
 """
 check_namespace.py — coherence guard for the profile <-> form-registry namespace.
 
-Invariant (KTD5/KTD6): every `profile_key` referenced by the form registry MUST
+Invariant: every `profile_key` referenced by the form registry MUST
 exist in the case-profile schema. Otherwise a form field would map to a key the
 intake never collects -> a guaranteed gap or a hallucinated value at draft time.
 

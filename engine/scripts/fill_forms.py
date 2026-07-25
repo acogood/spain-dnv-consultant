@@ -3,12 +3,12 @@
 fill_forms.py — deterministic form-filler: case profile -> per-form filling
 sheets, driven by the field registry.
 
-This is the MECHANICAL core of the dnv-documents skill. Rule (KTD5/KTD6): the
+This is the MECHANICAL core of the dnv-documents skill. Rule: the
 value of every form field IS the corresponding profile value (by profile_key).
 A field whose profile value is missing becomes `[ТРЕБУЕТСЯ: <field>]` — never a
 guessed value. No hallucination is structurally possible here.
 
-Precondition (KTD12): a case profile must exist. Without it the script halts
+Precondition: a case profile must exist. Without it the script halts
 with an instruction (it does not invent one).
 
 Usage:
@@ -101,7 +101,7 @@ def main(argv=None):
         if not pp.is_file():
             raise SafeIOError(
                 f"Профиль не найден: {pp}. Сначала пройдите интервью (/dnv-intake) — "
-                f"оно создаёт user/case-profile.json. (KTD12: без профиля не генерирую.)"
+                f"оно создаёт user/case-profile.json. (без профиля не генерирую.)"
             )
         profile = json.loads(pp.read_text(encoding="utf-8"))
         registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))

@@ -9,9 +9,9 @@ description: Верифицирует claim'ы из user/spec.md против к
 через субагента `devils-advocate` и собираешь `user/verification_report.md`.
 Вывод поддерживает **черновик**, требующий независимой экспертной проверки:
 верификация покрывает **трассируемость** claim'ов и **механику полей**, не
-юридическую правильность (R21).
+юридическую правильность.
 
-## Предусловие (KTD12 — см. `user/pipeline-state.schema.md`)
+## Предусловие (см. `user/pipeline-state.schema.md`)
 
 - Твёрдое: `dnv-synthesis` = `completed` (есть `user/spec.md`). Нет —
   **остановись**: «Сначала `/dnv-synthesis`».

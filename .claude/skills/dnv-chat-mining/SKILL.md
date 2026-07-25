@@ -11,7 +11,7 @@ description: ЛОКАЛЬНО домалывает практику из све�
 (gitignored). Наружу (в дайджест) ничего не идёт — это делает мейнтейнер отдельно
 (`build_digest.py`), не этот навык.
 
-## Предусловие (KTD12 — см. `user/pipeline-state.schema.md`)
+## Предусловие (см. `user/pipeline-state.schema.md`)
 
 - Твёрдое: `dnv-intake` = `completed` (workspace/state существует).
 - Нужны **свежие экспорты** Telegram (JSON, Telegram Desktop) в `user/`. Нет
@@ -38,7 +38,7 @@ description: ЛОКАЛЬНО домалывает практику из све�
 python engine/scripts/chat/merge_chat_dumps.py user/dump_old.json user/dump_new.json user/merged.json --allowed-root user
 # отчёт вида "in=… out=… dedup=…": dedup>0 при перекрытии — это и есть идемпотентность
 
-# b) anonymize (ПРИВАТ-ГЕЙТ, U2): keep-allowlist полей, псевдоним = salted-hash from_id,
+# b) anonymize (ПРИВАТ-ГЕЙТ): keep-allowlist полей, псевдоним = salted-hash from_id,
 #    страйп имён/контактов. Салт стабильный (один файл) → стабильные псевдонимы между прогонами.
 python engine/scripts/chat/anonymize_chat.py user/merged.json user/anon.json --salt-file user/.anon_salt --allowed-root user
 

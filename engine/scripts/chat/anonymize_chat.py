@@ -6,7 +6,7 @@ chat-mining pipeline: merge -> ANONYMIZE -> filter -> slice. Its output stays
 under user/ and is NEVER shipped; only the aggregated digest (build_digest.py)
 is publishable.
 
-Design (KTD4):
+Design:
   * KEEP-ALLOWLIST of fields, not a denylist. Identity leaks through many
     fields (from, from_id, forwarded_from, actor, actor_id, members,
     saved_from, reply_to_peer_id, ...) and unknown future fields would slip a

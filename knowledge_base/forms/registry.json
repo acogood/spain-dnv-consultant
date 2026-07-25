@@ -1,6 +1,6 @@
 {
   "as_of": "2026-06",
-  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются (R23). origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge).",
+  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge).",
   "archetype": "autonomo_contractor + conyuge",
   "controlled_vocabularies": {
     "sexo": ["Hombre", "Mujer"],

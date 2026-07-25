@@ -7,7 +7,7 @@ contains, per claim: a human-curated statement, a confidence tag, a coarse
 SUPPORT BAND (how many DISTINCT pseudonymous authors back it), and a
 year-month date range. It deliberately does NOT contain raw messages, message
 ids, author pseudonyms, or the salt — publishing pseudo-keys against a known
-roster + public salt would be reversible (KTD4).
+roster + public salt would be reversible.
 
 Privacy controls:
   * Distinct-author counting over salted pseudonyms (from anonymize_chat.py).

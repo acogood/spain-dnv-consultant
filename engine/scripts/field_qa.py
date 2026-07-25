@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 field_qa.py — exhaustive, deterministic field-QA BASELINE (the must-have layer
-of dnv-review, KTD7).
+of dnv-review).
 
 For EVERY field in the registry it emits an explicit verdict
 (OK / WRONG / MISSING / UNCERTAIN) — silence is a review bug, so the count of
@@ -13,7 +13,7 @@ plausibility:
   * draft value != re-derived profile value   -> WRONG  (catches a plausible-but-wrong value)
   * profile-empty & draft '[ТРЕБУЕТСЯ]'        -> MISSING (alta) / OK (media/baja)
 
-ISOLATION (KTD13): `rederive_expected()` reads ONLY the profile + registry — it
+ISOLATION: `rederive_expected()` reads ONLY the profile + registry — it
 never looks at the draft. A separate step (`diff`) compares those expected values
 with the draft. This is the deterministic baseline; the LLM re-derivation lives
 in the field-qa-reviewer agent (two independent processes).
@@ -62,7 +62,7 @@ def is_empty(v):
 
 
 def rederive_expected(profile, registry):
-    """KTD13: derive each field's expected value from profile + registry ONLY.
+    """Derive each field's expected value from profile + registry ONLY.
     Does NOT read the draft. Returns {(form, field_name): expected_or_None}."""
     flat = flatten(profile)
     expected = {}
@@ -163,7 +163,7 @@ def main(argv=None):
         registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))
         drafts = json.loads(Path(args.drafts).read_text(encoding="utf-8"))
 
-        expected = rederive_expected(profile, registry)   # KTD13: no draft here
+        expected = rederive_expected(profile, registry)   # no draft here
         verdicts = diff(expected, registry, drafts)        # compare with draft
         report, counts = render(verdicts)
 

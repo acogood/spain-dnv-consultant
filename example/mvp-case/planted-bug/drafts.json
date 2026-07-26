@@ -77,7 +77,7 @@
    "profile_key": "applicant.nie",
    "domain": "free",
    "criticality": "alta",
-   "value": "X9099999R",
+   "value": "X9999998R",
    "present": true
   },
   {
@@ -199,8 +199,8 @@
    "profile_key": "family.titular_regage",
    "domain": "free",
    "criticality": "alta",
-   "value": "ВЫДУМАННЫЙ-НОМЕР-000",
-   "present": false
+   "value": "REGAGE-2026-000123",
+   "present": true
   },
   {
    "name": "INICIAL / RENOVADA",
@@ -263,12 +263,304 @@
    "present": true
   },
   {
+   "name": "Domicilio",
+   "profile_key": "applicant.address_full",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Calle Ejemplo, 1, 28001 Madrid",
+   "present": true
+  },
+  {
+   "name": "Epígrafe / autoliquidación (TIE)",
+   "profile_key": "tasa.epigrafe_012",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación (TIE)]",
+   "present": false
+  },
+  {
    "name": "Importe (TIE)",
    "profile_key": "tasa.importe_012",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Importe (TIE)]",
    "present": false
+  }
+ ],
+ "EX-17": [
+  {
+   "name": "Primer apellido",
+   "profile_key": "applicant.last_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Testovenko",
+   "present": true
+  },
+  {
+   "name": "Segundo apellido",
+   "profile_key": "applicant.second_last_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Segundo apellido]",
+   "present": false
+  },
+  {
+   "name": "Nombre",
+   "profile_key": "applicant.first_name",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Ivan",
+   "present": true
+  },
+  {
+   "name": "Sexo",
+   "profile_key": "applicant.sexo",
+   "domain": "sexo",
+   "criticality": "alta",
+   "value": "Hombre",
+   "present": true
+  },
+  {
+   "name": "Fecha de nacimiento",
+   "profile_key": "applicant.birth_date",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "1990-01-15",
+   "present": true
+  },
+  {
+   "name": "Lugar de nacimiento",
+   "profile_key": "applicant.birth_place",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Novgrad",
+   "present": true
+  },
+  {
+   "name": "País de nacimiento",
+   "profile_key": "applicant.birth_country",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Rusia",
+   "present": true
+  },
+  {
+   "name": "Nombre del padre",
+   "profile_key": "applicant.father_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Piotr Testovenko",
+   "present": true
+  },
+  {
+   "name": "Nombre de la madre",
+   "profile_key": "applicant.mother_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Olga Testovenko",
+   "present": true
+  },
+  {
+   "name": "Nacionalidad",
+   "profile_key": "applicant.nationality",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Rusa",
+   "present": true
+  },
+  {
+   "name": "Estado civil",
+   "profile_key": "applicant.marital_status",
+   "domain": "estado_civil",
+   "criticality": "media",
+   "value": "Casado/a",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "applicant.nie",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999999R",
+   "present": true
+  },
+  {
+   "name": "Nº pasaporte",
+   "profile_key": "applicant.passport_number",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "880000999",
+   "present": true
+  },
+  {
+   "name": "Domicilio en España",
+   "profile_key": "applicant.address_full",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Calle Ejemplo, 1, 28001 Madrid",
+   "present": true
+  },
+  {
+   "name": "Teléfono",
+   "profile_key": "applicant.phone",
+   "domain": "free",
+   "criticality": "baja",
+   "value": "600000000",
+   "present": true
+  },
+  {
+   "name": "Correo electrónico",
+   "profile_key": "applicant.email",
+   "domain": "free",
+   "criticality": "media",
+   "value": "ivan.test@example.com",
+   "present": true
+  },
+  {
+   "name": "TIE: INICIAL / RENOVADA",
+   "profile_key": "applicant.tipo_solicitud",
+   "domain": "tipo_solicitud",
+   "criticality": "alta",
+   "value": "RENOVADA",
+   "present": true
+  },
+  {
+   "name": "DIRIGIDA A (provincia / comisaría)",
+   "profile_key": "applicant.comisaria_provincia",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Madrid",
+   "present": true
+  }
+ ],
+ "EX-17-familiar": [
+  {
+   "name": "Primer apellido",
+   "profile_key": "family.last_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Testovenko",
+   "present": true
+  },
+  {
+   "name": "Nombre",
+   "profile_key": "family.first_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Maria",
+   "present": true
+  },
+  {
+   "name": "Sexo",
+   "profile_key": "family.sexo",
+   "domain": "sexo",
+   "criticality": "media",
+   "value": "Mujer",
+   "present": true
+  },
+  {
+   "name": "Fecha de nacimiento",
+   "profile_key": "family.birth_date",
+   "domain": "free",
+   "criticality": "media",
+   "value": "1992-03-20",
+   "present": true
+  },
+  {
+   "name": "Lugar de nacimiento",
+   "profile_key": "family.birth_place",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Vetrograd",
+   "present": true
+  },
+  {
+   "name": "País de nacimiento",
+   "profile_key": "family.birth_country",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Rusia",
+   "present": true
+  },
+  {
+   "name": "Nombre del padre",
+   "profile_key": "family.father_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Andrei Primerov",
+   "present": true
+  },
+  {
+   "name": "Nombre de la madre",
+   "profile_key": "family.mother_name",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Elena Primerova",
+   "present": true
+  },
+  {
+   "name": "Nacionalidad",
+   "profile_key": "family.nationality",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Rusa",
+   "present": true
+  },
+  {
+   "name": "Estado civil",
+   "profile_key": "family.marital_status",
+   "domain": "estado_civil",
+   "criticality": "media",
+   "value": "Casado/a",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "family.nie",
+   "domain": "free",
+   "criticality": "media",
+   "value": "X9999998T",
+   "present": true
+  },
+  {
+   "name": "Nº pasaporte",
+   "profile_key": "family.passport_number",
+   "domain": "free",
+   "criticality": "media",
+   "value": "990000222",
+   "present": true
+  },
+  {
+   "name": "Domicilio en España",
+   "profile_key": "family.address_full",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Calle Ejemplo, 1, 28001 Madrid",
+   "present": true
+  },
+  {
+   "name": "Teléfono",
+   "profile_key": "family.phone",
+   "domain": "free",
+   "criticality": "baja",
+   "value": "600000001",
+   "present": true
+  },
+  {
+   "name": "Correo electrónico",
+   "profile_key": "family.email",
+   "domain": "free",
+   "criticality": "media",
+   "value": "maria.test@example.com",
+   "present": true
+  },
+  {
+   "name": "TIE: INICIAL / RENOVADA",
+   "profile_key": "family.tipo_solicitud",
+   "domain": "tipo_solicitud",
+   "criticality": "media",
+   "value": "RENOVADA",
+   "present": true
   }
  ],
  "memoria": [

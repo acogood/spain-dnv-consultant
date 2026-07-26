@@ -49,8 +49,9 @@ silencio positivo, requerimiento). Сохраняйте эту конвенци�
   extract_claims), `requirements.txt`.
 - `.claude/skills/` — `dnv-intake`, `dnv-research`, `dnv-chat-mining`,
   `dnv-synthesis`, `dnv-verify`, `dnv-documents`, `dnv-review`, `dnv-submission`,
-  `dnv-status` (снимок «где я», read-only), `dnv-tracking` (ведение после
-  подачи, повторяемый).
+  `dnv-status` (снимок «где я», read-only), `dnv-tracking` (ведение **до**
+  резолюции, повторяемый), `dnv-tie` (последняя миля **после** резолюции:
+  huellas, EX-17, tasa 790-012, recogida, regreso; повторяемый).
 - `.claude/agents/` — `devils-advocate`, `field-qa-reviewer`, `official-reviewer`.
 - `user/` — **GITIGNORED** рабочее пространство (профиль, документы, выгрузки,
   черновики, `pipeline-state.json`).
@@ -70,7 +71,8 @@ silencio positivo, requerimiento). Сохраняйте эту конвенци�
    на входе читает `user/pipeline-state.json` и **проверяет предусловия**: если
    их нет — останавливается с инструкцией, а не догадывается.
    Рекомендуемый поток: intake → research → (chat-mining) → synthesis → verify →
-   documents → review → submission → tracking. `/dnv-status` — в любой момент.
+   documents → review → submission → tracking → **tie** (после резолюции).
+   `/dnv-status` — в любой момент.
 4. **Каждый факт несёт тег достоверности** (`[норма]`, `[официальное
    разъяснение]`, `[практика — консультант]`, `[практика — Telegram]`,
    `[не подтверждено]`) и, для процедурного/порогового, **as-of дату**.

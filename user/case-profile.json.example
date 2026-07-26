@@ -24,7 +24,11 @@
     "tipo_solicitud": "RENOVADA",
     "tie_expiry": "",
     "first_approval_date": "",
-    "certificado_digital": true
+    "certificado_digital": true,
+    "_tie_branch": "ниже — поля EX-17 (branch: tie). В интейке НЕ спрашиваются: их добирает /dnv-tie после одобрения. До этого — null.",
+    "father_name": null,
+    "mother_name": null,
+    "comisaria_provincia": null
   },
   "work": {
     "company_name": "",
@@ -45,18 +49,29 @@
     "last_name": "",
     "sexo": "",
     "birth_date": "",
+    "birth_place": "",
+    "birth_country": "",
     "nationality": "",
+    "marital_status": "",
     "nie": "",
     "passport_number": "",
+    "passport_expiry": "",
+    "address_full": "",
+    "email": "",
+    "phone": null,
     "relationship": "",
     "tipo_solicitud": "RENOVADA",
     "marriage_date": null,
     "marriage_place": null,
-    "titular_regage": null
+    "titular_regage": null,
+    "father_name": null,
+    "mother_name": null
   },
   "tasa": {
+    "_comment": "derived + «проверить вживую»: эпиграфы и суммы ищутся на дату подачи, не выдумываются. 052 — на авторизацию, 012 — на TIE после одобрения.",
     "epigrafe_052": null,
     "importe_052": null,
+    "epigrafe_012": null,
     "importe_012": null
   }
 }

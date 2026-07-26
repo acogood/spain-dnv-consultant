@@ -1,5 +1,5 @@
 {
-  "_comment": "СИНТЕТИЧЕСКИЙ профиль (полностью вымышленные значения) для примера. Архетип v1: autónomo/контрактор + cónyuge, renovación. НИ ОДНОГО реального значения.",
+  "_comment": "СИНТЕТИЧЕСКИЙ профиль (полностью вымышленные значения) для примера. Архетип v1: autónomo/контрактор + cónyuge, renovación. НИ ОДНОГО реального значения. Поля ветки tie (имена родителей, провинция отделения) здесь заполнены, чтобы пример показывал заливку EX-17; в живом кейсе их добирает /dnv-tie после одобрения.",
   "case": {
     "process_type": "renovacion",
     "archetype_ok": true
@@ -25,7 +25,10 @@
     "tipo_solicitud": "RENOVADA",
     "tie_expiry": "2026-08-01",
     "first_approval_date": "2023-08-01",
-    "certificado_digital": true
+    "certificado_digital": true,
+    "father_name": "Piotr Testovenko",
+    "mother_name": "Olga Testovenko",
+    "comisaria_provincia": "Madrid"
   },
   "work": {
     "company_name": "Acme Remote LLC",
@@ -46,18 +49,28 @@
     "last_name": "Testovenko",
     "sexo": "Mujer",
     "birth_date": "1992-03-20",
+    "birth_place": "Vetrograd",
+    "birth_country": "Rusia",
     "nationality": "Rusa",
+    "marital_status": "Casado/a",
     "nie": "X9999998T",
     "passport_number": "990000222",
+    "passport_expiry": "2031-02-15",
+    "address_full": "Calle Ejemplo, 1, 28001 Madrid",
+    "email": "maria.test@example.com",
+    "phone": "600000001",
     "relationship": "Cónyuge",
     "tipo_solicitud": "RENOVADA",
     "marriage_date": "2026-01-10",
     "marriage_place": "Consulado, Madrid",
-    "titular_regage": null
+    "titular_regage": null,
+    "father_name": "Andrei Primerov",
+    "mother_name": "Elena Primerova"
   },
   "tasa": {
     "epigrafe_052": null,
     "importe_052": null,
+    "epigrafe_012": null,
     "importe_012": null
   }
 }

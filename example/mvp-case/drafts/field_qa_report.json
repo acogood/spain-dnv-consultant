@@ -193,9 +193,225 @@
  },
  {
   "form": "tasa-790-012",
+  "field": "Domicilio",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "tasa-790-012",
+  "field": "Epígrafe / autoliquidación (TIE)",
+  "verdict": "MISSING",
+  "reason": "обязательное поле пусто в профиле"
+ },
+ {
+  "form": "tasa-790-012",
   "field": "Importe (TIE)",
   "verdict": "OK",
   "reason": "пусто в профиле и корректно помечено"
+ },
+ {
+  "form": "EX-17",
+  "field": "Primer apellido",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Segundo apellido",
+  "verdict": "OK",
+  "reason": "пусто в профиле и корректно помечено"
+ },
+ {
+  "form": "EX-17",
+  "field": "Nombre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Sexo",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Fecha de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Lugar de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "País de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Nombre del padre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Nombre de la madre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Nacionalidad",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Estado civil",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "N.I.E.",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Nº pasaporte",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Domicilio en España",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Teléfono",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "Correo electrónico",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "TIE: INICIAL / RENOVADA",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17",
+  "field": "DIRIGIDA A (provincia / comisaría)",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Primer apellido",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Nombre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Sexo",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Fecha de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Lugar de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "País de nacimiento",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Nombre del padre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Nombre de la madre",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Nacionalidad",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Estado civil",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "N.I.E.",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Nº pasaporte",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Domicilio en España",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Teléfono",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "Correo electrónico",
+  "verdict": "OK",
+  "reason": ""
+ },
+ {
+  "form": "EX-17-familiar",
+  "field": "TIE: INICIAL / RENOVADA",
+  "verdict": "OK",
+  "reason": ""
  },
  {
   "form": "memoria",

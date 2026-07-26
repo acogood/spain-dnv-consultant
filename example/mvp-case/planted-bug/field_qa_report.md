@@ -13,7 +13,7 @@
 | MI-T | País de nacimiento | ✅ OK |  |
 | MI-T | Nacionalidad | ✅ OK |  |
 | MI-T | Estado civil | ✅ OK |  |
-| MI-T | N.I.E. | ❌ WRONG | не совпадает: черновик 'X9099999R' ≠ профиль 'X9999999R' |
+| MI-T | N.I.E. | ❌ WRONG | не совпадает: черновик 'X9999998R' ≠ профиль 'X9999999R' |
 | MI-T | Nº pasaporte | ✅ OK |  |
 | MI-T | Domicilio en España | ✅ OK |  |
 | MI-T | Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL | ✅ OK |  |
@@ -28,7 +28,7 @@
 | MI-F | N.I.E. | ✅ OK |  |
 | MI-F | Nº pasaporte | ✅ OK |  |
 | MI-F | Parentesco con el titular | ✅ OK |  |
-| MI-F | Nº de registro de la solicitud del titular | ❌ WRONG | профиль пуст, но в черновике значение 'ВЫДУМАННЫЙ-НОМЕР-000' (галлюцинация) |
+| MI-F | Nº de registro de la solicitud del titular | ❌ WRONG | профиль пуст, но в черновике значение 'REGAGE-2026-000123' (галлюцинация) |
 | MI-F | INICIAL / RENOVADA | ✅ OK |  |
 | tasa-790-052 | Apellidos y nombre / Razón social | ✅ OK |  |
 | tasa-790-052 | N.I.E. | ✅ OK |  |
@@ -36,7 +36,43 @@
 | tasa-790-052 | Importe | ✅ OK | пусто в профиле и корректно помечено |
 | tasa-790-012 | Apellidos y nombre | ✅ OK |  |
 | tasa-790-012 | N.I.E. | ✅ OK |  |
+| tasa-790-012 | Domicilio | ✅ OK |  |
+| tasa-790-012 | Epígrafe / autoliquidación (TIE) | ⚠️ MISSING | обязательное поле пусто в профиле |
 | tasa-790-012 | Importe (TIE) | ✅ OK | пусто в профиле и корректно помечено |
+| EX-17 | Primer apellido | ✅ OK |  |
+| EX-17 | Segundo apellido | ✅ OK | пусто в профиле и корректно помечено |
+| EX-17 | Nombre | ✅ OK |  |
+| EX-17 | Sexo | ✅ OK |  |
+| EX-17 | Fecha de nacimiento | ✅ OK |  |
+| EX-17 | Lugar de nacimiento | ✅ OK |  |
+| EX-17 | País de nacimiento | ✅ OK |  |
+| EX-17 | Nombre del padre | ✅ OK |  |
+| EX-17 | Nombre de la madre | ✅ OK |  |
+| EX-17 | Nacionalidad | ✅ OK |  |
+| EX-17 | Estado civil | ✅ OK |  |
+| EX-17 | N.I.E. | ✅ OK |  |
+| EX-17 | Nº pasaporte | ❌ WRONG | не совпадает: черновик '880000999' ≠ профиль '990000111' |
+| EX-17 | Domicilio en España | ✅ OK |  |
+| EX-17 | Teléfono | ✅ OK |  |
+| EX-17 | Correo electrónico | ✅ OK |  |
+| EX-17 | TIE: INICIAL / RENOVADA | ✅ OK |  |
+| EX-17 | DIRIGIDA A (provincia / comisaría) | ✅ OK |  |
+| EX-17-familiar | Primer apellido | ✅ OK |  |
+| EX-17-familiar | Nombre | ✅ OK |  |
+| EX-17-familiar | Sexo | ✅ OK |  |
+| EX-17-familiar | Fecha de nacimiento | ✅ OK |  |
+| EX-17-familiar | Lugar de nacimiento | ✅ OK |  |
+| EX-17-familiar | País de nacimiento | ✅ OK |  |
+| EX-17-familiar | Nombre del padre | ✅ OK |  |
+| EX-17-familiar | Nombre de la madre | ✅ OK |  |
+| EX-17-familiar | Nacionalidad | ✅ OK |  |
+| EX-17-familiar | Estado civil | ✅ OK |  |
+| EX-17-familiar | N.I.E. | ✅ OK |  |
+| EX-17-familiar | Nº pasaporte | ✅ OK |  |
+| EX-17-familiar | Domicilio en España | ✅ OK |  |
+| EX-17-familiar | Teléfono | ✅ OK |  |
+| EX-17-familiar | Correo electrónico | ✅ OK |  |
+| EX-17-familiar | TIE: INICIAL / RENOVADA | ✅ OK |  |
 | memoria | Основание (teletrabajo, Ley 14/2013) | ✅ OK |  |
 | memoria | Описание работы и роли | ✅ OK |  |
 | memoria | Обоснование дохода (gross, EUR-эквивалент) | ✅ OK |  |
@@ -46,8 +82,8 @@
 
 | Вердикт | Кол-во |
 |---|---|
-| OK | 32 |
-| WRONG | 4 |
-| MISSING | 1 |
+| OK | 66 |
+| WRONG | 5 |
+| MISSING | 2 |
 | UNCERTAIN | 0 |
-| **Всего полей** | **37** |
+| **Всего полей** | **73** |

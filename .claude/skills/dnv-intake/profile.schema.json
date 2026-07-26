@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "archetype": "autonomo_contractor + conyuge",
-  "note": "Канонический namespace профиля кейса. Должен быть НАДмножеством profile_key реестра форм (engine/scripts/check_namespace.py проверяет registry ⊆ schema). domain ссылается на controlled_vocabularies реестра. branch: both|initial|renovacion|family|tie — когда поле спрашивается (tie = не в интейке, а в /dnv-tie после одобрения). derived=true — вычисляется/ищется, не спрашивается напрямую.",
+  "note": "Канонический namespace профиля кейса. Должен быть НАДмножеством profile_key реестра форм (engine/scripts/check_namespace.py проверяет registry ⊆ schema). domain ссылается на controlled_vocabularies реестра. branch: both|initial|renovacion|family|tie — когда поле спрашивается (tie = не в интейке, а в /dnv-tie после одобрения). derived=true — вычисляется/ищется, не спрашивается напрямую. Отдельный класс ключей — СОСТОЯНИЕ кейса (case.*): на них ссылается applies_when в реестре форм, то есть они решают, применяется ли форма на текущем этапе. Пустой case.resolution_notified = резолюции ещё нет = формы этапа TIE не применяются.",
   "controlled_vocabularies": {
     "sexo": ["Hombre", "Mujer"],
     "estado_civil": ["Soltero/a", "Casado/a", "Viudo/a", "Divorciado/a", "Separado/a"],
@@ -12,6 +12,7 @@
   "properties": {
     "case.process_type": {"type": "enum", "domain": "process_type", "required": true, "branch": "both", "label": "Первичная подача или продление?"},
     "case.archetype_ok": {"type": "bool", "required": true, "branch": "both", "label": "Кейс подходит под архетип v1 (autónomo/контрактор; cónyuge опционально)?"},
+    "case.resolution_notified": {"type": "date", "required": false, "branch": "tie", "label": "Дата уведомления о резолюции (заполняет /dnv-tie). ГЕЙТ ЭТАПА: пока пусто — формы EX-17 / EX-17-familiar / tasa-790-012 в реестре не применяются (applies_when), и field_qa.py не требует их обязательные поля."},
 
     "applicant.first_name": {"type": "text", "required": true, "branch": "both", "label": "Имя (как в паспорте)"},
     "applicant.last_name": {"type": "text", "required": true, "branch": "both", "label": "Первая фамилия"},

@@ -12,6 +12,40 @@
 (`/dnv-documents`). EX-17 и tasa 790-012 — уже **после** одобрения, на сдачу
 отпечатков (`/dnv-tie`): до concesión заполнять их нечем и незачем.
 
+## `applies_when` — этап кейса как машиночитаемое условие
+
+| Форма | `applies_when` (все ключи по И) |
+|---|---|
+| `EX-17` | `case.resolution_notified` |
+| `tasa-790-012` | `case.resolution_notified` |
+| `EX-17-familiar` | `case.resolution_notified` + `family.present` |
+| остальные | нет — применяются всегда |
+
+Форма применяется, когда **все** её ключи непусты (для булевых — истинны:
+`family.present: false` это заполненный ответ «нет», он форму **не** включает).
+
+**Что это меняет в проверках:**
+
+- форма **не применяется** → пустое поле, честно помеченное `[ТРЕБУЕТСЯ]`, даёт
+  `OK`; `fill_forms.py` ставит на лист шапку «не этот этап»;
+- форма **применяется** → работает обычное правило: `alta` + пусто = `MISSING`;
+- **проверка значений идёт в обоих случаях.** Значение из ниоткуда, выход из
+  домена, расхождение с профилем — это `WRONG` независимо от этапа.
+  Неприменимость снимает гейт **обязательности**, но не **корректности**.
+
+> **Почему не критичностью.** Раньше «ещё не этот этап» кодировали занижением
+> `criticality` до `media` у всех полей EX-17. Ложные `MISSING` это глушило —
+> но заодно **маскировало настоящие**: при `family.present=true` пустой
+> `family.passport_number` давал `OK`. `criticality` статична, а обязательность
+> зависит от **состояния кейса**; смешивать их — значит терять одно из двух.
+> Теперь критичность честная, а этап решает `applies_when`.
+
+> `case.resolution_notified` записывает `/dnv-tie` — он и так спрашивает дату
+> уведомления, нового вопроса не появилось. Инвариант «ключ `applies_when`
+> объявлен в схеме профиля» проверяет `engine/scripts/check_namespace.py`:
+> гейт на необъявленном ключе не сработал бы никогда, и это хуже отсутствия
+> гейта.
+
 ## Зачем нужен реестр
 
 1. **Генерация** (`dnv-documents`): движок берёт значение по `profile_key`
@@ -84,6 +118,8 @@
 Форма последней мили: с ней идут сдавать отпечатки. Заполняется не в
 `/dnv-documents`, а в `/dnv-tie`, когда одобрение уже получено.
 
+> `applies_when: case.resolution_notified` — до резолюции форма не применяется.
+
 > **Практика расходится: EX-17 или MI-TIE.** Часть отделений берёт EX-17, и
 > распространённый совет в сообществе — принести обе. Движок фиксирует
 > расхождение как расхождение и не выбирает за пользователя; см.
@@ -98,8 +134,8 @@
 | Fecha de nacimiento | date | free | applicant.birth_date | alta | DD/MM/AAAA | generic |
 | Lugar de nacimiento | text | free | applicant.birth_place | media | **реальная ошибка прогона: вписан телефон** — соседнее поле бланка | generic |
 | País de nacimiento | text | free | applicant.birth_country | media | | generic |
-| **Nombre del padre** | text | free | applicant.father_name | media | в MI-T поля не было → в профиле может быть пусто; добирается в `/dnv-tie` | generic |
-| **Nombre de la madre** | text | free | applicant.mother_name | media | то же | generic |
+| **Nombre del padre** | text | free | applicant.father_name | **alta** | в MI-T поля не было → в профиле может быть пусто; добирается в `/dnv-tie`. Пусто до резолюции не штрафуется (`applies_when`), после — штрафуется | generic |
+| **Nombre de la madre** | text | free | applicant.mother_name | **alta** | то же | generic |
 | Nacionalidad | text | free | applicant.nationality | alta | форма страны vs форма гражданства — держать одинаково во всех формах пакета | generic |
 | Estado civil | enum | estado_civil | applicant.marital_status | media | см. Sexo (отрисовка галочки) | generic |
 | N.I.E. | text | free | applicant.nie | alta | транспозиция цифр | generic |
@@ -112,15 +148,35 @@
 
 ## EX-17-familiar (TIE — член семьи)
 
-Та же форма на члена семьи; заполняется, **только если он подавался**. Все поля
-`media`: при `family.present=false` профиль по ним пуст, черновик ставит
-`[ТРЕБУЕТСЯ]`, и field-QA считает это корректной пометкой, а не пропуском.
+Та же форма на члена семьи; заполняется, **только если он подавался**.
 
-`family.last_name`, `family.first_name`, `family.sexo`, `family.birth_date`,
-`family.birth_place`, `family.birth_country`, `family.father_name`,
-`family.mother_name`, `family.nationality`, `family.marital_status`,
-`family.nie`, `family.passport_number`, `family.address_full`, `family.phone`,
-`family.email`, `family.tipo_solicitud`.
+> `applies_when: case.resolution_notified` **+** `family.present` — нужны оба.
+
+| Поле | profile_key | Крит. |
+|---|---|---|
+| Primer apellido | `family.last_name` | alta |
+| Nombre | `family.first_name` | alta |
+| Sexo | `family.sexo` | alta |
+| Fecha de nacimiento | `family.birth_date` | alta |
+| Lugar de nacimiento | `family.birth_place` | media |
+| País de nacimiento | `family.birth_country` | media |
+| Nombre del padre | `family.father_name` | alta |
+| Nombre de la madre | `family.mother_name` | alta |
+| Nacionalidad | `family.nationality` | alta |
+| Estado civil | `family.marital_status` | media |
+| N.I.E. | `family.nie` | alta |
+| **Nº pasaporte** | `family.passport_number` | **alta** |
+| Domicilio en España | `family.address_full` | alta |
+| Teléfono | `family.phone` | baja |
+| Correo electrónico | `family.email` | media |
+| TIE: INICIAL / RENOVADA | `family.tipo_solicitud` | alta |
+
+> **Здесь была найденная ревью маскировка.** Раньше *все* поля этой формы стояли
+> `media` — чтобы пустая семейная ветка не сыпала ложными `MISSING`. Побочный
+> эффект: при `family.present=true` **настоящий** пропуск (пустой
+> `family.passport_number`) тоже давал `OK`. Теперь критичность парная MI-F и
+> EX-17 титулара, а «ещё не этот этап» / «семьи нет» выражено через
+> `applies_when`.
 
 ## Tasa (Modelo 790)
 

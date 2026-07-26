@@ -178,11 +178,13 @@ def aggregate(curation: dict, messages: list[dict], min_authors: int):
         topic = claim.get("topic")
 
         supporters = {}  # author -> list of dates
+        from_ids, from_match = set(), set()   # provenance of each distinct author
         # explicit ids
         for mid in ids:
             m = by_id.get(mid)
             if m:
                 supporters.setdefault(m.get("author"), []).append(m.get("date"))
+                from_ids.add(m.get("author"))
         # regex auto-discovery (optionally scoped to the claim's topic)
         if regexes:
             for m in messages:
@@ -191,15 +193,31 @@ def aggregate(curation: dict, messages: list[dict], min_authors: int):
                 text = m.get("text") or ""
                 if any(rx.search(text) for rx in regexes):
                     supporters.setdefault(m.get("author"), []).append(m.get("date"))
+                    from_match.add(m.get("author"))
 
         supporters.pop(None, None)
         supporters.pop("u_anon", None)  # never count anonymous bucket as a person
+        for bucket in (from_ids, from_match):
+            bucket.discard(None)
+            bucket.discard("u_anon")
         distinct = len(supporters)
 
         record = {
             "topic": topic,
             "tag": claim.get("tag", "практика — Telegram"),
             "statement": statement,
+        }
+        # Maintainer-only provenance: how the band was actually earned. NOT
+        # published — stripped before the digest is written (see main()).
+        record["_provenance"] = {
+            "distinct": distinct,
+            "ids": len(from_ids),
+            "match_only": len(from_match - from_ids),
+            "has_match": bool(regexes),
+            # Absence defaults to the STRICT reading: an undeclared claim is
+            # treated as asserting a specific observation, so a broad regex under
+            # it gets flagged rather than quietly excused.
+            "measures": claim.get("band_measures", "predicate"),
         }
         if distinct < min_authors:
             record["distinct_authors"] = distinct
@@ -212,6 +230,68 @@ def aggregate(curation: dict, messages: list[dict], min_authors: int):
         published.append(record)
 
     return published, suppressed
+
+
+def provenance_report(published: list[dict], suppressed: list[dict]) -> str:
+    """MAINTAINER-only breakdown: for each claim, how many distinct authors came
+    from explicit `supporting_ids` versus from `match` auto-discovery.
+
+    Why this exists: `match` counts AUTHORS, and that count is published as the
+    band. A regex broad enough to catch a whole TOPIC under a claim that asserts
+    one specific observation inflates the band — the digest then tells the reader
+    that N people said a thing when N people merely discussed the area. That
+    defect is invisible in the published digest and was found only by an external
+    review. Printing the split makes it visible on EVERY rebuild instead.
+
+    Whether a broad regex is honest is a CURATION fact the script cannot infer,
+    so the curation declares it per claim as `band_measures`:
+
+      * "topic"     — the claim asserts how much the TOPIC is discussed
+                      ("самая объёмная тема"). A broad regex IS the claim here;
+                      a large match_only share is expected, not a defect.
+      * "predicate" — the claim asserts a specific observation. The regex must
+                      match the PREDICATE. This is the default when undeclared,
+                      so silence is read strictly, never as an excuse.
+
+    Only `predicate` claims are flagged, and only when the band is both large and
+    essentially unanchored by explicit ids — that is where an over-broad regex
+    does real damage, because a big number is what a reader trusts.
+    """
+    FLAG_MATCH_ONLY, FLAG_MAX_IDS = 20, 2
+    lines = ["", "--- provenance (мейнтейнеру; в дайджест НЕ публикуется) ---",
+             "distinct = ids + match_only.",
+             f"'!!' = claim заявлен как PREDICATE (конкретное наблюдение), но band "
+             f"набран регэкспом (match_only>={FLAG_MATCH_ONLY}, ids<={FLAG_MAX_IDS}).",
+             "Это не приговор, а список на перечитывание: убедитесь, что регэксп ловит",
+             "ПРЕДИКАТ утверждения, а не тему целиком. Claim'ы с band_measures=topic",
+             "широкими и должны быть — там регэксп и есть утверждение.",
+             "См. _band_contract в curation.json и _private/DIGEST_REBUILD.md.", ""]
+    rows = [("PUB", r) for r in published] + [("SUP", r) for r in suppressed]
+    flagged, topical = 0, 0
+    for kind, r in rows:
+        pv = r.get("_provenance") or {}
+        d, i, mo = pv.get("distinct", 0), pv.get("ids", 0), pv.get("match_only", 0)
+        measures = pv.get("measures", "predicate")
+        mark = "  "
+        if measures == "topic":
+            mark, topical = "TT", topical + 1
+        elif (kind == "PUB" and pv.get("has_match")
+              and mo >= FLAG_MATCH_ONLY and i <= FLAG_MAX_IDS):
+            mark, flagged = "!!", flagged + 1
+        lines.append(f" {mark} [{kind}] distinct={d:<4} ids={i:<3} match_only={mo:<4} "
+                     f"| {r['statement'][:72]}")
+    lines.append("")
+    lines.append(f"'!!' на перечитывание: {flagged}   ·   'TT' заявлены как "
+                 f"тематические: {topical}")
+    if flagged:
+        lines.append("Если '!!' растёт от сборки к сборке — регэкспы расползаются "
+                     "по темам, и band'ы врут в сторону завышения.")
+    return "\n".join(lines)
+
+
+def strip_provenance(records: list[dict]) -> list[dict]:
+    """Drop maintainer-only keys before anything is written to the repo."""
+    return [{k: v for k, v in r.items() if not k.startswith("_")} for r in records]
 
 
 def render_markdown(curation: dict, published: list[dict], last_covered_date: str) -> str:
@@ -274,6 +354,11 @@ def main(argv=None):
         published, suppressed = aggregate(curation, messages, args.min_authors)
         last_covered, coverage_warning = resolve_last_covered(curation, messages)
 
+        # Provenance is computed for the maintainer report and stripped here, so
+        # nothing under _* can reach a published file even by accident.
+        report = provenance_report(published, suppressed)
+        published = strip_provenance(published)
+
         out_dir = resolve_output(args.out_dir, args.allowed_root)
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "digest.md").write_text(
@@ -294,6 +379,7 @@ def main(argv=None):
           f"published={len(published)} suppressed(k-anon)={len(suppressed)}")
     for r in suppressed:
         print(f"  suppressed [{r.get('distinct_authors')} автор(ов)]: {r['statement'][:60]}...")
+    print(report)
     print(f"-> {out_dir}/digest.md, digest.json, LAST_COVERED_DATE")
 
 

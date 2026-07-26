@@ -2,9 +2,14 @@
 """
 check_namespace.py — coherence guard for the profile <-> form-registry namespace.
 
-Invariant: every `profile_key` referenced by the form registry MUST
-exist in the case-profile schema. Otherwise a form field would map to a key the
-intake never collects -> a guaranteed gap or a hallucinated value at draft time.
+Invariant: every profile key referenced by the form registry MUST exist in the
+case-profile schema. Two kinds of reference are checked:
+
+  * `profile_key` on a field — otherwise a form field maps to a key the intake
+    never collects -> a guaranteed gap or a hallucinated value at draft time;
+  * `applies_when` on a form (stage gate) — a gate on an undeclared key is worse
+    than no gate: it reads as empty forever, so the form silently never applies
+    and its missing required fields are never reported.
 
 The registry (knowledge_base/forms/registry.json) is the canonical source of
 field->key mappings; the profile schema declares the available keys. This script
@@ -40,6 +45,19 @@ def registry_profile_keys(registry: dict) -> set[str]:
     return keys
 
 
+def registry_gate_keys(registry: dict) -> set[str]:
+    """Profile keys referenced by any form's `applies_when` (string or list)."""
+    keys = set()
+    for form in registry.get("forms", {}).values():
+        raw = form.get("applies_when")
+        if raw is None:
+            continue
+        for k in ([raw] if isinstance(raw, str) else raw):
+            if isinstance(k, str):
+                keys.add(k)
+    return keys
+
+
 def schema_keys(schema: dict) -> set[str]:
     """Collect declared keys from the profile schema. Accepts either a flat
     {"keys": ["a.b", ...]} list or a {"properties": {...}} dotted map."""
@@ -59,10 +77,13 @@ def main(argv=None):
 
     reg = json.loads(Path(args.registry).read_text(encoding="utf-8"))
     reg_keys = registry_profile_keys(reg)
+    gate_keys = registry_gate_keys(reg)
 
     if args.list:
         for k in sorted(reg_keys):
             print(k)
+        for k in sorted(gate_keys):
+            print(f"{k}  (applies_when)")
         return
 
     sp = Path(args.schema)
@@ -73,14 +94,17 @@ def main(argv=None):
     sk = schema_keys(sch)
 
     missing = sorted(reg_keys - sk)
-    if missing:
+    missing_gates = sorted(gate_keys - sk)
+    if missing or missing_gates:
         print("NAMESPACE DRIFT — registry keys not declared in profile schema:", file=sys.stderr)
         for k in missing:
             print(f"  - {k}", file=sys.stderr)
+        for k in missing_gates:
+            print(f"  - {k}  (applies_when — the gate would never fire)", file=sys.stderr)
         sys.exit(1)
 
-    print(f"OK: all {len(reg_keys)} registry profile keys exist in the profile schema "
-          f"({len(sk)} declared).")
+    print(f"OK: all {len(reg_keys)} registry profile keys and {len(gate_keys)} "
+          f"applies_when gate key(s) exist in the profile schema ({len(sk)} declared).")
 
 
 if __name__ == "__main__":

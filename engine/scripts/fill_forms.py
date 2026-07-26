@@ -11,6 +11,14 @@ guessed value. No hallucination is structurally possible here.
 Precondition: a case profile must exist. Without it the script halts
 with an instruction (it does not invent one).
 
+Stage gating: a form may carry `applies_when` (a profile key, or a list AND-ed)
+saying it only makes sense at a later stage of the case — EX-17 and tasa-790-012
+only after a resolución. Such forms are still generated (so the sheet exists the
+moment the stage arrives), but they are LABELLED — in the summary line and in the
+`.md` header — so "almost entirely [ТРЕБУЕТСЯ]" reads as "not this step yet",
+not as a hole in the package. Structural, so the skills no longer have to say it
+in prose. `field_qa.py` reads the same key and suspends the requiredness gate.
+
 Usage:
   python fill_forms.py [profile.json] [registry.json] [--out-dir DIR] [--allowed-root DIR]
   # defaults: user/case-profile.json  knowledge_base/forms/registry.json
@@ -55,6 +63,35 @@ def is_empty(v):
     return v is None or v == "" or v == [] or v == {}
 
 
+def applies_when_keys(form):
+    """Normalize a form's `applies_when` into a list of profile keys (AND-ed)."""
+    raw = form.get("applies_when")
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        return [raw]
+    return [k for k in raw if isinstance(k, str)]
+
+
+def gate_satisfied(v):
+    """Does a profile value SWITCH ON the form that gates on it?
+
+    Not the same question as is_empty(): a boolean gate key is answered by its
+    value, not by its presence. `family.present: false` is a filled-in answer
+    meaning "no family member" — it must leave the family form OFF, whereas
+    is_empty(False) is False and would switch it ON. Mirrors field_qa.py.
+    """
+    if isinstance(v, bool):
+        return v
+    return not is_empty(v)
+
+
+def form_applies(form, flat):
+    """(applies, missing_keys) for one form against the flattened profile."""
+    missing = [k for k in applies_when_keys(form) if not gate_satisfied(flat.get(k))]
+    return (not missing), missing
+
+
 def fill_form(form, flat):
     rows = []
     for field in form.get("fields", []):
@@ -77,11 +114,19 @@ def fill_form(form, flat):
     return rows
 
 
-def render_md(form_id, title, rows):
-    lines = [f"# {form_id} — {title}", "",
-             "> Сгенерировано из профиля по реестру. `[ТРЕБУЕТСЯ: …]` — нет данных "
-             "в профиле (заполнить, не выдумывать). Сверьте ярлыки с текущим бланком.",
-             "", "| Поле | Значение | Домен | Крит. |", "|---|---|---|---|"]
+def render_md(form_id, title, rows, applies=True, missing_keys=()):
+    lines = [f"# {form_id} — {title}", ""]
+    if not applies:
+        lines += ["> ⏸️ **Эта форма НЕ относится к текущему этапу кейса.** "
+                  "Условие применимости из реестра (`applies_when`) не выполнено: "
+                  "пусто " + ", ".join(f"`{k}`" for k in missing_keys) + ". "
+                  "Поэтому лист ниже почти целиком в `[ТРЕБУЕТСЯ: …]` — это "
+                  "**ожидаемо, а не пробел пакета**, и field-QA не считает это "
+                  "пропусками. Лист станет актуальным, когда этап наступит; "
+                  "тогда перегенерируйте его.", ""]
+    lines += ["> Сгенерировано из профиля по реестру. `[ТРЕБУЕТСЯ: …]` — нет данных "
+              "в профиле (заполнить, не выдумывать). Сверьте ярлыки с текущим бланком.",
+              "", "| Поле | Значение | Домен | Крит. |", "|---|---|---|---|"]
     for r in rows:
         lines.append(f"| {r['name']} | {r['value']} | {r['domain']} | {r['criticality']} |")
     lines.append("")
@@ -114,11 +159,13 @@ def main(argv=None):
         for form_id, form in registry.get("forms", {}).items():
             rows = fill_form(form, flat)
             drafts[form_id] = rows
+            applies, missing_keys = form_applies(form, flat)
             safe_id = form_id.replace("/", "_")
             (out_dir / f"{safe_id}.md").write_text(
-                render_md(form_id, form.get("title", ""), rows), encoding="utf-8")
+                render_md(form_id, form.get("title", ""), rows, applies, missing_keys),
+                encoding="utf-8")
             missing = sum(1 for r in rows if not r["present"])
-            summary.append((form_id, len(rows), missing))
+            summary.append((form_id, len(rows), missing, applies, missing_keys))
 
         (out_dir / "drafts.json").write_text(
             json.dumps(drafts, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -127,8 +174,13 @@ def main(argv=None):
     except json.JSONDecodeError as e:
         die(SafeIOError(f"Bad JSON: {e}"))
 
-    for fid, n, miss in summary:
-        print(f"  {fid}: {n} полей, {miss} [ТРЕБУЕТСЯ]")
+    for fid, n, miss, applies, missing_keys in summary:
+        note = "" if applies else (
+            "  ⏸️ не этот этап (нет: " + ", ".join(missing_keys) + ")")
+        print(f"  {fid}: {n} полей, {miss} [ТРЕБУЕТСЯ]{note}")
+    if any(not applies for *_, applies, _ in summary):
+        print("Формы, помеченные ⏸️, к текущему этапу не относятся — их "
+              "[ТРЕБУЕТСЯ] это не пробел пакета.")
     print(f"-> {out_dir} (drafts.json + per-form .md)")
 
 

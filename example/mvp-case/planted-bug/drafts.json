@@ -348,7 +348,7 @@
    "name": "Nombre del padre",
    "profile_key": "applicant.father_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Piotr Testovenko",
    "present": true
   },
@@ -356,7 +356,7 @@
    "name": "Nombre de la madre",
    "profile_key": "applicant.mother_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Olga Testovenko",
    "present": true
   },
@@ -438,7 +438,7 @@
    "name": "Primer apellido",
    "profile_key": "family.last_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Testovenko",
    "present": true
   },
@@ -446,7 +446,7 @@
    "name": "Nombre",
    "profile_key": "family.first_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Maria",
    "present": true
   },
@@ -454,7 +454,7 @@
    "name": "Sexo",
    "profile_key": "family.sexo",
    "domain": "sexo",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Mujer",
    "present": true
   },
@@ -462,7 +462,7 @@
    "name": "Fecha de nacimiento",
    "profile_key": "family.birth_date",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "1992-03-20",
    "present": true
   },
@@ -486,7 +486,7 @@
    "name": "Nombre del padre",
    "profile_key": "family.father_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Andrei Primerov",
    "present": true
   },
@@ -494,7 +494,7 @@
    "name": "Nombre de la madre",
    "profile_key": "family.mother_name",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Elena Primerova",
    "present": true
   },
@@ -502,7 +502,7 @@
    "name": "Nacionalidad",
    "profile_key": "family.nationality",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Rusa",
    "present": true
   },
@@ -518,7 +518,7 @@
    "name": "N.I.E.",
    "profile_key": "family.nie",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "X9999998T",
    "present": true
   },
@@ -526,7 +526,7 @@
    "name": "Nº pasaporte",
    "profile_key": "family.passport_number",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "990000222",
    "present": true
   },
@@ -534,7 +534,7 @@
    "name": "Domicilio en España",
    "profile_key": "family.address_full",
    "domain": "free",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "Calle Ejemplo, 1, 28001 Madrid",
    "present": true
   },
@@ -558,7 +558,7 @@
    "name": "TIE: INICIAL / RENOVADA",
    "profile_key": "family.tipo_solicitud",
    "domain": "tipo_solicitud",
-   "criticality": "media",
+   "criticality": "alta",
    "value": "RENOVADA",
    "present": true
   }

@@ -13,6 +13,20 @@ plausibility:
   * draft value != re-derived profile value   -> WRONG  (catches a plausible-but-wrong value)
   * profile-empty & draft '[ТРЕБУЕТСЯ]'        -> MISSING (alta) / OK (media/baja)
 
+STAGE GATING (`applies_when`): a form may not apply yet at the case's current
+stage — EX-17 / tasa-790-012 only make sense after a resolución. The registry
+declares that as `applies_when: <profile key>` (or a list, AND-ed); a form
+without the key always applies. When a form does NOT apply, an empty field
+correctly marked `[ТРЕБУЕТСЯ]` is OK regardless of criticality.
+
+Why this is a gate and not a criticality tweak: criticality is static, but
+whether a field is required depends on case STATE. The registry used to encode
+"not yet" by demoting EX-17 fields to `media`, which silenced the false MISSINGs
+— and MASKED the real ones (an empty spouse passport with family.present=true
+scored OK). Non-applicability now suspends the REQUIREDNESS gate only; the
+value checks above (domain, hallucination, mismatch) still run on every field of
+every form, applicable or not.
+
 ISOLATION: `rederive_expected()` reads ONLY the profile + registry — it
 never looks at the draft. A separate step (`diff`) compares those expected values
 with the draft. This is the deterministic baseline; the LLM re-derivation lives
@@ -61,6 +75,51 @@ def is_empty(v):
     return v is None or v == "" or v == [] or v == {}
 
 
+def applies_when_keys(form):
+    """Normalize a form's `applies_when` into a list of profile keys.
+
+    Accepts a single key, a list of keys, or nothing at all. All keys are AND-ed.
+    """
+    raw = form.get("applies_when")
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        return [raw]
+    return [k for k in raw if isinstance(k, str)]
+
+
+def gate_satisfied(v):
+    """Does a profile value SWITCH ON the form that gates on it?
+
+    Not the same question as is_empty(): a boolean gate key is answered by its
+    value, not by its presence. `family.present: false` is a filled-in answer
+    meaning "no family member" — it must leave the family form OFF, whereas
+    is_empty(False) is False and would switch it ON.
+    """
+    if isinstance(v, bool):
+        return v
+    return not is_empty(v)
+
+
+def form_applicability(registry, profile):
+    """{form_id: (applies: bool, reason: str)} for every form in the registry.
+
+    Reuses the same flatten() the value re-derivation uses — one profile parser,
+    not two, so a form can never be gated on a key spelled differently from the
+    key its fields are filled from.
+    """
+    flat = flatten(profile)
+    out = {}
+    for form_id, form in registry.get("forms", {}).items():
+        missing = [k for k in applies_when_keys(form) if not gate_satisfied(flat.get(k))]
+        if missing:
+            out[form_id] = (False, "форма не применяется на этом этапе: пусто "
+                                   + ", ".join(missing))
+        else:
+            out[form_id] = (True, "")
+    return out
+
+
 def rederive_expected(profile, registry):
     """Derive each field's expected value from profile + registry ONLY.
     Does NOT read the draft. Returns {(form, field_name): expected_or_None}."""
@@ -73,8 +132,15 @@ def rederive_expected(profile, registry):
     return expected
 
 
-def diff(expected, registry, drafts):
+def diff(expected, registry, drafts, applicability=None):
+    """Compare re-derived expectations with the draft.
+
+    `applicability` is {form_id: (applies, reason)} from form_applicability().
+    Omitted (None) means "every form applies" — backward-compatible with a
+    registry that declares no `applies_when` anywhere.
+    """
     vocab = registry.get("controlled_vocabularies", {})
+    applicability = applicability or {}
     crit_of, domain_of = {}, {}
     for form_id, form in registry.get("forms", {}).items():
         for field in form.get("fields", []):
@@ -108,7 +174,12 @@ def diff(expected, registry, drafts):
         # 2) profile empty
         if exp is None:
             if act_is_req:
-                if crit == "alta":
+                applies, why_not = applicability.get(form_id, (True, ""))
+                if not applies:
+                    # Stage gate, not a criticality question: the form is not in
+                    # play yet, so an honest [ТРЕБУЕТСЯ] is the correct state.
+                    verdicts.append((form_id, name, "OK", why_not))
+                elif crit == "alta":
                     verdicts.append((form_id, name, "MISSING", "обязательное поле пусто в профиле"))
                 else:
                     verdicts.append((form_id, name, "OK", "пусто в профиле и корректно помечено"))
@@ -126,15 +197,22 @@ def diff(expected, registry, drafts):
     return verdicts
 
 
-def render(verdicts):
+def render(verdicts, applicability=None):
     counts = {}
     for *_ , v, _ in [(f, n, ver, why) for f, n, ver, why in verdicts]:
         counts[v] = counts.get(v, 0) + 1
     lines = ["# Field-QA baseline (механический, исчерпывающий)", "",
              "> Один вердикт на КАЖДОЕ поле реестра (count==полей). Проверяется "
              "корректность, не правдоподобие. Это must-have baseline; независимая "
-             "ре-деривация и official-review — отдельные слои.", "",
-             "| Форма | Поле | Вердикт | Причина |", "|---|---|---|---|"]
+             "ре-деривация и official-review — отдельные слои.", ""]
+    inactive = sorted(f for f, (ok, _) in (applicability or {}).items() if not ok)
+    if inactive:
+        lines += ["> **Не применяются на этом этапе кейса** (`applies_when`): "
+                  + ", ".join(f"`{f}`" for f in inactive) + ". Их пустые поля с "
+                  "`[ТРЕБУЕТСЯ]` дают OK — это не пробел пакета. Проверка "
+                  "значений (домены, галлюцинации, расхождение с профилем) для "
+                  "них всё равно выполнена.", ""]
+    lines += ["| Форма | Поле | Вердикт | Причина |", "|---|---|---|---|"]
     for f, n, v, why in verdicts:
         mark = {"OK": "✅", "WRONG": "❌", "MISSING": "⚠️", "UNCERTAIN": "❔"}.get(v, "")
         lines.append(f"| {f} | {n} | {mark} {v} | {why} |")
@@ -163,9 +241,10 @@ def main(argv=None):
         registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))
         drafts = json.loads(Path(args.drafts).read_text(encoding="utf-8"))
 
-        expected = rederive_expected(profile, registry)   # no draft here
-        verdicts = diff(expected, registry, drafts)        # compare with draft
-        report, counts = render(verdicts)
+        expected = rederive_expected(profile, registry)    # no draft here
+        applicability = form_applicability(registry, profile)  # nor here
+        verdicts = diff(expected, registry, drafts, applicability)  # compare with draft
+        report, counts = render(verdicts, applicability)
 
         out_dir = resolve_output(args.out_dir, args.allowed_root)
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -180,6 +259,9 @@ def main(argv=None):
 
     print(f"fields={len(verdicts)} OK={counts.get('OK',0)} WRONG={counts.get('WRONG',0)} "
           f"MISSING={counts.get('MISSING',0)} UNCERTAIN={counts.get('UNCERTAIN',0)}")
+    inactive = sorted(f for f, (ok, _) in applicability.items() if not ok)
+    if inactive:
+        print("не применяются на этом этапе (applies_when): " + ", ".join(inactive))
     print(f"-> {out_dir}/field_qa_report.md")
     # Non-zero exit if any hard error verdict, so CI / the gate can branch on it.
     sys.exit(1 if counts.get("WRONG", 0) else 0)

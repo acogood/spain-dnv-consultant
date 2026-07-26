@@ -4,7 +4,7 @@ Parameterized, cross-platform (Windows/macOS/Linux), **stdlib-only** Python
 scripts. They process **untrusted input** (your own Telegram exports) defensively
 and confine all output to a directory you choose (default: the user workspace).
 
-> Requirements: Python 3.8+. No pip packages (see `requirements.txt`).
+> Requirements: Python 3.8+. No pip packages — the standard library is enough.
 > Run with `python` or `python3` — never a hardcoded interpreter path.
 
 ## The chat pipeline
@@ -57,12 +57,3 @@ python engine/scripts/chat/build_digest.py --curation knowledge_base/practice/cu
   `filter`/`build_digest`, bad regex in config — all refuse with a message.
 - **Keep-allowlist** in the anonymizer: unknown future identity fields are
   dropped by construction (never copied), not blocklisted.
-
-## Tests
-
-```bash
-python -m unittest discover -s engine/scripts/chat -p "test_*.py"
-```
-Stdlib `unittest`, synthetic fixtures only (no real data). Covers the anonymizer,
-digest aggregation/suppression, the safe-IO guards, and the merge/filter/slice
-pipeline end-to-end.

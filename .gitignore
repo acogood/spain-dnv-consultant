@@ -13,7 +13,6 @@
 user/**
 !user/**/
 !user/**/*.example
-!user/.gitkeep
 !user/README.md
 # Documentation-only schema stub that ships next to its *.example (no PII).
 # Exact-path exception (not a *.schema.md glob) so a forker's own user/ files
@@ -50,14 +49,6 @@ user/**
 # in (employer/bank keywords, paths) must never be tracked.
 config.json
 /engine/scripts/config.json
-
-# ---- local maintainer notes (never published) ------------------------------
-PROJECT_INTENT.local.md
-*.local.md
-
-# ---- maintainer-only local workspace (never published) ---------------------
-_pii_denylist.txt
-_private/
 
 # ---- tooling / OS cruft ----------------------------------------------------
 __pycache__/

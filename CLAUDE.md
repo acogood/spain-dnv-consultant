@@ -6,7 +6,7 @@ Guidance for Claude Code working in this repository.
 
 Шаблон-репозиторий: персональный консультант (на базе Claude Code) для
 **самостоятельной** подачи/продления испанского ВНЖ *teletrabajo de carácter
-internacional* (digital nomad, Ley 14/2013). Вы форкаете репозиторий,
+internacional* (digital nomad, Ley 14/2013). Вы клонируете репозиторий,
 открываете его в Claude Code и проходите пайплайн: интервью → рисёрч → синтез →
 документы → ревью → пакет «готов к подаче».
 
@@ -45,8 +45,8 @@ silencio positivo, requerimiento). Сохраняйте эту конвенци�
   (обезличенный дайджест), `sources/` (отчёты + публичные YouTube-транскрипты),
   `forms/` (реестр полей форм).
 - `templates/` — шаблоны spec/escritos/queja с `{{плейсхолдерами}}`.
-- `engine/scripts/` — параметризованный Python (chat-анонимайзер, дайджест,
-  extract_claims), `requirements.txt`.
+- `engine/scripts/` — параметризованный Python на одной стандартной библиотеке
+  (chat-анонимайзер, дайджест, extract_claims, заполнение форм и field-QA).
 - `.claude/skills/` — `dnv-intake`, `dnv-research`, `dnv-chat-mining`,
   `dnv-synthesis`, `dnv-verify`, `dnv-documents`, `dnv-review`, `dnv-submission`,
   `dnv-status` (снимок «где я», read-only), `dnv-tracking` (ведение **до**
@@ -89,7 +89,7 @@ silencio positivo, requerimiento). Сохраняйте эту конвенци�
 
 ## first-run
 
-Если навыки `/dnv-*` не видны после форка — перезапустите сессию Claude Code
+Если навыки `/dnv-*` не видны после клонирования — перезапустите сессию Claude Code
 один раз (skills/agents подхватываются при открытии папки). MCP-интеграции
 (Trello / Notion — для опциональной доски задач в `dnv-submission`) не
 обязательны: без них движок полностью функционален.

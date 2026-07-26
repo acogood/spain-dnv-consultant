@@ -9,6 +9,8 @@ _common). Stdlib unittest only — runnable from a clean clone with no deps:
 All fixtures are synthetic — there is NO real PII in this file.
 """
 
+import contextlib
+import io
 import json
 import sys
 import tempfile
@@ -192,6 +194,100 @@ class TestDigest(unittest.TestCase):
             p.write_text(json.dumps([{"id": 1, "from_id": "user1", "text": "x"}]), encoding="utf-8")
             with self.assertRaises(_common.SafeIOError):
                 bd.load_slices([str(p)], _common.DEFAULT_MAX_BYTES, _common.DEFAULT_MAX_DEPTH)
+
+
+class TestLastCoveredDate(unittest.TestCase):
+    """LAST_COVERED_DATE is DERIVED from the corpus, not copied from curation.
+
+    The manual constant had already drifted from the data (curation said
+    2026-06, the corpus reached 2026-07) — an internal contradiction inside one
+    publication. Curation may only assert a FLOOR.
+    """
+
+    def _msgs(self, *dates):
+        return [{"id": i, "author": f"u_{i}", "date": d, "text": "x"}
+                for i, d in enumerate(dates, start=1)]
+
+    def test_corpus_date_wins_over_older_curation(self):
+        msgs = self._msgs("2026-05-02T10:00:00", "2026-07-24T18:30:00")
+        lcd, warn = bd.resolve_last_covered({"last_covered_date": "2026-04-30"}, msgs)
+        self.assertEqual(lcd, "2026-07-24")
+        self.assertIsNone(warn)
+
+    def test_curation_claiming_more_than_corpus_warns(self):
+        msgs = self._msgs("2026-07-24T18:30:00")
+        lcd, warn = bd.resolve_last_covered({"last_covered_date": "2026-09-01"}, msgs)
+        self.assertEqual(lcd, "2026-07-24")          # data wins
+        self.assertIsNotNone(warn)                    # but the drift is reported
+        self.assertIn("2026-09-01", warn)
+        self.assertIn("2026-07-24", warn)
+
+    def test_curation_without_the_field(self):
+        msgs = self._msgs("2026-03-01T00:00:00")
+        lcd, warn = bd.resolve_last_covered({}, msgs)
+        self.assertEqual(lcd, "2026-03-01")
+        self.assertIsNone(warn)
+
+    def test_no_parseable_dates_falls_back_deterministically(self):
+        junk = [{"id": 1, "author": "u_1", "date": None, "text": "x"},
+                {"id": 2, "author": "u_2", "date": "вчера", "text": "y"}]
+        # curation value is the documented fallback...
+        lcd, _ = bd.resolve_last_covered({"last_covered_date": "2026-04-30"}, junk)
+        self.assertEqual(lcd, "2026-04-30")
+        # ...and without one, the module's "no dates" marker — never "" and never a crash
+        lcd2, _ = bd.resolve_last_covered({}, junk)
+        self.assertEqual(lcd2, "—")
+
+    def _run_main(self, curation, out="out"):
+        """Run build_digest end-to-end in a temp cwd; return (out_dir, stdout)."""
+        anon, *_ = ac.anonymize(RAW["messages"], SALT, 4)
+        Path("slice.json").write_text(json.dumps(anon, ensure_ascii=False), encoding="utf-8")
+        Path("cur.json").write_text(json.dumps(curation, ensure_ascii=False), encoding="utf-8")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            bd.main(["--curation", "cur.json", "--slices", "slice.json", "--out-dir", out])
+        return Path(out), buf.getvalue()
+
+    def _curation_for_main(self, **extra):
+        c = {"source": "synthetic",
+             "claims": [{"topic": "UGE_подача", "tag": "практика — Telegram",
+                         "statement": "UGE принимает выписку Wise.",
+                         "match": [r"UGE.*Wise|Wise.*UGE"]}]}
+        c.update(extra)
+        return c
+
+    def test_end_to_end_writes_derived_date_and_is_reproducible(self):
+        import os
+        with tempfile.TemporaryDirectory() as d:
+            old = os.getcwd()
+            try:
+                os.chdir(d)
+                cur = self._curation_for_main(last_covered_date="2025-01-01")
+                out, _ = self._run_main(cur)
+                first = {f: (out / f).read_bytes()
+                         for f in ("LAST_COVERED_DATE", "digest.md", "digest.json")}
+                # RAW's newest message is 2026-02-01 — NOT the curation constant
+                self.assertEqual(first["LAST_COVERED_DATE"].decode("utf-8").strip(), "2026-02-01")
+                self.assertIn("2026-02-01", first["digest.md"].decode("utf-8"))
+                self._run_main(cur)  # byte-identical on re-run
+                for f, blob in first.items():
+                    self.assertEqual((out / f).read_bytes(), blob, f"{f} not reproducible")
+            finally:
+                os.chdir(old)
+
+    def test_end_to_end_overclaiming_curation_warns_but_exits_clean(self):
+        import os
+        with tempfile.TemporaryDirectory() as d:
+            old = os.getcwd()
+            try:
+                os.chdir(d)
+                # curation claims coverage the corpus does not have -> warn, don't fail
+                out, stdout = self._run_main(self._curation_for_main(last_covered_date="2026-09-01"))
+                self.assertEqual((out / "LAST_COVERED_DATE").read_text(encoding="utf-8").strip(),
+                                 "2026-02-01")
+                self.assertIn("2026-09-01", stdout)
+            finally:
+                os.chdir(old)
 
 
 class TestCommonGuards(unittest.TestCase):

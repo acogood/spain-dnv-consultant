@@ -18,9 +18,14 @@ Privacy controls:
 Determinism: no randomness — given the same curation file + slices the digest
 (and its bands) are exactly reproducible.
 
+Coverage date: LAST_COVERED_DATE is DERIVED from the newest message in the
+slices, not copied from the curation file. `curation.last_covered_date` is an
+optional FLOOR — if it claims more coverage than the data has, that mismatch is
+printed as a warning and the corpus date is published anyway (warning, not gate).
+
 Curation file (JSON):
   {
-    "last_covered_date": "YYYY-MM-DD",
+    "last_covered_date": "YYYY-MM-DD",  # optional floor; corpus date wins
     "source": "free-text provenance, PII-free",
     "claims": [
       {
@@ -78,17 +83,65 @@ def support_band(d: int) -> str:
     return "массово (100+ чел.)"
 
 
+NO_DATES = "—"  # module-wide marker for "no parseable dates" (see date_range)
+_ISO_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
 def year_month(date_str) -> str | None:
     if not isinstance(date_str, str) or len(date_str) < 7:
         return None
     return date_str[:7]  # "YYYY-MM"
 
 
+def iso_day(date_str) -> str | None:
+    """'2026-07-24T18:30:00' -> '2026-07-24'. Same guard shape as year_month(),
+    but validated: this value is published as LAST_COVERED_DATE."""
+    if not isinstance(date_str, str) or len(date_str) < 10:
+        return None
+    day = date_str[:10]
+    return day if _ISO_DAY.match(day) else None
+
+
 def date_range(dates: list[str]) -> str:
     yms = sorted(d for d in (year_month(x) for x in dates) if d)
     if not yms:
-        return "—"
+        return NO_DATES
     return yms[0] if yms[0] == yms[-1] else f"{yms[0]} — {yms[-1]}"
+
+
+def corpus_last_date(messages: list[dict]) -> str | None:
+    """Newest message date (YYYY-MM-DD) across the loaded slices, or None if no
+    message carries a parseable date. ISO days sort lexicographically, so max()
+    over strings is both correct and deterministic."""
+    days = [d for d in (iso_day(m.get("date")) for m in messages) if d]
+    return max(days) if days else None
+
+
+def resolve_last_covered(curation: dict, messages: list[dict]) -> tuple[str, str | None]:
+    """Coverage date is DERIVED from the corpus, never copied from curation.
+
+    `curation.last_covered_date` is treated as an optional FLOOR: if it claims
+    coverage the data does not have, that is a curation bug and we say so — but
+    we publish what the corpus actually supports and still exit 0 (a warning,
+    not a gate). Returns (last_covered_date, warning_or_None).
+    """
+    declared = curation.get("last_covered_date")
+    declared = declared.strip() if isinstance(declared, str) and declared.strip() else None
+    corpus = corpus_last_date(messages)
+
+    if corpus is None:
+        # Deterministic fallback: the declared floor if there is one, else the
+        # same "no dates" marker date_range() uses. Never "" and never a crash.
+        return (declared or NO_DATES, None)
+
+    warning = None
+    if declared and declared > corpus:
+        warning = (
+            f"ВНИМАНИЕ: curation.last_covered_date={declared} новее максимальной "
+            f"даты корпуса ({corpus}) — курация заявляет покрытие, которого в "
+            f"данных нет. Публикуется {corpus}."
+        )
+    return (corpus, warning)
 
 
 def load_slices(slice_paths, max_bytes, max_depth) -> list[dict]:
@@ -161,7 +214,7 @@ def aggregate(curation: dict, messages: list[dict], min_authors: int):
     return published, suppressed
 
 
-def render_markdown(curation: dict, published: list[dict]) -> str:
+def render_markdown(curation: dict, published: list[dict], last_covered_date: str) -> str:
     lines = [
         "# Дайджест практики сообщества (обезличенный)",
         "",
@@ -176,7 +229,7 @@ def render_markdown(curation: dict, published: list[dict]) -> str:
         "исключены (k-анонимность).",
         "",
         f"- **Источник:** {curation.get('source', '—')}",
-        f"- **LAST_COVERED_DATE:** {curation.get('last_covered_date', '—')}",
+        f"- **LAST_COVERED_DATE:** {last_covered_date}",
         f"- **Опубликовано пунктов:** {len(published)}",
         "",
     ]
@@ -219,22 +272,26 @@ def main(argv=None):
 
         messages = load_slices(slice_paths, args.max_bytes, args.max_depth)
         published, suppressed = aggregate(curation, messages, args.min_authors)
+        last_covered, coverage_warning = resolve_last_covered(curation, messages)
 
         out_dir = resolve_output(args.out_dir, args.allowed_root)
         out_dir.mkdir(parents=True, exist_ok=True)
-        (out_dir / "digest.md").write_text(render_markdown(curation, published), encoding="utf-8")
+        (out_dir / "digest.md").write_text(
+            render_markdown(curation, published, last_covered), encoding="utf-8")
         (out_dir / "digest.json").write_text(
             json.dumps({"source": curation.get("source"),
-                        "last_covered_date": curation.get("last_covered_date"),
+                        "last_covered_date": last_covered,
                         "min_authors": args.min_authors,
                         "claims": published}, ensure_ascii=False, indent=1),
             encoding="utf-8")
-        lcd = curation.get("last_covered_date", "")
-        (out_dir / "LAST_COVERED_DATE").write_text(str(lcd) + "\n", encoding="utf-8")
+        (out_dir / "LAST_COVERED_DATE").write_text(last_covered + "\n", encoding="utf-8")
     except SafeIOError as e:
         die(e)
 
-    print(f"messages={len(messages)} published={len(published)} suppressed(k-anon)={len(suppressed)}")
+    if coverage_warning:
+        print(coverage_warning)
+    print(f"messages={len(messages)} last_covered={last_covered} "
+          f"published={len(published)} suppressed(k-anon)={len(suppressed)}")
     for r in suppressed:
         print(f"  suppressed [{r.get('distinct_authors')} автор(ов)]: {r['statement'][:60]}...")
     print(f"-> {out_dir}/digest.md, digest.json, LAST_COVERED_DATE")

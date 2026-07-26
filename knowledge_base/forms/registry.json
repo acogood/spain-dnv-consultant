@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-06",
-  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge).",
+  "as_of": "2026-07",
+  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge). MI-T/MI-F/790-052/memoria — на подачу (/dnv-documents); EX-17 и 790-012 — после concesión, на сдачу отпечатков (/dnv-tie).",
   "archetype": "autonomo_contractor + conyuge",
   "controlled_vocabularies": {
     "sexo": ["Hombre", "Mujer"],
@@ -63,7 +63,57 @@
       "fields": [
         {"name": "Apellidos y nombre", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Domicilio", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "media", "common_errors": "практика расходится: адрес заявки vs адрес падрона — сверить с отделением", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación (TIE)", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_012", "criticality": "alta", "common_errors": "RENOVACIÓN и primera concesión — РАЗНЫЕ строки с разными суммами; подставленная формой сумма — способ проверить, что выбрана нужная строка", "origin": "generic"},
         {"name": "Importe (TIE)", "type": "number", "domain": "free", "profile_key": "tasa.importe_012", "criticality": "media", "common_errors": "сумма меняется — проверить вживую", "origin": "generic"}
+      ]
+    },
+    "EX-17": {
+      "title": "Solicitud de Tarjeta de Identidad de Extranjero (TIE) — заполняется ПОСЛЕ concesión, для сдачи отпечатков",
+      "applies_to": "ambos",
+      "note": "Практика по отделениям расходится: часть берёт EX-17, часть — MI-TIE. См. ../norms/tie-huellas.md — движок не выбирает за пользователя.",
+      "fields": [
+        {"name": "Primer apellido", "type": "text", "domain": "free", "profile_key": "applicant.last_name", "criticality": "alta", "common_errors": "должна совпадать с паспортом и с ранее поданной MI-T", "origin": "generic"},
+        {"name": "Segundo apellido", "type": "text", "domain": "free", "profile_key": "applicant.second_last_name", "criticality": "media", "common_errors": "нет второй фамилии — оставить пустым, не дублировать первую", "origin": "generic"},
+        {"name": "Nombre", "type": "text", "domain": "free", "profile_key": "applicant.first_name", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Sexo", "type": "enum", "domain": "sexo", "profile_key": "applicant.sexo", "criticality": "alta", "common_errors": "галочка стоит в данных формы, но не рисуется некоторыми просмотрщиками PDF — проверять в другом", "origin": "generic"},
+        {"name": "Fecha de nacimiento", "type": "date", "domain": "free", "profile_key": "applicant.birth_date", "criticality": "alta", "common_errors": "формат DD/MM/AAAA", "origin": "generic"},
+        {"name": "Lugar de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_place", "criticality": "media", "common_errors": "РЕАЛЬНАЯ ошибка прогона: в это поле вписали телефон — соседнее поле бланка; проверять глазами", "origin": "generic"},
+        {"name": "País de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_country", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Nombre del padre", "type": "text", "domain": "free", "profile_key": "applicant.father_name", "criticality": "media", "common_errors": "в MI-T этого поля не было — данных в профиле может не быть; добирается в /dnv-tie, не выдумывается", "origin": "generic"},
+        {"name": "Nombre de la madre", "type": "text", "domain": "free", "profile_key": "applicant.mother_name", "criticality": "media", "common_errors": "то же: добирается в /dnv-tie", "origin": "generic"},
+        {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "applicant.nationality", "criticality": "alta", "common_errors": "повторяющийся вопрос практики: форма страны vs форма гражданства — держать одинаково во всех формах пакета", "origin": "generic"},
+        {"name": "Estado civil", "type": "enum", "domain": "estado_civil", "profile_key": "applicant.marital_status", "criticality": "media", "common_errors": "галочка может не отрисоваться в просмотрщике — см. Sexo", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка", "origin": "generic"},
+        {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "applicant.passport_number", "criticality": "alta", "common_errors": "РЕАЛЬНАЯ ошибка прогона: взяли номер УСТАРЕВШЕГО паспорта при действующем в профиле", "origin": "generic"},
+        {"name": "Domicilio en España", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "alta", "common_errors": "если отпечатки сдаются не в провинции адреса заявки — практика расходится; сверить с отделением, иногда просят падрон", "origin": "generic"},
+        {"name": "Teléfono", "type": "text", "domain": "free", "profile_key": "applicant.phone", "criticality": "baja", "common_errors": "", "origin": "generic"},
+        {"name": "Correo electrónico", "type": "text", "domain": "free", "profile_key": "applicant.email", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "TIE: INICIAL / RENOVADA", "type": "enum", "domain": "tipo_solicitud", "profile_key": "applicant.tipo_solicitud", "criticality": "alta", "common_errors": "должно соответствовать типу решения; связано с выбором эпиграфа tasa 790-012", "origin": "generic"},
+        {"name": "DIRIGIDA A (provincia / comisaría)", "type": "text", "domain": "free", "profile_key": "applicant.comisaria_provincia", "criticality": "alta", "common_errors": "отделение, где реально записались на huellas — не обязательно провинция домициля; добирается в /dnv-tie", "origin": "case_derived"}
+      ]
+    },
+    "EX-17-familiar": {
+      "title": "Solicitud de TIE (EX-17) — член семьи; заполняется, только если член семьи подавался",
+      "applies_to": "familiar",
+      "note": "Пустая ветка при family.present=false — это норма: поля профиля пусты, черновик показывает [ТРЕБУЕТСЯ], критичность подобрана так, чтобы это не давало ложных MISSING.",
+      "fields": [
+        {"name": "Primer apellido", "type": "text", "domain": "free", "profile_key": "family.last_name", "criticality": "media", "common_errors": "совпадение с паспортом", "origin": "generic"},
+        {"name": "Nombre", "type": "text", "domain": "free", "profile_key": "family.first_name", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Sexo", "type": "enum", "domain": "sexo", "profile_key": "family.sexo", "criticality": "media", "common_errors": "не оставлять пустым; Hombre/Mujer", "origin": "generic"},
+        {"name": "Fecha de nacimiento", "type": "date", "domain": "free", "profile_key": "family.birth_date", "criticality": "media", "common_errors": "DD/MM/AAAA", "origin": "generic"},
+        {"name": "Lugar de nacimiento", "type": "text", "domain": "free", "profile_key": "family.birth_place", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "País de nacimiento", "type": "text", "domain": "free", "profile_key": "family.birth_country", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Nombre del padre", "type": "text", "domain": "free", "profile_key": "family.father_name", "criticality": "media", "common_errors": "добирается в /dnv-tie", "origin": "generic"},
+        {"name": "Nombre de la madre", "type": "text", "domain": "free", "profile_key": "family.mother_name", "criticality": "media", "common_errors": "добирается в /dnv-tie", "origin": "generic"},
+        {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "family.nationality", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Estado civil", "type": "enum", "domain": "estado_civil", "profile_key": "family.marital_status", "criticality": "media", "common_errors": "при cónyuge — Casado/a, согласовано с титуларом", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "family.passport_number", "criticality": "media", "common_errors": "действующий паспорт, не предыдущий", "origin": "generic"},
+        {"name": "Domicilio en España", "type": "text", "domain": "free", "profile_key": "family.address_full", "criticality": "media", "common_errors": "обычно совпадает с адресом титулара", "origin": "generic"},
+        {"name": "Teléfono", "type": "text", "domain": "free", "profile_key": "family.phone", "criticality": "baja", "common_errors": "", "origin": "generic"},
+        {"name": "Correo electrónico", "type": "text", "domain": "free", "profile_key": "family.email", "criticality": "media", "common_errors": "", "origin": "generic"},
+        {"name": "TIE: INICIAL / RENOVADA", "type": "enum", "domain": "tipo_solicitud", "profile_key": "family.tipo_solicitud", "criticality": "media", "common_errors": "", "origin": "generic"}
       ]
     },
     "memoria": {

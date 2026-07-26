@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "archetype": "autonomo_contractor + conyuge",
-  "note": "Канонический namespace профиля кейса. Должен быть НАДмножеством profile_key реестра форм (engine/scripts/check_namespace.py проверяет registry ⊆ schema). domain ссылается на controlled_vocabularies реестра. branch: both|initial|renovacion|family — когда поле спрашивается. derived=true — вычисляется/ищется, не спрашивается напрямую.",
+  "note": "Канонический namespace профиля кейса. Должен быть НАДмножеством profile_key реестра форм (engine/scripts/check_namespace.py проверяет registry ⊆ schema). domain ссылается на controlled_vocabularies реестра. branch: both|initial|renovacion|family|tie — когда поле спрашивается (tie = не в интейке, а в /dnv-tie после одобрения). derived=true — вычисляется/ищется, не спрашивается напрямую.",
   "controlled_vocabularies": {
     "sexo": ["Hombre", "Mujer"],
     "estado_civil": ["Soltero/a", "Casado/a", "Viudo/a", "Divorciado/a", "Separado/a"],
@@ -34,6 +34,9 @@
     "applicant.tie_expiry": {"type": "date", "required": false, "branch": "renovacion", "label": "Дата истечения TIE (для продления)"},
     "applicant.first_approval_date": {"type": "date", "required": false, "branch": "renovacion", "label": "Дата первичного одобрения"},
     "applicant.certificado_digital": {"type": "bool", "required": true, "branch": "both", "label": "Есть certificado digital?"},
+    "applicant.father_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя отца (поле EX-17)"},
+    "applicant.mother_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя матери (поле EX-17)"},
+    "applicant.comisaria_provincia": {"type": "text", "required": false, "branch": "tie", "label": "Провинция/отделение, куда подаётся EX-17 (DIRIGIDA A)"},
 
     "work.company_name": {"type": "text", "required": true, "branch": "both", "label": "Работодатель/заказчик"},
     "work.company_country": {"type": "text", "required": true, "branch": "both", "label": "Страна регистрации компании"},
@@ -60,9 +63,19 @@
     "family.marriage_date": {"type": "date", "required": false, "branch": "family", "label": "Дата регистрации брака (если cónyuge)"},
     "family.marriage_place": {"type": "text", "required": false, "branch": "family", "label": "Место регистрации брака"},
     "family.titular_regage": {"type": "text", "required": false, "branch": "family", "label": "REGAGE titular (вписать ПОСЛЕ подачи; не выдумывать)"},
+    "family.birth_place": {"type": "text", "required": false, "branch": "family", "label": "Место рождения члена семьи"},
+    "family.birth_country": {"type": "text", "required": false, "branch": "family", "label": "Страна рождения члена семьи"},
+    "family.marital_status": {"type": "enum", "domain": "estado_civil", "required": false, "branch": "family", "label": "Семейное положение члена семьи"},
+    "family.address_full": {"type": "text", "required": false, "branch": "family", "label": "Домициль члена семьи в Испании"},
+    "family.passport_expiry": {"type": "date", "required": false, "branch": "family", "label": "Паспорт члена семьи действителен до"},
+    "family.email": {"type": "text", "required": false, "branch": "family", "label": "Email члена семьи"},
+    "family.phone": {"type": "text", "required": false, "branch": "family", "label": "Телефон члена семьи"},
+    "family.father_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя отца члена семьи (поле EX-17)"},
+    "family.mother_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя матери члена семьи (поле EX-17)"},
 
     "tasa.epigrafe_052": {"type": "text", "required": false, "derived": true, "branch": "both", "label": "Эпиграф tasa 790-052 (проверить вживую)"},
     "tasa.importe_052": {"type": "number", "required": false, "derived": true, "branch": "both", "label": "Сумма tasa 790-052 (проверить вживую)"},
-    "tasa.importe_012": {"type": "number", "required": false, "derived": true, "branch": "both", "label": "Сумма tasa 790-012/TIE (проверить вживую)"}
+    "tasa.epigrafe_012": {"type": "text", "required": false, "derived": true, "branch": "tie", "label": "Эпиграф tasa 790-012 (renovación и primera concesión — РАЗНЫЕ строки; проверить вживую)"},
+    "tasa.importe_012": {"type": "number", "required": false, "derived": true, "branch": "tie", "label": "Сумма tasa 790-012/TIE (проверить вживую)"}
   }
 }

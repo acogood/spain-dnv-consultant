@@ -13,11 +13,14 @@ plausibility:
   * draft value != re-derived profile value   -> WRONG  (catches a plausible-but-wrong value)
   * profile-empty & draft '[ТРЕБУЕТСЯ]'        -> MISSING (alta) / OK (media/baja)
 
-STAGE GATING (`applies_when`): a form may not apply yet at the case's current
-stage — EX-17 / tasa-790-012 only make sense after a resolución. The registry
-declares that as `applies_when: <profile key>` (or a list, AND-ed); a form
-without the key always applies. When a form does NOT apply, an empty field
-correctly marked `[ТРЕБУЕТСЯ]` is OK regardless of criticality.
+APPLICABILITY GATING (`applies_when`): a form may not apply to this case in its
+current state. Two kinds, which the key deliberately does not distinguish:
+STAGE — EX-17 / tasa-790-012 only make sense after a resolución, and WILL apply
+later; SHAPE — MI-F / EX-17-familiar need `family.present`, and for a solo
+applicant (in scope for v1) they will NEVER apply. The registry declares either
+as `applies_when: <profile key>` (or a list, AND-ed); a form without the key
+always applies. When a form does NOT apply, an empty field correctly marked
+`[ТРЕБУЕТСЯ]` is OK regardless of criticality.
 
 Why this is a gate and not a criticality tweak: criticality is static, but
 whether a field is required depends on case STATE. The registry used to encode
@@ -122,8 +125,8 @@ def form_applicability(registry, profile):
     for form_id, form in registry.get("forms", {}).items():
         missing = [k for k in applies_when_keys(form) if not gate_satisfied(flat.get(k))]
         if missing:
-            out[form_id] = (False, "форма не применяется на этом этапе: пусто "
-                                   + ", ".join(missing))
+            out[form_id] = (False, "форма не применяется к этому кейсу в его "
+                                   "текущем состоянии: пусто " + ", ".join(missing))
         else:
             out[form_id] = (True, "")
     return out
@@ -267,11 +270,14 @@ def render(verdicts, applicability=None):
              "каком случае.", ""]
     inactive = sorted(f for f, (ok, _) in (applicability or {}).items() if not ok)
     if inactive:
-        lines += ["> **Не применяются на этом этапе кейса** (`applies_when`): "
-                  + ", ".join(f"`{f}`" for f in inactive) + ". Их пустые поля с "
-                  "`[ТРЕБУЕТСЯ]` дают OK — это не пробел пакета. Проверка "
-                  "значений (домены, галлюцинации, расхождение с профилем) для "
-                  "них всё равно выполнена.", ""]
+        lines += ["> **Не применяются к этому кейсу в его текущем состоянии** "
+                  "(`applies_when`): " + ", ".join(f"`{f}`" for f in inactive)
+                  + ". Их пустые поля с `[ТРЕБУЕТСЯ]` дают OK — это не пробел "
+                  "пакета. Условие бывает про **этап** (`case.resolution_notified` "
+                  "— форма применится позже) и про **состав кейса** "
+                  "(`family.present` — у соло-заявителя не применится никогда). "
+                  "Проверка значений (домены, галлюцинации, расхождение с "
+                  "профилем) для них всё равно выполнена.", ""]
     lines += ["| Форма | Поле | Вердикт | Причина |", "|---|---|---|---|"]
     for f, n, v, why in verdicts:
         mark = {"OK": "✅", "WRONG": "❌", "MISSING": "⚠️", "UNCERTAIN": "❔"}.get(v, "")
@@ -321,7 +327,7 @@ def main(argv=None):
           f"MISSING={counts.get('MISSING',0)} UNCERTAIN={counts.get('UNCERTAIN',0)}")
     inactive = sorted(f for f, (ok, _) in applicability.items() if not ok)
     if inactive:
-        print("не применяются на этом этапе (applies_when): " + ", ".join(inactive))
+        print("не применяются к этому кейсу (applies_when): " + ", ".join(inactive))
     print(f"-> {out_dir}/field_qa_report.md")
     # Non-zero exit if any hard error verdict, so CI / the gate can branch on it.
     sys.exit(1 if counts.get("WRONG", 0) else 0)

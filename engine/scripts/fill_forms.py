@@ -11,13 +11,18 @@ guessed value. No hallucination is structurally possible here.
 Precondition: a case profile must exist. Without it the script halts
 with an instruction (it does not invent one).
 
-Stage gating: a form may carry `applies_when` (a profile key, or a list AND-ed)
-saying it only makes sense at a later stage of the case — EX-17 and tasa-790-012
-only after a resolución. Such forms are still generated (so the sheet exists the
-moment the stage arrives), but they are LABELLED — in the summary line and in the
-`.md` header — so "almost entirely [ТРЕБУЕТСЯ]" reads as "not this step yet",
-not as a hole in the package. Structural, so the skills no longer have to say it
-in prose. `field_qa.py` reads the same key and suspends the requiredness gate.
+Applicability gating: a form may carry `applies_when` (a profile key, or a list
+AND-ed) saying it does not apply to this case in its current state. Two kinds,
+and the key deliberately does not distinguish them:
+  * STAGE  — EX-17 / tasa-790-012 need `case.resolution_notified`; they WILL
+             apply later.
+  * SHAPE  — MI-F / EX-17-familiar need `family.present`; for a solo applicant
+             they will NEVER apply.
+Such forms are still generated (so the sheet exists the moment it becomes
+relevant), but they are LABELLED — in the summary line and in the `.md` header —
+so "almost entirely [ТРЕБУЕТСЯ]" reads as "does not apply to you", not as a hole
+in the package. Structural, so the skills no longer have to say it in prose.
+`field_qa.py` reads the same key and suspends the requiredness gate.
 
 Usage:
   python fill_forms.py [profile.json] [registry.json] [--out-dir DIR] [--allowed-root DIR]
@@ -42,6 +47,29 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "chat"))
 from _common import SafeIOError, die, resolve_output  # noqa: E402
 
 REQUIRED = "[ТРЕБУЕТСЯ: {}]"
+
+# What an unmet gate key MEANS for the reader. Both kinds suspend the same
+# requiredness gate, but they are not the same news: a STAGE key will be filled
+# in later, a SHAPE key never will for this applicant, and telling a solo
+# applicant to "wait for the stage" would have them waiting forever. Unknown keys
+# fall back to the neutral wording rather than guessing.
+GATE_MEANING = {
+    "case.resolution_notified":
+        "Этап ещё не наступил: лист станет актуальным после одобрения "
+        "(`/dnv-tie` запишет дату уведомления) — тогда перегенерируйте его.",
+    "family.present":
+        "Эта форма относится к члену семьи, а в профиле его нет. Если вы "
+        "подаётесь **соло** — форма вам не нужна вообще: не заполняйте и не "
+        "подавайте её, ждать тут нечего.",
+}
+
+
+def gate_explanations(missing_keys):
+    """Reader-facing sentences for the unmet keys, in the order given."""
+    out = [GATE_MEANING[k] for k in missing_keys if k in GATE_MEANING]
+    if not out:
+        out = ["Лист станет актуальным, когда это условие в профиле выполнится."]
+    return out
 
 
 def flatten(obj, prefix=""):
@@ -117,13 +145,12 @@ def fill_form(form, flat):
 def render_md(form_id, title, rows, applies=True, missing_keys=()):
     lines = [f"# {form_id} — {title}", ""]
     if not applies:
-        lines += ["> ⏸️ **Эта форма НЕ относится к текущему этапу кейса.** "
-                  "Условие применимости из реестра (`applies_when`) не выполнено: "
-                  "пусто " + ", ".join(f"`{k}`" for k in missing_keys) + ". "
-                  "Поэтому лист ниже почти целиком в `[ТРЕБУЕТСЯ: …]` — это "
+        lines += ["> ⏸️ **Эта форма НЕ применяется к вашему кейсу в его текущем "
+                  "состоянии.** Условие применимости из реестра (`applies_when`) "
+                  "не выполнено: пусто " + ", ".join(f"`{k}`" for k in missing_keys)
+                  + ". Поэтому лист ниже почти целиком в `[ТРЕБУЕТСЯ: …]` — это "
                   "**ожидаемо, а не пробел пакета**, и field-QA не считает это "
-                  "пропусками. Лист станет актуальным, когда этап наступит; "
-                  "тогда перегенерируйте его.", ""]
+                  "пропусками. " + " ".join(gate_explanations(missing_keys)), ""]
     lines += ["> Сгенерировано из профиля по реестру. `[ТРЕБУЕТСЯ: …]` — нет данных "
               "в профиле (заполнить, не выдумывать). Сверьте ярлыки с текущим бланком.",
               "", "| Поле | Значение | Домен | Крит. |", "|---|---|---|---|"]
@@ -176,11 +203,11 @@ def main(argv=None):
 
     for fid, n, miss, applies, missing_keys in summary:
         note = "" if applies else (
-            "  ⏸️ не этот этап (нет: " + ", ".join(missing_keys) + ")")
+            "  ⏸️ не применяется (нет: " + ", ".join(missing_keys) + ")")
         print(f"  {fid}: {n} полей, {miss} [ТРЕБУЕТСЯ]{note}")
     if any(not applies for *_, applies, _ in summary):
-        print("Формы, помеченные ⏸️, к текущему этапу не относятся — их "
-              "[ТРЕБУЕТСЯ] это не пробел пакета.")
+        print("Формы, помеченные ⏸️, к этому кейсу в его текущем состоянии не "
+              "относятся — их [ТРЕБУЕТСЯ] это не пробел пакета.")
     print(f"-> {out_dir} (drafts.json + per-form .md)")
 
 

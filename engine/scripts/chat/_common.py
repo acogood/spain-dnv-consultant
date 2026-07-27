@@ -127,6 +127,13 @@ def resolve_output(path: str | os.PathLike, allowed_root: str | os.PathLike) -> 
     return resolved
 
 
+def _hmac_token(salt: bytes, material: str, prefix: str, length: int) -> str:
+    """Prefixed, truncated HMAC-SHA256 over `material`. One construction for
+    every salted token in the pipeline, so they cannot drift apart."""
+    digest = hmac.new(salt, material.encode("utf-8"), hashlib.sha256).hexdigest()
+    return prefix + digest[:length]
+
+
 def stable_pseudonym(identity: str, salt: bytes, length: int = 12) -> str:
     """Deterministic, salted pseudonym for an author identity (e.g. from_id).
 
@@ -135,8 +142,42 @@ def stable_pseudonym(identity: str, salt: bytes, length: int = 12) -> str:
     NOT be published (see build_digest.py) — with a known author roster and a
     public salt they would be reversible.
     """
-    digest = hmac.new(salt, identity.encode("utf-8"), hashlib.sha256).hexdigest()
-    return "u_" + digest[:length]
+    return _hmac_token(salt, identity, "u_", length)
+
+
+CORPUS_REF_PREFIX = "m_"
+
+
+def stable_corpus_ref(message_id, salt: bytes, length: int = 12) -> str:
+    """Deterministic, salted reference to a CORPUS MESSAGE id.
+
+    Why this exists: `curation.json` ships in the public repo, and it used to
+    carry raw Telegram message ids in `supporting_ids`. A raw id is a
+    re-identification key — with the chat known, it reconstructs the message and
+    therefore its author. The regex PII gate cannot see that class at all: an
+    integer is indistinguishable from any other integer.
+
+    A salted ref keeps what the curation actually needs — a stable handle the
+    maintainer can resolve against their own corpus, and proof that a claim rests
+    on named messages rather than on a broad regex (the third case of the band
+    contract) — while publishing nothing that points back at a person. The salt
+    lives in `user/anon/.anon_salt`, is gitignored, and is never shipped, so the
+    ref is not reversible by a reader.
+
+    Domain-separated from stable_pseudonym() by the `mid:` prefix on the HMAC
+    input: an author identity and a message id can never collide into the same
+    token even if their string forms coincide.
+    """
+    return _hmac_token(salt, "mid:" + str(message_id), CORPUS_REF_PREFIX, length)
+
+
+def is_corpus_ref(value) -> bool:
+    """Is `value` a salted corpus ref (as opposed to a raw id)? Shape-only check
+    — used to decide, fail-closed, which resolution mode a curation file needs."""
+    return (isinstance(value, str)
+            and value.startswith(CORPUS_REF_PREFIX)
+            and len(value) > len(CORPUS_REF_PREFIX)
+            and all(c in "0123456789abcdef" for c in value[len(CORPUS_REF_PREFIX):]))
 
 
 def load_or_create_salt(salt_file: str | os.PathLike) -> bytes:
@@ -154,6 +195,35 @@ def load_or_create_salt(salt_file: str | os.PathLike) -> bytes:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(salt.hex(), encoding="utf-8")
     return salt
+
+
+def load_salt_readonly(salt_file: str | os.PathLike) -> bytes:
+    """Read an EXISTING salt, refusing to create one. Use this when the salt must
+    match tokens that were minted earlier.
+
+    The difference from load_or_create_salt() is not cosmetic. On a mistyped path
+    that function silently mints a FRESH salt, and every token derived from it
+    then fails to match the ones already on disk — pseudonyms split one person
+    into two (inflating author bands), and corpus refs resolve to nothing (bands
+    collapse and claims vanish under k-anonymity). Both failures look like data,
+    not like an error. Anything RESOLVING existing tokens must fail loudly instead.
+    """
+    p = Path(salt_file)
+    if not p.is_file():
+        raise _fail(
+            f"Salt file not found: {p}\n"
+            f"Refusing to create one here: a fresh salt would silently fail to "
+            f"match the tokens it is supposed to resolve. Point --salt-file at the "
+            f"salt those tokens were minted with (maintainer corpus: "
+            f"user/anon/.anon_salt)."
+        )
+    val = p.read_text(encoding="utf-8").strip()
+    if not val:
+        raise _fail(f"Salt file is empty: {p}")
+    try:
+        return bytes.fromhex(val)
+    except ValueError as e:
+        raise _fail(f"Salt file is not hex ({p}): {e}") from e
 
 
 def die(err: Exception, code: int = 2) -> None:

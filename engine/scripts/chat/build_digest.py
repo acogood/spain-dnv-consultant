@@ -32,16 +32,30 @@ Curation file (JSON):
         "topic": "доход_IPREM",
         "tag": "практика — Telegram",
         "statement": "PII-free human-written claim.",
-        "supporting_ids": [123, 456],        # explicit (LLM-curated) — optional
+        "supporting_ids": ["m_1a2b3c4d5e6f"],  # explicit (LLM-curated) — optional
         "match": ["regex1", "regex2"]        # auto-discovery helper — optional
       }
     ]
   }
 A claim may use supporting_ids, match, or both. At least one is required.
 
+`supporting_ids` comes in TWO forms and the script refuses to mix them:
+  * SALTED REFS ("m_<hex>", from _common.stable_corpus_ref) — the only form a
+    PUBLISHED curation file may use. A raw message id is a re-identification key
+    (chat + id -> the message -> its author) that no regex gate can spot, so the
+    shipped `knowledge_base/practice/curation.json` carries refs, and resolving
+    them REQUIRES --salt-file. Hash new ids with `_private/hash_curation_ids.py`.
+  * RAW ids (integers) — for a LOCAL, unpublished curation over your own corpus
+    (the /dnv-chat-mining path). Resolved without a salt.
+Fail-closed either way: refs without --salt-file, raw ids WITH --salt-file, and
+any file that mixes the two are hard errors, never a silently empty resolution.
+
 Usage:
   python build_digest.py --curation FILE --slices-dir DIR --out-dir DIR [options]
   python build_digest.py --curation FILE --slices a.json b.json --out-dir DIR
+  # publishable rebuild (curation carries salted refs):
+  python build_digest.py --curation FILE --slices corpus.json --out-dir DIR \
+      --salt-file user/anon/.anon_salt
 """
 
 from __future__ import annotations
@@ -63,9 +77,12 @@ from _common import (  # noqa: E402
     DEFAULT_MAX_DEPTH,
     SafeIOError,
     die,
+    is_corpus_ref,
     load_json_safe,
+    load_salt_readonly,
     messages_of,
     resolve_output,
+    stable_corpus_ref,
 )
 
 
@@ -165,8 +182,58 @@ def load_slices(slice_paths, max_bytes, max_depth) -> list[dict]:
     return all_msgs
 
 
-def aggregate(curation: dict, messages: list[dict], min_authors: int):
-    by_id = {m.get("id"): m for m in messages if m.get("id") is not None}
+def supporting_ids_mode(curation: dict) -> str:
+    """'hashed' | 'raw' | 'none' — which form the curation's supporting_ids take.
+
+    Raises on a file that MIXES the two. Mixing is the dangerous state, not an
+    inconvenience: it is exactly what a partial hashing pass leaves behind, and
+    the leftover raw ids are the re-identification keys the hashing was for. A
+    half-converted file must stop the build, not publish the remainder.
+    """
+    raw_claims, hashed_claims = [], []
+    for i, claim in enumerate(curation.get("claims", [])):
+        for value in (claim.get("supporting_ids") or []):
+            (hashed_claims if is_corpus_ref(value) else raw_claims).append(i)
+    if raw_claims and hashed_claims:
+        raise SafeIOError(
+            f"curation mixes RAW corpus ids and salted refs in supporting_ids "
+            f"(raw in claim #{raw_claims[0]}, refs in claim #{hashed_claims[0]}). "
+            f"Hash all of them or none — a partially hashed file still publishes "
+            f"re-identification keys. See _private/hash_curation_ids.py."
+        )
+    if hashed_claims:
+        return "hashed"
+    return "raw" if raw_claims else "none"
+
+
+def corpus_index(messages: list[dict], salt: bytes | None) -> dict:
+    """Map each message to the key `supporting_ids` will be looked up by: the raw
+    id when there is no salt, the salted ref when there is.
+
+    A ref collision would silently merge two different messages (and thus two
+    different authors) into one supporter, so it is refused rather than counted.
+    """
+    index = {}
+    if salt is None:
+        return {m.get("id"): m for m in messages if m.get("id") is not None}
+    for m in messages:
+        mid = m.get("id")
+        if mid is None:
+            continue
+        ref = stable_corpus_ref(mid, salt)
+        prev = index.get(ref)
+        if prev is not None and prev.get("id") != mid:
+            raise SafeIOError(
+                f"salted-ref collision: corpus ids {prev.get('id')} and {mid} hash "
+                f"to the same ref. Rebuild with a longer ref length rather than "
+                f"letting two authors count as one."
+            )
+        index[ref] = m
+    return index
+
+
+def aggregate(curation: dict, messages: list[dict], min_authors: int, salt=None):
+    by_id = corpus_index(messages, salt)
 
     published, suppressed = [], []
     for claim in curation.get("claims", []):
@@ -335,6 +402,12 @@ def main(argv=None):
     ap.add_argument("--allowed-root", default=".")
     ap.add_argument("--min-authors", type=int, default=2,
                     help="k-anonymity floor: drop claims backed by fewer distinct people")
+    ap.add_argument("--salt-file", default=None,
+                    help="salt used to resolve SALTED supporting_ids ('m_<hex>'). "
+                         "Required when the curation carries refs instead of raw "
+                         "ids; must be the salt they were minted with "
+                         "(maintainer corpus: user/anon/.anon_salt). Never created "
+                         "here — a fresh salt would resolve nothing.")
     ap.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES)
     ap.add_argument("--max-depth", type=int, default=DEFAULT_MAX_DEPTH)
     args = ap.parse_args(argv)
@@ -350,8 +423,29 @@ def main(argv=None):
         if not isinstance(curation, dict) or "claims" not in curation:
             raise SafeIOError("Curation file must be an object with a 'claims' array.")
 
+        # Which form do the explicit supports take, and does that match what we
+        # were handed? Both mismatches resolve to ZERO supporters — bands collapse
+        # and claims silently vanish under k-anonymity — so both are hard errors.
+        mode = supporting_ids_mode(curation)
+        salt = load_salt_readonly(args.salt_file) if args.salt_file else None
+        if mode == "hashed" and salt is None:
+            raise SafeIOError(
+                "curation's supporting_ids are salted refs ('m_<hex>') but no "
+                "--salt-file was given: they would resolve to nothing and every "
+                "claim resting on them would drop out under k-anonymity. Pass the "
+                "salt they were minted with (maintainer corpus: user/anon/.anon_salt)."
+            )
+        if mode == "raw" and salt is not None:
+            raise SafeIOError(
+                "curation's supporting_ids are RAW corpus ids while a --salt-file "
+                "was given. Raw ids must never reach a published curation file: "
+                "with the chat known, an id reconstructs the message and its "
+                "author. Hash them first (_private/hash_curation_ids.py), or drop "
+                "--salt-file to build a LOCAL digest over your own corpus."
+            )
+
         messages = load_slices(slice_paths, args.max_bytes, args.max_depth)
-        published, suppressed = aggregate(curation, messages, args.min_authors)
+        published, suppressed = aggregate(curation, messages, args.min_authors, salt)
         last_covered, coverage_warning = resolve_last_covered(curation, messages)
 
         # Provenance is computed for the maintainer report and stripped here, so
@@ -376,7 +470,8 @@ def main(argv=None):
     if coverage_warning:
         print(coverage_warning)
     print(f"messages={len(messages)} last_covered={last_covered} "
-          f"published={len(published)} suppressed(k-anon)={len(suppressed)}")
+          f"published={len(published)} suppressed(k-anon)={len(suppressed)} "
+          f"supports={mode}")
     for r in suppressed:
         print(f"  suppressed [{r.get('distinct_authors')} автор(ов)]: {r['statement'][:60]}...")
     print(report)

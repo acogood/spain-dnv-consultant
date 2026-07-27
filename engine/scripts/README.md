@@ -28,8 +28,9 @@ aggregated **digest** is ever publishable.
 | claims | `extract_claims.py` | pull tagged claims from `user/spec.md` for verification |
 
 `chat/_common.py` holds the shared guards (size + JSON-depth limits, output
-path-containment, salted pseudonyms). `config.example.json` holds the filter's
-keyword groups (copy to `config.json` for local edits).
+path-containment, salted pseudonyms and salted corpus refs).
+`config.example.json` holds the filter's keyword groups (copy to `config.json`
+for local edits).
 
 ## Quickstart (on your own exports — everything stays in `user/`)
 
@@ -40,12 +41,20 @@ python engine/scripts/chat/anonymize_chat.py user/merged.json user/anon.json --s
 python engine/scripts/chat/filter_chat.py user/anon.json user/filtered.json --allowed-root user
 python engine/scripts/chat/slice_by_topic.py user/filtered.json user/slices all --allowed-root user
 
-# build/refresh the publishable digest (see knowledge_base/practice/README.md)
-python engine/scripts/chat/build_digest.py --curation knowledge_base/practice/curation.json \
-    --slices user/anon.json --out-dir knowledge_base/practice --allowed-root . --min-authors 3
+# aggregate YOUR OWN curation into a digest (stays in user/ — nothing published)
+python engine/scripts/chat/build_digest.py --curation user/my-curation.json \
+    --slices user/anon.json --out-dir user/digest --allowed-root user --min-authors 3
 ```
 
 > Single-export users can skip `merge` and feed the export straight to `anonymize`.
+
+> **The shipped `knowledge_base/practice/` digest is not yours to rebuild.** Its
+> `curation.json` references supporting messages as SALTED REFS (`m_<hex>`) rather
+> than raw message ids — a raw id plus a known chat reconstructs the message and
+> its author, so it has no business in a published file. Resolving those refs
+> needs the maintainer's salt, which is not shipped, and `build_digest.py` refuses
+> the job rather than silently resolving them to nothing. Your own curation uses
+> plain ids and needs no salt; the maintainer path is `_private/DIGEST_REBUILD.md`.
 
 ## Safety properties (why these are safe on untrusted input)
 

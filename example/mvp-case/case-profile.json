@@ -1,5 +1,5 @@
 {
-  "_comment": "СИНТЕТИЧЕСКИЙ профиль (полностью вымышленные значения) для примера. Архетип v1: autónomo/контрактор + cónyuge, renovación. НИ ОДНОГО реального значения. case.resolution_notified заполнен намеренно: он включает формы этапа TIE (EX-17 / EX-17-familiar / tasa-790-012) через applies_when в реестре, чтобы пример показывал и заливку EX-17, и честный гейт обязательности. Уберите этот ключ — и те же формы станут неприменимыми, а их [ТРЕБУЕТСЯ] перестанут быть MISSING. Поля ветки tie (имена родителей, провинция отделения) в живом кейсе добирает /dnv-tie после одобрения.",
+  "_comment": "СИНТЕТИЧЕСКИЙ профиль (полностью вымышленные значения) для примера. Архетип v1: autónomo/контрактор + cónyuge, renovación. НИ ОДНОГО реального значения. case.resolution_notified заполнен намеренно: он включает формы этапа TIE (EX-17 / EX-17-familiar / tasa-790-012 / tasa-790-012-familiar) через applies_when в реестре, чтобы пример показывал и заливку EX-17, и честный гейт обязательности. Уберите этот ключ — и те же формы станут неприменимыми, а их [ТРЕБУЕТСЯ] перестанут быть MISSING. Поля ветки tie (имена родителей, провинция отделения) в живом кейсе добирает /dnv-tie после одобрения. family.full_name — производное (derived), как и applicant.full_name: без него оба бланка tasa на члена семьи вышли бы с [ТРЕБУЕТСЯ] в поле плательщика.",
   "case": {
     "process_type": "renovacion",
     "archetype_ok": true,
@@ -27,6 +27,12 @@
     "tie_expiry": "2026-08-01",
     "first_approval_date": "2023-08-01",
     "certificado_digital": true,
+    "qualification_basis": "≥3 лет опыта в аналогичных функциях (art. 74 bis); подтверждается CV + рекомендательные письма заказчиков",
+    "seguro_enfermedad": "Испанский частный полис, страховщик из реестра DGSFP, без копейов и периодов ожидания",
+    "countries_last_2y": "Rusia, España",
+    "entry_date": null,
+    "entry_stamp": null,
+    "declaracion_entrada": null,
     "father_name": "Piotr Testovenko",
     "mother_name": "Olga Testovenko",
     "comisaria_provincia": "Madrid"
@@ -48,6 +54,7 @@
     "present": true,
     "first_name": "Maria",
     "last_name": "Testovenko",
+    "full_name": "Maria Testovenko",
     "sexo": "Mujer",
     "birth_date": "1992-03-20",
     "birth_place": "Vetrograd",
@@ -65,6 +72,8 @@
     "marriage_date": "2026-01-10",
     "marriage_place": "Consulado, Madrid",
     "titular_regage": null,
+    "seguro_enfermedad": "Свой испанский частный полис (покрытие титуляра на cónyuge не переносится)",
+    "countries_last_2y": "Rusia, España",
     "father_name": "Andrei Primerov",
     "mother_name": "Elena Primerova"
   },

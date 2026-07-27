@@ -12,7 +12,7 @@
   "properties": {
     "case.process_type": {"type": "enum", "domain": "process_type", "required": true, "branch": "both", "label": "Первичная подача или продление?"},
     "case.archetype_ok": {"type": "bool", "required": true, "branch": "both", "label": "Кейс подходит под архетип v1 (autónomo/контрактор; cónyuge опционально)?"},
-    "case.resolution_notified": {"type": "date", "required": false, "branch": "tie", "label": "Дата уведомления о резолюции (заполняет /dnv-tie). ГЕЙТ ЭТАПА: пока пусто — формы EX-17 / EX-17-familiar / tasa-790-012 в реестре не применяются (applies_when), и field_qa.py не требует их обязательные поля."},
+    "case.resolution_notified": {"type": "date", "required": false, "branch": "tie", "label": "Дата уведомления о резолюции (заполняет /dnv-tie). ГЕЙТ ЭТАПА: пока пусто — формы EX-17 / EX-17-familiar / tasa-790-012 / tasa-790-012-familiar в реестре не применяются (applies_when), и field_qa.py не требует их обязательные поля."},
 
     "applicant.first_name": {"type": "text", "required": true, "branch": "both", "label": "Имя (как в паспорте)"},
     "applicant.last_name": {"type": "text", "required": true, "branch": "both", "label": "Первая фамилия"},
@@ -24,7 +24,7 @@
     "applicant.birth_country": {"type": "text", "required": true, "branch": "both", "label": "Страна рождения"},
     "applicant.nationality": {"type": "text", "required": true, "branch": "both", "label": "Гражданство"},
     "applicant.marital_status": {"type": "enum", "domain": "estado_civil", "required": true, "branch": "both", "label": "Семейное положение"},
-    "applicant.nie": {"type": "text", "required": false, "branch": "both", "label": "NIE (обязателен при renovación; на первичной подаче может ОТСУТСТВОВАТЬ — art. 76.5 Ley 14/2013 это прямо предусматривает, тогда подаёт представитель)"},
+    "applicant.nie": {"type": "text", "required": false, "branch": "both", "label": "NIE (обязателен при renovación; на первичной подаче может ОТСУТСТВОВАТЬ — требования предъявить его норма не ставит, тогда подаёт представитель со своей подписью: art. 5 Ley 39/2015)"},
     "applicant.files_via_representative": {"type": "text", "required": false, "branch": "both", "label": "Кто подаёт, если нет certificado digital: представитель + чем оформлено (нотариальная/консульская доверенность, простая доверенность в комплекте, REA)"},
     "applicant.passport_number": {"type": "text", "required": true, "branch": "both", "label": "Номер паспорта"},
     "applicant.passport_expiry": {"type": "date", "required": true, "branch": "both", "label": "Паспорт действителен до"},
@@ -36,6 +36,15 @@
     "applicant.tie_expiry": {"type": "date", "required": false, "branch": "renovacion", "label": "Дата истечения TIE (для продления)"},
     "applicant.first_approval_date": {"type": "date", "required": false, "branch": "renovacion", "label": "Дата первичного одобрения"},
     "applicant.certificado_digital": {"type": "bool", "required": true, "branch": "both", "label": "Есть certificado digital?"},
+
+    "applicant.qualification_basis": {"type": "text", "required": true, "branch": "both", "label": "Квалификация — ОСНОВАНИЕ по art. 74 bis: диплом вуза/высшей школы, профессиональная квалификация ИЛИ ≥3 лет профильного опыта. Записать, чем именно закрываете и каким документом (диплом+апостиль / CV+рекомендательные письма)"},
+    "applicant.seguro_enfermedad": {"type": "text", "required": true, "branch": "both", "label": "Медстраховка по art. 62.3.e — какая: испанская частная (полное покрытие, без копейов и периодов ожидания) ИЛИ покрытие через котизацию в Seguridad Social. Разбор — norms/documentacion-y-forma.md"},
+    "applicant.countries_last_2y": {"type": "text", "required": true, "branch": "both", "label": "Страны проживания за последние 2 года — ЧЕРЕЗ ЗАПЯТУЮ, одной строкой (не списком). По art. 62.3.c справка о несудимости нужна из каждой. Внимание: 2 года — это про справки; declaración responsable об отсутствии судимостей охватывает 5 лет, это РАЗНЫЕ документы"},
+
+    "applicant.entry_date": {"type": "date", "required": false, "branch": "initial", "label": "Дата въезда в Испанию/Шенген (если уже въехали) — от неё считается окно законного пребывания"},
+    "applicant.entry_stamp": {"type": "text", "required": false, "branch": "initial", "label": "Штамп о въезде: есть/нет и где (паспорт, какая граница). Нет штампа при въезде из другой шенгенской страны — обычная ситуация, тогда нужна declaración de entrada"},
+    "applicant.declaracion_entrada": {"type": "text", "required": false, "branch": "initial", "label": "Declaración de entrada (art. 12 LOEX): подана/нет, дата и где. Требуется при въезде через другое государство Шенгена без штампа"},
+
     "applicant.father_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя отца (поле EX-17)"},
     "applicant.mother_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя матери (поле EX-17)"},
     "applicant.comisaria_provincia": {"type": "text", "required": false, "branch": "tie", "label": "Провинция/отделение, куда подаётся EX-17 (DIRIGIDA A)"},
@@ -55,6 +64,7 @@
     "family.present": {"type": "bool", "required": true, "branch": "both", "label": "Подаётся ли член семьи?"},
     "family.first_name": {"type": "text", "required": false, "branch": "family", "label": "Имя члена семьи"},
     "family.last_name": {"type": "text", "required": false, "branch": "family", "label": "Фамилия члена семьи"},
+    "family.full_name": {"type": "text", "required": false, "derived": true, "branch": "family", "label": "ФИО члена семьи (из имени+фамилии). ВЫВОДИТСЯ так же, как applicant.full_name — второй фамилии члена семьи в схеме нет, и выдумывать её нельзя. Нужно для бланков tasa: плательщик там — сам заявитель, а не титуляр"},
     "family.sexo": {"type": "enum", "domain": "sexo", "required": false, "branch": "family", "label": "Пол члена семьи"},
     "family.birth_date": {"type": "date", "required": false, "branch": "family", "label": "Дата рождения члена семьи"},
     "family.nationality": {"type": "text", "required": false, "branch": "family", "label": "Гражданство члена семьи"},
@@ -72,6 +82,8 @@
     "family.passport_expiry": {"type": "date", "required": false, "branch": "family", "label": "Паспорт члена семьи действителен до"},
     "family.email": {"type": "text", "required": false, "branch": "family", "label": "Email члена семьи"},
     "family.phone": {"type": "text", "required": false, "branch": "family", "label": "Телефон члена семьи"},
+    "family.seguro_enfermedad": {"type": "text", "required": false, "branch": "family", "label": "Медстраховка члена семьи — art. 62.4 распространяет требования 62.3 и на него. СВОЙ полис: покрытие титуляра через котизацию на cónyuge не переносится"},
+    "family.countries_last_2y": {"type": "text", "required": false, "branch": "family", "label": "Страны проживания члена семьи за 2 года — через запятую. Справки о несудимости нужны свои, из его стран (могут отличаться от стран титуляра)"},
     "family.father_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя отца члена семьи (поле EX-17)"},
     "family.mother_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя матери члена семьи (поле EX-17)"},
 

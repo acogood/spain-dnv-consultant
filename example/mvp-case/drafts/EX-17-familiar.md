@@ -7,7 +7,7 @@
 | Primer apellido | Testovenko | free | alta |
 | Nombre | Maria | free | alta |
 | Sexo | Mujer | sexo | alta |
-| Fecha de nacimiento | 1992-03-20 | free | alta |
+| Fecha de nacimiento | 20/03/1992 | free | alta |
 | Lugar de nacimiento | Vetrograd | free | media |
 | País de nacimiento | Rusia | free | media |
 | Nombre del padre | Andrei Primerov | free | alta |

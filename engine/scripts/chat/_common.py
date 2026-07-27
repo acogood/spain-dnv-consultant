@@ -161,8 +161,20 @@ def stable_corpus_ref(message_id, salt: bytes, length: int = 12) -> str:
     maintainer can resolve against their own corpus, and proof that a claim rests
     on named messages rather than on a broad regex (the third case of the band
     contract) — while publishing nothing that points back at a person. The salt
-    lives in `user/anon/.anon_salt`, is gitignored, and is never shipped, so the
-    ref is not reversible by a reader.
+    is gitignored and never shipped, so the ref is not reversible by a reader.
+
+    WHERE THE SALT LIVES — the rule, not a fixed path. `anonymize_chat.py`
+    defaults `--salt-file` to `<dirname(output)>/.anon_salt`, so the location
+    follows whatever output path you anonymized to: `user/anon.json` puts it in
+    `user/.anon_salt`, `user/anon/corpus.json` in `user/anon/.anon_salt`. Both
+    appear in the docs because they are different corpora, not a contradiction —
+    the maintainer's corpus lives under `user/anon/`, the quick-start in
+    `engine/scripts/README.md` writes to `user/anon.json`.
+
+    Consequence: for anything that must resolve against an EXISTING corpus
+    (`build_digest.py --salt-file`, `_private/hash_curation_ids.py`) always pass
+    `--salt-file` EXPLICITLY. Relying on the default silently mints a fresh salt
+    against the wrong directory, and a fresh salt resolves nothing.
 
     Domain-separated from stable_pseudonym() by the `mid:` prefix on the HMAC
     input: an author identity and a message id can never collide into the same

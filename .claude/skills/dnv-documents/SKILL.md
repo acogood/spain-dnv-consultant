@@ -53,14 +53,29 @@ python engine/scripts/fill_forms.py user/case-profile.json knowledge_base/forms/
 ## Шаг 2. Текстовые документы из шаблонов (memoria, escritos, queja)
 
 Для свободнотекстовых документов используй `templates/`:
-- **`templates/memoria.template.md`** — memoria descriptiva, повествовательная
-  часть пакета. Формы дают поля, memoria — связный рассказ: основание,
-  описание деятельности, подтверждение отношений, доход и его соотношение с
-  порогом, связь с Испанией, перечень приложений. Наполняется из
-  `user/case-profile.json` **и `user/spec.md`** (юридические утверждения — только
-  оттуда и из `knowledge_base/norms/`, не из общих знаний).
+- **`templates/memoria.template.md`** → пиши в
+  **`user/drafts/memoria-descriptiva.md`**.
+
+  > ⚠️ **НЕ в `memoria.md`.** Шаг 1 уже создал `user/drafts/memoria.md` — это
+  > лист полей формы `memoria` из реестра, и запись повествовательного текста по
+  > тому же имени **затрёт его**. Два разных документа с похожим названием:
+  > `memoria.md` — таблица «поле → значение» (генерируется), `memoria-descriptiva.md`
+  > — связный текст (пишешь ты).
+
+  Memoria descriptiva — повествовательная часть пакета. Формы дают поля,
+  memoria — связный рассказ: основание, описание деятельности, подтверждение
+  отношений, доход и его соотношение с порогом, связь с Испанией, перечень
+  приложений. Наполняется из `user/case-profile.json` **и `user/spec.md`**
+  (юридические утверждения — только оттуда и из `knowledge_base/norms/`, не из
+  общих знаний).
   Условный семейный блок (секция 6) включается только при `family.present=true`
   — иначе секцию **удалить**, а не оставлять пустой.
+
+  > **Язык memoria — испанский.** `art. 15 Ley 39/2015`: язык процедуры —
+  > castellano; Instrucción **Octava ¶ 1** требует документы на испанском (или с
+  > traducción jurada). Memoria — документ, который вы пишете сами, значит писать
+  > его надо сразу по-испански, а не переводить потом. Русский черновик держите
+  > рядом для себя, в пакет он не идёт.
 - `templates/spec_renewal.template.md` (если нужен ориентир spec) — обычно
   заполняется `dnv-synthesis`.
 - `templates/escrito_*.template.md`, `templates/queja_defensor.template.md` —

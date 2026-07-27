@@ -48,6 +48,16 @@ python engine/scripts/chat/build_digest.py --curation user/my-curation.json \
 
 > Single-export users can skip `merge` and feed the export straight to `anonymize`.
 
+> **Where `.anon_salt` ends up — the rule.** `anonymize_chat.py` defaults
+> `--salt-file` to `<dirname(output)>/.anon_salt`. The line above writes to
+> `user/anon.json`, so the salt lands in `user/.anon_salt`; a corpus anonymized
+> to `user/anon/corpus.json` puts it in `user/anon/.anon_salt` instead. Both
+> paths appear across the docs because they are **different corpora**, not a
+> contradiction. **Always pass `--salt-file` explicitly** for anything that must
+> resolve against an existing corpus — the default would quietly mint a *fresh*
+> salt in the wrong directory, and a fresh salt resolves nothing. The salt is
+> gitignored: it is what makes published refs non-reversible.
+
 > **The shipped `knowledge_base/practice/` digest is not yours to rebuild.** Its
 > `curation.json` references supporting messages as SALTED REFS (`m_<hex>`) rather
 > than raw message ids — a raw id plus a known chat reconstructs the message and

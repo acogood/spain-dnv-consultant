@@ -7,7 +7,7 @@
 | Primer apellido | Testovenko | free | alta |
 | Nombre | Maria | free | alta |
 | Sexo | Mujer | sexo | alta |
-| Fecha de nacimiento | 1992-03-20 | free | alta |
+| Fecha de nacimiento | 20/03/1992 | free | alta |
 | Nacionalidad | Rusa | free | alta |
 | N.I.E. | X9999998T | free | alta |
 | Nº pasaporte | 990000222 | free | alta |

@@ -8,7 +8,7 @@
 | Segundo apellido | [ТРЕБУЕТСЯ: Segundo apellido] | free | media |
 | Nombre | Ivan | free | alta |
 | Sexo | Hombre | sexo | alta |
-| Fecha de nacimiento | 1990-01-15 | free | alta |
+| Fecha de nacimiento | 15/01/1990 | free | alta |
 | Lugar de nacimiento | Novgrad | free | media |
 | País de nacimiento | Rusia | free | media |
 | Nacionalidad | Rusa | free | alta |
@@ -16,7 +16,7 @@
 | N.I.E. | X9999999R | free | alta |
 | Nº pasaporte | 990000111 | free | alta |
 | Domicilio en España | Calle Ejemplo, 1, 28001 Madrid | free | alta |
-| Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL | teletrabajador de carácter internacional | fixed_checked | alta |
+| Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL | ☑ отметить — teletrabajador de carácter internacional | fixed_checked | alta |
 | INICIAL / RENOVADA | RENOVADA | tipo_solicitud | alta |
 | Correo a efectos de notificaciones | ivan.test@example.com | free | media |
 | Teléfono | 600000000 | free | baja |

@@ -1,6 +1,6 @@
 {
   "as_of": "2026-07",
-  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge). MI-T/MI-F/790-038/memoria — на подачу (/dnv-documents); EX-17 и 790-012 — после concesión, на сдачу отпечатков (/dnv-tie). Код авторизационной tasa — 038, а НЕ 052: 038 платится там, где трамит резолвит UGE-CE (Ley 14/2013), 052 — в общей экстранхерии через Oficinas de Extranjería, и в этом пайплайне 052 легитимна только для autorización de regreso. Карта кодов — knowledge_base/sources/primary/tasas-790.md.",
+  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge). MI-T/MI-F/790-038(+familiar)/memoria — на подачу (/dnv-documents); EX-17(+familiar) и 790-012(+familiar) — после concesión, на сдачу отпечатков (/dnv-tie). applies_to — ДОКУМЕНТИРУЮЩЕЕ поле (код его не читает): titular | familiar. Значения «ambos» больше нет: tasa платится отдельным бланком на каждого заявителя, поэтому у 790-038 и 790-012 есть парные *-familiar формы, а сами они относятся только к титуляру. Код авторизационной tasa — 038, а НЕ 052: 038 платится там, где трамит резолвит UGE-CE (Ley 14/2013), 052 — в общей экстранхерии через Oficinas de Extranjería, и в этом пайплайне 052 легитимна только для autorización de regreso. Карта кодов — knowledge_base/sources/primary/tasas-790.md.",
   "applies_when_note": "applies_when — условие ПРИМЕНИМОСТИ формы к этому кейсу в этом его состоянии: имя ключа профиля (или список ключей, объединяемых по И). Форма применяется, когда все перечисленные ключи непусты; форма БЕЗ applies_when применяется всегда. Состояние бывает двух родов, и ключ не различает их намеренно: ЭТАП (case.resolution_notified — формы TIE до резолюции не применяются, но применятся позже) и СОСТАВ кейса (family.present — у соло-заявителя семейные формы не применятся НИКОГДА). Зачем: criticality статична, а обязательность поля зависит от состояния кейса. Раньше формы этапа TIE занижали criticality до media, чтобы до резолюции не сыпать ложными MISSING, — и этим МАСКИРОВАЛИ настоящие пропуски (пустой паспорт члена семьи давал OK). Теперь criticality честная, а состояние гейтит applies_when: форма неприменима → пустое поле с [ТРЕБУЕТСЯ] это OK; форма применима → alta + пусто это MISSING. Проверка значений (домены, галлюцинации, несовпадение с профилем) работает в ОБОИХ случаях: неприменимость снимает гейт обязательности, но не корректности. Читают: engine/scripts/field_qa.py, engine/scripts/fill_forms.py.",
   "archetype": "autonomo_contractor + conyuge",
   "controlled_vocabularies": {
@@ -23,7 +23,7 @@
         {"name": "País de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_country", "criticality": "media", "common_errors": "", "origin": "generic"},
         {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "applicant.nationality", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "Estado civil", "type": "enum", "domain": "estado_civil", "profile_key": "applicant.marital_status", "criticality": "media", "common_errors": "должно соответствовать семейному статусу (Casado/a при cónyuge)", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка. НА ПЕРВИЧНОЙ ПОДАЧЕ NIE может законно отсутствовать (art. 76.5 Ley 14/2013 прямо предусматривает заявителя без NIE) — тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, а НЕ ошибка заполнения; подаёт представитель, см. norms/solicitud-inicial.md §5. Выдумывать NIE нельзя ни в каком случае.", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка. НА ПЕРВИЧНОЙ ПОДАЧЕ NIE может законно отсутствовать: требования предъявить его норма не устанавливает, а подписать подачу может представитель — art. 5 Ley 39/2015, представительство доказывается cualquier medio válido en Derecho. Тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, а НЕ ошибка заполнения; см. norms/solicitud-inicial.md §5. Выдумывать NIE нельзя ни в каком случае.", "origin": "generic"},
         {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "applicant.passport_number", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "Domicilio en España", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "alta", "common_errors": "совпадение с empadronamiento", "origin": "generic"},
         {"name": "Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL", "type": "checkbox", "domain": "fixed_checked", "profile_key": "applicant.permit_type", "criticality": "alta", "common_errors": "должна стоять именно эта галочка", "origin": "case_derived"},
@@ -43,7 +43,7 @@
         {"name": "Sexo", "type": "enum", "domain": "sexo", "profile_key": "family.sexo", "criticality": "alta", "common_errors": "не оставлять пустым; Hombre/Mujer", "origin": "generic"},
         {"name": "Fecha de nacimiento", "type": "date", "domain": "free", "profile_key": "family.birth_date", "criticality": "alta", "common_errors": "DD/MM/AAAA", "origin": "generic"},
         {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "family.nationality", "criticality": "alta", "common_errors": "", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]. НА ПЕРВИЧНОЙ ПОДАЧЕ NIE может законно отсутствовать и у члена семьи — тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, а НЕ ошибка заполнения (art. 76.5 Ley 14/2013; разбор — norms/solicitud-inicial.md §5). Выдумывать NIE нельзя ни в каком случае.", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]. НА ПЕРВИЧНОЙ ПОДАЧЕ NIE может законно отсутствовать и у члена семьи — тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, а НЕ ошибка заполнения (подача через представителя — art. 5 Ley 39/2015; разбор — norms/solicitud-inicial.md §5). Выдумывать NIE нельзя ни в каком случае.", "origin": "generic"},
         {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "family.passport_number", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "Parentesco con el titular", "type": "enum", "domain": "parentesco", "profile_key": "family.relationship", "criticality": "alta", "common_errors": "Cónyuge vs Pareja — должно соответствовать актуальному статусу", "origin": "case_derived"},
         {"name": "Nº de registro de la solicitud del titular", "type": "text", "domain": "free", "profile_key": "family.titular_regage", "criticality": "alta", "common_errors": "связка дел: вписать REGAGE titular после его подачи; НЕ выдумывать", "origin": "case_derived"},
@@ -51,30 +51,57 @@
       ]
     },
     "tasa-790-038": {
-      "title": "Tasa Modelo 790 código 038 — autorización por movilidad internacional (Ley 14/2013), epígrafe según tipo",
-      "applies_to": "ambos",
+      "title": "Tasa Modelo 790 código 038 — autorización por movilidad internacional (Ley 14/2013), epígrafe según tipo — ТИТУЛЯР",
+      "applies_to": "titular",
+      "note": "Sujeto pasivo — «los solicitantes de cada autorización»: пошлина платится ОТДЕЛЬНЫМ бланком на КАЖДОГО заявителя, а не один раз на дело. Поэтому у формы есть парная tasa-790-038-familiar, гейтованная family.present. Раньше реестр этого выразить не мог (одна форма с ключами applicant.*), fill_forms второй бланк не создавал, field_qa не помечал его пропущенным — и человек приходил с недоплатой.",
       "fields": [
-        {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "имя плательщика = заявитель", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "на первичной подаче NIE может законно отсутствовать — пусто + [ТРЕБУЕТСЯ] это состояние кейса, не ошибка (art. 76.5 Ley 14/2013)", "origin": "generic"},
-        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_038", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую. Код 038 (НЕ 052): авторизацию по Ley 14/2013 резолвит UGE-CE", "origin": "generic"},
+        {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "имя плательщика = САМ заявитель, а не тот, кто фактически платит картой", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "на первичной подаче NIE может законно отсутствовать — пусто + [ТРЕБУЕТСЯ] это состояние кейса, не ошибка (подача через представителя — art. 5 Ley 39/2015)", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_038", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую. Код 038 (НЕ 052): авторизацию по Ley 14/2013 резолвит UGE-CE. СВЕРЬТЕ СТРОКУ ОТДЕЛЬНО ДЛЯ КАЖДОГО ЗАЯВИТЕЛЯ: бланк на титуляра и бланк на члена семьи заполняются каждый сам по себе, и совпадение эпиграфа надо подтвердить, а не предположить", "origin": "generic"},
         {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_038", "criticality": "media", "common_errors": "сумма tasa меняется ежегодно — проверить актуальную", "origin": "generic"}
       ]
     },
-    "tasa-790-012": {
-      "title": "Tasa Modelo 790 código 012 — expedición de TIE (tras concesión)",
-      "applies_to": "ambos",
-      "applies_when": "case.resolution_notified",
+    "tasa-790-038-familiar": {
+      "title": "Tasa Modelo 790 código 038 — ЧЛЕН СЕМЬИ (свой бланк, своя оплата)",
+      "applies_to": "familiar",
+      "applies_when": "family.present",
+      "note": "Гейт по СОСТАВУ кейса, как у MI-F: соло-заявителю эта форма не нужна никогда. Отдельный бланк — не дублирование: sujeto pasivo tasa — «los solicitantes de cada autorización», то есть каждый заявитель платит за СВОЮ авторизацию. Эпиграф и сумму переиспользуем из tasa.* титуляра — первичный источник говорит «на каждого заявителя», и это про ЧИСЛО ПЛАТЕЖЕЙ, а не про разные строки. В практике сообщества встречается утверждение, что на renovación строки у титуляра и члена семьи разные, но это [практика — Telegram] и вдобавок вопрос, а не ответ: апгрейд практики до нормы запрещён. Митигация — предупреждение в common_errors эпиграфа (эпиграф всегда пуст -> всегда MISSING -> подсказка доедет до пользователя гарантированно). Решение обратимо без правки кода: развести на свои ключи tasa.*_familiar, если норма подтвердится.",
       "fields": [
-        {"name": "Apellidos y nombre", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "family.full_name", "criticality": "alta", "common_errors": "имя плательщика = ЧЛЕН СЕМЬИ, а НЕ титуляр. Частая ошибка: оба бланка заполняют на титуляра, и один платёж не засчитывается", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "alta", "common_errors": "NIE члена семьи; на первичной подаче может законно отсутствовать — тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, не ошибка", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_038", "criticality": "alta", "common_errors": "СВЕРЬТЕ СТРОКУ ОТДЕЛЬНО ДЛЯ КАЖДОГО ЗАЯВИТЕЛЯ. Реестр подставляет сюда тот же эпиграф, что и титуляру, потому что дословный источник различия не устанавливает; если на бланке видите, что для члена семьи строка своя — берите её, а не подставленную", "origin": "generic"},
+        {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_038", "criticality": "media", "common_errors": "сумма меняется ежегодно — проверить актуальную. Это ВТОРОЙ платёж, а не половина общего", "origin": "generic"}
+      ]
+    },
+    "tasa-790-012": {
+      "title": "Tasa Modelo 790 código 012 — expedición de TIE (tras concesión) — ТИТУЛЯР",
+      "applies_to": "titular",
+      "applies_when": "case.resolution_notified",
+      "note": "Как и 790-038: своя tasa на каждого заявителя. Карту TIE выдают каждому персонально, значит и пошлина за выдачу — на каждого. Парная форма — tasa-790-012-familiar.",
+      "fields": [
+        {"name": "Apellidos y nombre", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "плательщик = тот, на кого выдаётся карта", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "к этому этапу NIE уже присвоен резолюцией — здесь пусто это настоящий пропуск, а не состояние кейса", "origin": "generic"},
         {"name": "Domicilio", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "media", "common_errors": "практика расходится: адрес заявки vs адрес падрона — сверить с отделением", "origin": "generic"},
-        {"name": "Epígrafe / autoliquidación (TIE)", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_012", "criticality": "alta", "common_errors": "RENOVACIÓN и primera concesión — РАЗНЫЕ строки с разными суммами; подставленная формой сумма — способ проверить, что выбрана нужная строка", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación (TIE)", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_012", "criticality": "alta", "common_errors": "RENOVACIÓN и primera concesión — РАЗНЫЕ строки с разными суммами; подставленная формой сумма — способ проверить, что выбрана нужная строка. СВЕРЬТЕ СТРОКУ ОТДЕЛЬНО ДЛЯ КАЖДОГО ЗАЯВИТЕЛЯ", "origin": "generic"},
         {"name": "Importe (TIE)", "type": "number", "domain": "free", "profile_key": "tasa.importe_012", "criticality": "media", "common_errors": "сумма меняется — проверить вживую", "origin": "generic"}
+      ]
+    },
+    "tasa-790-012-familiar": {
+      "title": "Tasa Modelo 790 código 012 — ЧЛЕН СЕМЬИ (свой бланк на выдачу его TIE)",
+      "applies_to": "familiar",
+      "applies_when": ["case.resolution_notified", "family.present"],
+      "note": "Гейт двойной, порядок ключей значим: сначала ЭТАП (case.resolution_notified — до резолюции формы нет), потом СОСТАВ (family.present — у соло-заявителя не будет никогда). gate_explanations печатает объяснения в порядке реестра, и «этап» должен идти раньше «состава» — так же, как у EX-17-familiar. Эпиграф/сумма переиспользуются из tasa.*_012 титуляра по той же причине, что и в 790-038-familiar; см. её note.",
+      "fields": [
+        {"name": "Apellidos y nombre", "type": "text", "domain": "free", "profile_key": "family.full_name", "criticality": "alta", "common_errors": "плательщик = ЧЛЕН СЕМЬИ: карту выдают ему, и бланк на титуляра здесь не засчитается", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "family.nie", "criticality": "alta", "common_errors": "NIE члена семьи, присвоенный его резолюцией — не NIE титуляра", "origin": "generic"},
+        {"name": "Domicilio", "type": "text", "domain": "free", "profile_key": "family.address_full", "criticality": "media", "common_errors": "обычно совпадает с адресом титулара; практика по адресу заявки vs падрона расходится — сверить с отделением", "origin": "generic"},
+        {"name": "Epígrafe / autoliquidación (TIE)", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_012", "criticality": "alta", "common_errors": "СВЕРЬТЕ СТРОКУ ОТДЕЛЬНО ДЛЯ КАЖДОГО ЗАЯВИТЕЛЯ. Реестр подставляет ту же строку, что и титуляру; если на бланке для члена семьи строка своя — берите её", "origin": "generic"},
+        {"name": "Importe (TIE)", "type": "number", "domain": "free", "profile_key": "tasa.importe_012", "criticality": "media", "common_errors": "второй платёж, не половина общего — сумма меняется, проверить вживую", "origin": "generic"}
       ]
     },
     "EX-17": {
       "title": "Solicitud de Tarjeta de Identidad de Extranjero (TIE) — заполняется ПОСЛЕ concesión, для сдачи отпечатков",
-      "applies_to": "ambos",
+      "applies_to": "titular",
       "applies_when": "case.resolution_notified",
       "note": "Практика по отделениям расходится: часть берёт EX-17, часть — MI-TIE. См. ../norms/tie-huellas.md — движок не выбирает за пользователя.",
       "fields": [

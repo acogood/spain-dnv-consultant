@@ -8,9 +8,25 @@
 > `case_derived` = поле выведено из архетипа v1 (autónomo/контрактор + cónyuge);
 > `generic` = применимо ко всем кейсам.
 
-**Когда какая форма.** MI-T/MI-F, tasa 790-038 и memoria — на подачу
-(`/dnv-documents`). EX-17 и tasa 790-012 — уже **после** одобрения, на сдачу
-отпечатков (`/dnv-tie`): до concesión заполнять их нечем и незачем.
+**Когда какая форма.** MI-T/MI-F, tasa 790-038 (+ `-familiar`) и memoria — на
+подачу (`/dnv-documents`). EX-17 (+ `-familiar`) и tasa 790-012 (+ `-familiar`) —
+уже **после** одобрения, на сдачу отпечатков (`/dnv-tie`): до concesión заполнять
+их нечем и незачем.
+
+**Рендер значения задаёт `type` поля.** Реестр не только называет `profile_key`,
+но и говорит, **как** значение попадает в ячейку листа
+(`engine/scripts/_fieldfmt.py`, одна общая функция для генератора и для
+ре-деривации field-QA):
+
+| `type` | Что делает | Пример |
+|---|---|---|
+| `date` | `AAAA-MM-DD` → **`DD/MM/AAAA`** (формат испанского бланка); нераспознанное проходит насквозь, поэтому повторный прогон ничего не сдвигает | `1990-01-15` → `15/01/1990` |
+| `checkbox` + `domain: fixed_checked` | отметка **плюс** значение профиля | `☑ отметить — teletrabajador de carácter internacional` |
+| `text`, `enum`, `number` | как есть (`number` в v1 намеренно не форматируется) | `X9999999R` |
+
+⚠️ Правило завязано на **поле**, а не на `profile_key`: один ключ в разных формах
+может рендериться по-разному. `applicant.permit_type` — ровно такой случай: в
+`MI-T` это чекбокс, в `memoria` — обычный текст.
 
 ## `applies_when` — состояние кейса как машиночитаемое условие
 
@@ -19,7 +35,9 @@
 | `EX-17` | `case.resolution_notified` | этап |
 | `tasa-790-012` | `case.resolution_notified` | этап |
 | `MI-F` | `family.present` | **состав** |
+| `tasa-790-038-familiar` | `family.present` | **состав** |
 | `EX-17-familiar` | `case.resolution_notified` + `family.present` | этап + состав |
+| `tasa-790-012-familiar` | `case.resolution_notified` + `family.present` | этап + состав |
 | остальные | нет — применяются всегда | — |
 
 Форма применяется, когда **все** её ключи непусты (для булевых — истинны:
@@ -33,12 +51,30 @@
 
 > **MI-F гейтится с 2026-07.** До этого семейная форма подачи была единственной,
 > у которой условия не было, — и профиль без блока `family` давал
-> `OK=62 MISSING=11`, где **десять** MISSING это все поля MI-F. Пакет соло-кейса
-> читался как наполовину незаполненный. Этот же документ уже утверждал, что
-> «„семьи нет“ выражено через `applies_when`» (см. ниже, MI-F/EX-17-familiar) —
-> утверждение опережало реестр на одну форму. Теперь совпадает:
-> `OK=72 MISSING=1`, и единственный оставшийся MISSING — эпиграф tasa, который
-> ищется вживую на дату подачи.
+> **десять** ложных MISSING (все поля MI-F). Пакет соло-кейса читался как
+> наполовину незаполненный. Этот же документ уже утверждал, что «„семьи нет“
+> выражено через `applies_when`» (см. ниже, MI-F/EX-17-familiar) — утверждение
+> опережало реестр на одну форму. Теперь совпадает.
+
+> **Своя tasa на каждого заявителя — с 2026-07.** Тот же класс дефекта, ещё на
+> двух формах. Sujeto pasivo пошлины — `los solicitantes de **cada**
+> autorización`: 790-038 платится **отдельным бланком на каждого** заявителя,
+> включая cónyuge, и то же на этапе TIE для 790-012. Реестр этого выразить не
+> мог — одна форма с ключами `applicant.*`, множественности нет, — поэтому
+> `fill_forms` второй бланк не создавал, `field_qa` не помечал его пропущенным, и
+> человек приходил **с недоплатой**. Ниже (блок Tasa) этот документ уже писал
+> «плательщик = каждый заявитель» — снова документация опережала реестр, теперь
+> на две формы. Закрыто парами `tasa-790-038-familiar` и `tasa-790-012-familiar`
+> по образцу MI-T/MI-F: кода это не потребовало.
+>
+> Эпиграф и сумма **переиспользуются** из ключей титуляра (`tasa.epigrafe_038` и
+> т. д.): первичный источник говорит «на каждого заявителя», а это про **число
+> платежей**, не про разные строки. Встречающееся в сообществе утверждение, что
+> на renovación строки у титуляра и члена семьи разные, — `[практика — Telegram]`
+> и вдобавок **вопрос, а не ответ**; апгрейд практики до нормы запрещён.
+> Митигация — предупреждение «сверьте строку отдельно для каждого заявителя» в
+> `common_errors` эпиграфа: оно доедет гарантированно, потому что эпиграф всегда
+> пуст → всегда `MISSING` → `attach_hint` его покажет.
 
 **Что это меняет в проверках:**
 
@@ -109,7 +145,7 @@
 | N.I.E. | text | free | applicant.nie | alta | формат [XYZ]NNNNNNN[L]; транспозиция цифр | generic |
 | Nº pasaporte | text | free | applicant.passport_number | alta | | generic |
 | Domicilio en España | text | free | applicant.address_full | alta | совпадение с empadronamiento | generic |
-| TELETRABAJADOR DE CARÁCTER INTERNACIONAL | checkbox | fixed | applicant.permit_type | alta | нужна именно эта галочка | case_derived |
+| TELETRABAJADOR DE CARÁCTER INTERNACIONAL | checkbox | **fixed_checked** | applicant.permit_type | alta | нужна именно эта галочка; в лист идёт `☑ отметить — <значение>` | case_derived |
 | INICIAL / RENOVADA | enum | tipo_solicitud | applicant.tipo_solicitud | alta | продление → RENOVADA | generic |
 | Correo notificaciones | text | free | applicant.email | media | | generic |
 | Teléfono | text | free | applicant.phone | baja | | generic |
@@ -196,14 +232,48 @@
 
 ## Tasa (Modelo 790)
 
-| Форма | Поле | profile_key | Примечание |
+> **Четыре формы, а не две.** Пошлина платится **отдельным бланком на каждого
+> заявителя** (sujeto pasivo — `los solicitantes de cada autorización`), поэтому
+> у 790-038 и 790-012 есть парные `-familiar`, гейтованные `family.present`.
+> Соло-заявителю парные формы не применяются никогда.
+
+### `tasa-790-038` — титуляр (на подачу)
+
+| Поле | profile_key | Крит. | Примечание |
 |---|---|---|---|
-| **790-038** (autorización, movilidad internacional Ley 14/2013) | Apellidos y nombre | applicant.full_name | плательщик = **каждый** заявитель, включая cónyuge |
-| 790-038 | N.I.E. | applicant.nie | на первичной подаче NIE может отсутствовать → `[ТРЕБУЕТСЯ]`, не выдумка |
-| 790-038 | Epígrafe / Importe | tasa.epigrafe_038 / tasa.importe_038 | сумма меняется — проверить вживую |
-| 790-012 (TIE, после concesión) | Apellidos y nombre / N.I.E. / Domicilio | applicant.full_name / applicant.nie / applicant.address_full | какой адрес — практика расходится, сверить с отделением |
-| 790-012 | **Epígrafe** | tasa.epigrafe_012 | **RENOVACIÓN и primera concesión — разные строки с разными суммами**; подставленная формой сумма это и проверяет |
-| 790-012 | Importe | tasa.importe_012 | сумма меняется — проверить вживую |
+| Apellidos y nombre / Razón social | applicant.full_name | alta | плательщик = сам заявитель, а не тот, кто фактически платит картой |
+| N.I.E. | applicant.nie | alta | на первичной подаче NIE может отсутствовать → `[ТРЕБУЕТСЯ]`, не выдумка |
+| Epígrafe / autoliquidación | tasa.epigrafe_038 | alta | **сверить строку отдельно для каждого заявителя**; сумма меняется — вживую |
+| Importe | tasa.importe_038 | media | меняется ежегодно |
+
+### `tasa-790-038-familiar` — член семьи (`applies_when: family.present`)
+
+| Поле | profile_key | Крит. | Примечание |
+|---|---|---|---|
+| Apellidos y nombre / Razón social | **family.full_name** | alta | ⚠️ плательщик = **член семьи**, НЕ титуляр. Оба бланка на титуляра — типовая ошибка, один платёж не засчитывается |
+| N.I.E. | **family.nie** | alta | свой NIE члена семьи |
+| Epígrafe / autoliquidación | tasa.epigrafe_038 | alta | подставляется та же строка, что титуляру (различия дословный источник не устанавливает) — **проверить на бланке** |
+| Importe | tasa.importe_038 | media | **второй платёж**, а не половина общего |
+
+### `tasa-790-012` — титуляр (TIE, после concesión)
+
+| Поле | profile_key | Крит. | Примечание |
+|---|---|---|---|
+| Apellidos y nombre | applicant.full_name | alta | плательщик = тот, на кого выдаётся карта |
+| N.I.E. | applicant.nie | alta | к этому этапу NIE уже присвоен резолюцией — пусто здесь это настоящий пропуск |
+| Domicilio | applicant.address_full | media | адрес заявки vs падрона — практика расходится, сверить с отделением |
+| **Epígrafe** | tasa.epigrafe_012 | alta | **RENOVACIÓN и primera concesión — разные строки с разными суммами**; подставленная сумма это и проверяет |
+| Importe | tasa.importe_012 | media | меняется — вживую |
+
+### `tasa-790-012-familiar` — член семьи (`applies_when: case.resolution_notified + family.present`)
+
+| Поле | profile_key | Крит. | Примечание |
+|---|---|---|---|
+| Apellidos y nombre | **family.full_name** | alta | карту выдают ему — бланк на титуляра не засчитается |
+| N.I.E. | **family.nie** | alta | NIE, присвоенный **его** резолюцией |
+| Domicilio | **family.address_full** | media | обычно совпадает с адресом титуляра |
+| **Epígrafe** | tasa.epigrafe_012 | alta | та же строка, что титуляру — **проверить на бланке** |
+| Importe | tasa.importe_012 | media | второй платёж |
 
 > ⚠️ **038, а не 052 — и это не опечатка.** Код tasa определяется тем, **какой
 > орган трамитирует**, а не типом разрешения. Авторизацию по **Ley 14/2013**

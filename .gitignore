@@ -28,8 +28,18 @@ user/**
 /verification_report.md
 /spec.md
 /claims.json
+/research-notes.md
+/tracking.md
+/tie-checklist.md
 /drafts/
 /slices/
+# The two most sensitive files the engine produces, both from dnv-chat-mining:
+#   roster.json  — a line-by-line list of REAL names from the chat export;
+#   .anon_salt   — the salt the PUBLISHED refs in knowledge_base/practice/
+#                  curation.json are HMAC'd with. Leaking it re-identifies them.
+# Both belong under user/ (covered above); these rules are the stray-write net.
+/roster.json
+/.anon_salt
 
 # ---- raw / fresh chat exports (Telegram JSON can be huge and full of PII) ---
 *chat*export*.json

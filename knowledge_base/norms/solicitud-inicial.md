@@ -177,10 +177,19 @@ irregularmente en territorio español`. `[норма]`
    obtener su certificado digital»*. Все четыре способа получения
    (видеоидентификация, явка в офис, по DNIe, через мобильное) предполагают
    DNI/NIE. `[официальное разъяснение]`
-3. **На первичной подаче NIE может не быть** — и закон это прямо признаёт.
-   art. 76.5: `en aquellos supuestos en que el extranjero **no esté en posesión del
-   número de identificación de extranjero (NIE)**, sin perjuicio de que
-   posteriormente se solicite el NIE`. `[норма]`
+3. **На первичной подаче NIE может не быть.** Требования предъявить NIE в норме
+   просто нет — а отсутствие требования доказывается отсутствием нормы, не
+   цитатой. `[норма]`
+
+   Косвенно это подтверждает art. 76.5 — но читайте предложение **целиком**, не
+   с середины: `El pasaporte será documento acreditativo suficiente **para darse
+   de alta en la Seguridad Social** durante los primeros seis meses […] y en
+   aquellos supuestos en que el extranjero **no esté en posesión del número de
+   identificación de extranjero (NIE)**, sin perjuicio de que posteriormente se
+   solicite el NIE`. Предмет статьи — **соцстрах**, а не подача заявления.
+   Она показывает, что режим **предполагает** заявителя без NIE (иначе оговорка
+   была бы бессмысленна), но о самой подаче не говорит — и потому основанием
+   «подавать без NIE можно» служить не может.
 
 **Отсюда: подаёт представитель со своим сертификатом.** Это не костыль — это
 предусмотренный законом режим:

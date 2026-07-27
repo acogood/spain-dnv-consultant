@@ -8,6 +8,13 @@ value of every form field IS the corresponding profile value (by profile_key).
 A field whose profile value is missing becomes `[ТРЕБУЕТСЯ: <field>]` — never a
 guessed value. No hallucination is structurally possible here.
 
+Presentation is NOT invention: the registry declares a `type` per field, and
+`_fieldfmt.render_value()` turns the profile value into the exact cell string —
+an ISO birth date becomes `DD/MM/AAAA` (the format the Spanish form wants), a
+`checkbox` field becomes a tick plus the value. The DATUM is still the profile's;
+only its spelling on the sheet is the registry's call. `field_qa.py` re-derives
+through the SAME function, so the two sides cannot drift apart.
+
 Precondition: a case profile must exist. Without it the script halts
 with an instruction (it does not invent one).
 
@@ -45,6 +52,12 @@ except Exception:
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "chat"))
 from _common import SafeIOError, die, resolve_output  # noqa: E402
+
+# Сосед по каталогу: `sys.path[0]` уже равен engine/scripts при прямом запуске,
+# но вставляем путь явно — симметрично вставке выше, чтобы импорт не зависел от
+# того, как интерпретатор был вызван (`-m`, из другого cwd, из теста).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _fieldfmt import render_value  # noqa: E402
 
 REQUIRED = "[ТРЕБУЕТСЯ: {}]"
 
@@ -129,11 +142,15 @@ def fill_form(form, flat):
             value = REQUIRED.format(field.get("name", pk))
             present = False
         else:
-            value = str(val)
+            value = render_value(val, field)
             present = True
         rows.append({
             "name": field.get("name"),
             "profile_key": pk,
+            # `type` едет в drafts.json не для кода, а для ЧИТАТЕЛЯ: без него
+            # непонятно, почему ячейка `15/01/1990`, а в профиле `1990-01-15` —
+            # выглядит как расхождение, хотя это объявленный формат поля.
+            "type": field.get("type", "text"),
             "domain": field.get("domain", "free"),
             "criticality": field.get("criticality", ""),
             "value": value,

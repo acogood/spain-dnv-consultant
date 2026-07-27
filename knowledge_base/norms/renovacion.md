@@ -81,8 +81,27 @@ certificado digital, налоговые декларации, нормативн
   `case-derived`
 - Доход через личный платёжный сервис (напр. Wise Personal) в иностранной валюте
   → выписки + сопроводительное с курсами и EUR-эквивалентом. `case-derived`
-- Единственный заказчик → риск «falso autónomo»; подчеркнуть independent
-  contractor + список duties + indefinite term. `case-derived`
+- **Единственный заказчик — сам по себе НЕ дефект.** art. 74 ter d) дословно
+  требует `relación mercantil con **una o varias** empresas no localizadas en
+  España` — то есть **одна компания прямо допущена нормой**. `[норма]` Подавать
+  `num_clients=1` как уязвимость — неверно, и не надо ни извиняться за это, ни
+  искусственно набирать второго клиента.
+
+  Реальный риск другой и лежит не в числе заказчиков, а в **характере
+  отношений**: если UGE-CE переквалифицирует их из `relación profesional` в
+  `relación laboral`, включается **Instrucción Sexta ¶ 4**, а с ней —
+  инскрипция иностранной компании в испанской Seguridad Social, что для
+  зарубежного заказчика практически нереализуемо. Плюс сводка UGE-CE прямо
+  говорит, что одно другим не доказывается: *«la acreditación de la existencia
+  previa de una **relación laboral no es válida** para acreditar una **relación
+  profesional** y viceversa»* (см. `documentacion-y-forma.md` — «Найм и подряд не
+  конвертируются»). `[официальное разъяснение]`
+
+  Отсюда митигация — не «добрать клиентов», а **удержать отношения
+  профессиональными**: independent contractor в формулировках, список duties,
+  контроль исполнителя над способом и временем работы, собственные средства
+  производства, инвойсы, отсутствие признаков подчинённости и графика.
+  `case-derived`
 
 > Значения и стратегии — в `templates/spec_renewal.template.md` §4 (generic
 > каталог) и в дайджесте практики `../practice/`.

@@ -3,6 +3,7 @@
   {
    "name": "Primer apellido",
    "profile_key": "applicant.last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Testovenko",
@@ -11,6 +12,7 @@
   {
    "name": "Segundo apellido",
    "profile_key": "applicant.second_last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Segundo apellido]",
@@ -19,6 +21,7 @@
   {
    "name": "Nombre",
    "profile_key": "applicant.first_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Ivan",
@@ -27,6 +30,7 @@
   {
    "name": "Sexo",
    "profile_key": "applicant.sexo",
+   "type": "enum",
    "domain": "sexo",
    "criticality": "alta",
    "value": "Hombre",
@@ -35,14 +39,16 @@
   {
    "name": "Fecha de nacimiento",
    "profile_key": "applicant.birth_date",
+   "type": "date",
    "domain": "free",
    "criticality": "alta",
-   "value": "1990-01-15",
+   "value": "15/01/1990",
    "present": true
   },
   {
    "name": "Lugar de nacimiento",
    "profile_key": "applicant.birth_place",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Novgrad",
@@ -51,6 +57,7 @@
   {
    "name": "País de nacimiento",
    "profile_key": "applicant.birth_country",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Rusia",
@@ -59,6 +66,7 @@
   {
    "name": "Nacionalidad",
    "profile_key": "applicant.nationality",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Rusa",
@@ -67,6 +75,7 @@
   {
    "name": "Estado civil",
    "profile_key": "applicant.marital_status",
+   "type": "enum",
    "domain": "estado_civil",
    "criticality": "media",
    "value": "Casado/a",
@@ -75,6 +84,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "applicant.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999999R",
@@ -83,6 +93,7 @@
   {
    "name": "Nº pasaporte",
    "profile_key": "applicant.passport_number",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "990000111",
@@ -91,6 +102,7 @@
   {
    "name": "Domicilio en España",
    "profile_key": "applicant.address_full",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Calle Ejemplo, 1, 28001 Madrid",
@@ -99,14 +111,16 @@
   {
    "name": "Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL",
    "profile_key": "applicant.permit_type",
+   "type": "checkbox",
    "domain": "fixed_checked",
    "criticality": "alta",
-   "value": "teletrabajador de carácter internacional",
+   "value": "☑ отметить — teletrabajador de carácter internacional",
    "present": true
   },
   {
    "name": "INICIAL / RENOVADA",
    "profile_key": "applicant.tipo_solicitud",
+   "type": "enum",
    "domain": "tipo_solicitud",
    "criticality": "alta",
    "value": "RENOVADA",
@@ -115,6 +129,7 @@
   {
    "name": "Correo a efectos de notificaciones",
    "profile_key": "applicant.email",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "ivan.test@example.com",
@@ -123,6 +138,7 @@
   {
    "name": "Teléfono",
    "profile_key": "applicant.phone",
+   "type": "text",
    "domain": "free",
    "criticality": "baja",
    "value": "600000000",
@@ -133,6 +149,7 @@
   {
    "name": "Primer apellido",
    "profile_key": "family.last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Testovenko",
@@ -141,6 +158,7 @@
   {
    "name": "Nombre",
    "profile_key": "family.first_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Maria",
@@ -149,6 +167,7 @@
   {
    "name": "Sexo",
    "profile_key": "family.sexo",
+   "type": "enum",
    "domain": "sexo",
    "criticality": "alta",
    "value": "Mujer",
@@ -157,14 +176,16 @@
   {
    "name": "Fecha de nacimiento",
    "profile_key": "family.birth_date",
+   "type": "date",
    "domain": "free",
    "criticality": "alta",
-   "value": "1992-03-20",
+   "value": "20/03/1992",
    "present": true
   },
   {
    "name": "Nacionalidad",
    "profile_key": "family.nationality",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Rusa",
@@ -173,6 +194,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "family.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999998T",
@@ -181,6 +203,7 @@
   {
    "name": "Nº pasaporte",
    "profile_key": "family.passport_number",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "990000222",
@@ -189,6 +212,7 @@
   {
    "name": "Parentesco con el titular",
    "profile_key": "family.relationship",
+   "type": "enum",
    "domain": "parentesco",
    "criticality": "alta",
    "value": "Cónyuge",
@@ -197,6 +221,7 @@
   {
    "name": "Nº de registro de la solicitud del titular",
    "profile_key": "family.titular_regage",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "[ТРЕБУЕТСЯ: Nº de registro de la solicitud del titular]",
@@ -205,6 +230,7 @@
   {
    "name": "INICIAL / RENOVADA",
    "profile_key": "family.tipo_solicitud",
+   "type": "enum",
    "domain": "tipo_solicitud",
    "criticality": "alta",
    "value": "RENOVADA",
@@ -215,6 +241,7 @@
   {
    "name": "Apellidos y nombre / Razón social",
    "profile_key": "applicant.full_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Ivan Testovenko",
@@ -223,6 +250,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "applicant.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999999R",
@@ -231,6 +259,7 @@
   {
    "name": "Epígrafe / autoliquidación",
    "profile_key": "tasa.epigrafe_038",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación]",
@@ -239,6 +268,45 @@
   {
    "name": "Importe",
    "profile_key": "tasa.importe_038",
+   "type": "number",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Importe]",
+   "present": false
+  }
+ ],
+ "tasa-790-038-familiar": [
+  {
+   "name": "Apellidos y nombre / Razón social",
+   "profile_key": "family.full_name",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Maria Testovenko",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "family.nie",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999998T",
+   "present": true
+  },
+  {
+   "name": "Epígrafe / autoliquidación",
+   "profile_key": "tasa.epigrafe_038",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación]",
+   "present": false
+  },
+  {
+   "name": "Importe",
+   "profile_key": "tasa.importe_038",
+   "type": "number",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Importe]",
@@ -249,6 +317,7 @@
   {
    "name": "Apellidos y nombre",
    "profile_key": "applicant.full_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Ivan Testovenko",
@@ -257,6 +326,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "applicant.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999999R",
@@ -265,6 +335,7 @@
   {
    "name": "Domicilio",
    "profile_key": "applicant.address_full",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Calle Ejemplo, 1, 28001 Madrid",
@@ -273,6 +344,7 @@
   {
    "name": "Epígrafe / autoliquidación (TIE)",
    "profile_key": "tasa.epigrafe_012",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación (TIE)]",
@@ -281,6 +353,54 @@
   {
    "name": "Importe (TIE)",
    "profile_key": "tasa.importe_012",
+   "type": "number",
+   "domain": "free",
+   "criticality": "media",
+   "value": "[ТРЕБУЕТСЯ: Importe (TIE)]",
+   "present": false
+  }
+ ],
+ "tasa-790-012-familiar": [
+  {
+   "name": "Apellidos y nombre",
+   "profile_key": "family.full_name",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "Maria Testovenko",
+   "present": true
+  },
+  {
+   "name": "N.I.E.",
+   "profile_key": "family.nie",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "X9999998T",
+   "present": true
+  },
+  {
+   "name": "Domicilio",
+   "profile_key": "family.address_full",
+   "type": "text",
+   "domain": "free",
+   "criticality": "media",
+   "value": "Calle Ejemplo, 1, 28001 Madrid",
+   "present": true
+  },
+  {
+   "name": "Epígrafe / autoliquidación (TIE)",
+   "profile_key": "tasa.epigrafe_012",
+   "type": "text",
+   "domain": "free",
+   "criticality": "alta",
+   "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación (TIE)]",
+   "present": false
+  },
+  {
+   "name": "Importe (TIE)",
+   "profile_key": "tasa.importe_012",
+   "type": "number",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Importe (TIE)]",
@@ -291,6 +411,7 @@
   {
    "name": "Primer apellido",
    "profile_key": "applicant.last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Testovenko",
@@ -299,6 +420,7 @@
   {
    "name": "Segundo apellido",
    "profile_key": "applicant.second_last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Segundo apellido]",
@@ -307,6 +429,7 @@
   {
    "name": "Nombre",
    "profile_key": "applicant.first_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Ivan",
@@ -315,6 +438,7 @@
   {
    "name": "Sexo",
    "profile_key": "applicant.sexo",
+   "type": "enum",
    "domain": "sexo",
    "criticality": "alta",
    "value": "Hombre",
@@ -323,14 +447,16 @@
   {
    "name": "Fecha de nacimiento",
    "profile_key": "applicant.birth_date",
+   "type": "date",
    "domain": "free",
    "criticality": "alta",
-   "value": "1990-01-15",
+   "value": "15/01/1990",
    "present": true
   },
   {
    "name": "Lugar de nacimiento",
    "profile_key": "applicant.birth_place",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Novgrad",
@@ -339,6 +465,7 @@
   {
    "name": "País de nacimiento",
    "profile_key": "applicant.birth_country",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Rusia",
@@ -347,6 +474,7 @@
   {
    "name": "Nombre del padre",
    "profile_key": "applicant.father_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Piotr Testovenko",
@@ -355,6 +483,7 @@
   {
    "name": "Nombre de la madre",
    "profile_key": "applicant.mother_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Olga Testovenko",
@@ -363,6 +492,7 @@
   {
    "name": "Nacionalidad",
    "profile_key": "applicant.nationality",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Rusa",
@@ -371,6 +501,7 @@
   {
    "name": "Estado civil",
    "profile_key": "applicant.marital_status",
+   "type": "enum",
    "domain": "estado_civil",
    "criticality": "media",
    "value": "Casado/a",
@@ -379,6 +510,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "applicant.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999999R",
@@ -387,6 +519,7 @@
   {
    "name": "Nº pasaporte",
    "profile_key": "applicant.passport_number",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "990000111",
@@ -395,6 +528,7 @@
   {
    "name": "Domicilio en España",
    "profile_key": "applicant.address_full",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Calle Ejemplo, 1, 28001 Madrid",
@@ -403,6 +537,7 @@
   {
    "name": "Teléfono",
    "profile_key": "applicant.phone",
+   "type": "text",
    "domain": "free",
    "criticality": "baja",
    "value": "600000000",
@@ -411,6 +546,7 @@
   {
    "name": "Correo electrónico",
    "profile_key": "applicant.email",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "ivan.test@example.com",
@@ -419,6 +555,7 @@
   {
    "name": "TIE: INICIAL / RENOVADA",
    "profile_key": "applicant.tipo_solicitud",
+   "type": "enum",
    "domain": "tipo_solicitud",
    "criticality": "alta",
    "value": "RENOVADA",
@@ -427,6 +564,7 @@
   {
    "name": "DIRIGIDA A (provincia / comisaría)",
    "profile_key": "applicant.comisaria_provincia",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Madrid",
@@ -437,6 +575,7 @@
   {
    "name": "Primer apellido",
    "profile_key": "family.last_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Testovenko",
@@ -445,6 +584,7 @@
   {
    "name": "Nombre",
    "profile_key": "family.first_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Maria",
@@ -453,6 +593,7 @@
   {
    "name": "Sexo",
    "profile_key": "family.sexo",
+   "type": "enum",
    "domain": "sexo",
    "criticality": "alta",
    "value": "Mujer",
@@ -461,14 +602,16 @@
   {
    "name": "Fecha de nacimiento",
    "profile_key": "family.birth_date",
+   "type": "date",
    "domain": "free",
    "criticality": "alta",
-   "value": "1992-03-20",
+   "value": "20/03/1992",
    "present": true
   },
   {
    "name": "Lugar de nacimiento",
    "profile_key": "family.birth_place",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Vetrograd",
@@ -477,6 +620,7 @@
   {
    "name": "País de nacimiento",
    "profile_key": "family.birth_country",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Rusia",
@@ -485,6 +629,7 @@
   {
    "name": "Nombre del padre",
    "profile_key": "family.father_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Andrei Primerov",
@@ -493,6 +638,7 @@
   {
    "name": "Nombre de la madre",
    "profile_key": "family.mother_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Elena Primerova",
@@ -501,6 +647,7 @@
   {
    "name": "Nacionalidad",
    "profile_key": "family.nationality",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Rusa",
@@ -509,6 +656,7 @@
   {
    "name": "Estado civil",
    "profile_key": "family.marital_status",
+   "type": "enum",
    "domain": "estado_civil",
    "criticality": "media",
    "value": "Casado/a",
@@ -517,6 +665,7 @@
   {
    "name": "N.I.E.",
    "profile_key": "family.nie",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "X9999998T",
@@ -525,6 +674,7 @@
   {
    "name": "Nº pasaporte",
    "profile_key": "family.passport_number",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "990000222",
@@ -533,6 +683,7 @@
   {
    "name": "Domicilio en España",
    "profile_key": "family.address_full",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Calle Ejemplo, 1, 28001 Madrid",
@@ -541,6 +692,7 @@
   {
    "name": "Teléfono",
    "profile_key": "family.phone",
+   "type": "text",
    "domain": "free",
    "criticality": "baja",
    "value": "600000001",
@@ -549,6 +701,7 @@
   {
    "name": "Correo electrónico",
    "profile_key": "family.email",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "maria.test@example.com",
@@ -557,6 +710,7 @@
   {
    "name": "TIE: INICIAL / RENOVADA",
    "profile_key": "family.tipo_solicitud",
+   "type": "enum",
    "domain": "tipo_solicitud",
    "criticality": "alta",
    "value": "RENOVADA",
@@ -567,6 +721,7 @@
   {
    "name": "Основание (teletrabajo, Ley 14/2013)",
    "profile_key": "applicant.permit_type",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "teletrabajador de carácter internacional",
@@ -575,6 +730,7 @@
   {
    "name": "Описание работы и роли",
    "profile_key": "work.role",
+   "type": "text",
    "domain": "free",
    "criticality": "media",
    "value": "Marketing Manager",
@@ -583,6 +739,7 @@
   {
    "name": "Обоснование дохода (gross, EUR-эквивалент)",
    "profile_key": "work.income_amount",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "6000",
@@ -591,6 +748,7 @@
   {
    "name": "Работодатель/заказчик",
    "profile_key": "work.company_name",
+   "type": "text",
    "domain": "free",
    "criticality": "alta",
    "value": "Acme Remote LLC",

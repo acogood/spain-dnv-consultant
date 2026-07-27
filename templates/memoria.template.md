@@ -155,3 +155,34 @@ En **{{CIUDAD}}**, a **{{FECHA}}**.
 
 Fdo.: **{{NOMBRE_COMPLETO}}** — N.I.E. {{NIE}}
 *(firma electrónica)*
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ПОДПИСЬ — РАЗВЕСТИ ДВЕ РАЗНЫЕ ВЕЩИ. Инструкция синтезу/documents.
+
+     1) ДОКУМЕНТ подписывает САМ ЗАЯВИТЕЛЬ. Instrucción Octava ¶ 2, п. 3.º:
+        `Formulario de solicitud firmado por la persona teletrabajadora`.
+        Представитель подписать документ ЗА заявителя не может — он подписывает
+        ОТПРАВКУ (электронную подачу своим сертификатом, art. 5 Ley 39/2015).
+        Это два разных действия, и путать их нельзя: подача представителем НЕ
+        означает, что под memoria и под MI-T стоит его имя.
+
+     2) БЕЗ NIE — блок выше НЕ ГОДИТСЯ: строка `N.I.E. {{NIE}}` даст либо
+        пустое место, либо [ТРЕБУЕТСЯ] в подписи. На первичной подаче NIE
+        законно может не быть. ЗАМЕНИТЬ блок подписи на вариант Б:
+
+        Fdo.: **{{NOMBRE_COMPLETO}}** — pasaporte **{{PASAPORTE}}**
+        *(firma manuscrita; documento presentado telemáticamente por
+        representante — art. 5 Ley 39/2015)*
+
+        Идентифицируйте себя ПАСПОРТОМ: он у заявителя есть всегда, а art. 76.5
+        прямо называет паспорт `documento acreditativo suficiente` в ситуации
+        без NIE (пусть и применительно к соцстраху).
+
+     3) ЕСЛИ ПОДАЁТ ПРЕДСТАВИТЕЛЬ — добавить ПОСЛЕ подписи заявителя отдельный
+        блок, не вместо неё:
+
+        Presentado telemáticamente por **{{NOMBRE_REPRESENTANTE}}**,
+        N.I.E./D.N.I. **{{NIE_REPRESENTANTE}}**, en representación de la persona
+        solicitante, acreditada mediante **{{poder notarial / consular / apud
+        acta / REA}}** — art. 5 Ley 39/2015.
+     ═══════════════════════════════════════════════════════════════════════ -->

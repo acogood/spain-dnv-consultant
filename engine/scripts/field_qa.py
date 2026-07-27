@@ -33,9 +33,18 @@ every form, applicable or not.
 REGISTRY GUIDANCE IN THE REASON: a MISSING/WRONG verdict carries the field's
 `common_errors` from the registry after a ` · реестр: ` separator. An empty field
 is not automatically a gap — on a legitimate INITIAL application there may be no
-NIE at all (art. 76.5 Ley 14/2013) — and the registry already explained that;
+NIE at all (no rule demands one; the filing is signed by a representative under
+art. 5 Ley 39/2015) — and the registry already explained that;
 nothing read it, so the report showed a bare "обязательное поле пусто в профиле".
 The hint is CONTEXT, not a finding. It changes no counter and no verdict.
+
+FIELD `type` (formatting): the expected value is re-derived through the same
+`_fieldfmt.render_value()` that `fill_forms.py` writes with, so a date declared
+`type: date` is compared as `DD/MM/AAAA` on both sides. This is deliberately ONE
+shared function and not two implementations: any drift between them would mark
+every formatted field `WRONG: не совпадает` and exit non-zero. It does not
+weaken the check — the re-derivation still starts from the profile, never from
+the draft; only the spelling rule is shared, and that rule lives in the registry.
 
 ISOLATION: `rederive_expected()` reads ONLY the profile + registry — it
 never looks at the draft. A separate step (`diff`) compares those expected values
@@ -65,6 +74,12 @@ except Exception:
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "chat"))
 from _common import SafeIOError, die, resolve_output  # noqa: E402
+
+# Тот же форматтер, что пишет fill_forms.py. Ре-деривация обязана давать
+# байт-в-байт ту же строку, иначе каждое форматированное поле станет
+# `WRONG: не совпадает`. Общая функция — единственное, что это гарантирует.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _fieldfmt import render_value  # noqa: E402
 
 REQ_PREFIX = "[ТРЕБУЕТСЯ"
 
@@ -140,7 +155,8 @@ def rederive_expected(profile, registry):
     for form_id, form in registry.get("forms", {}).items():
         for field in form.get("fields", []):
             val = flat.get(field.get("profile_key"))
-            expected[(form_id, field.get("name"))] = None if is_empty(val) else str(val)
+            expected[(form_id, field.get("name"))] = (
+                None if is_empty(val) else render_value(val, field))
     return expected
 
 
@@ -151,9 +167,10 @@ def attach_hint(row, hint_of):
     """Append the registry's `common_errors` to a MISSING/WRONG reason.
 
     Why the report has to carry it: an empty field is not automatically a gap. On
-    a legitimate INITIAL application the applicant may have no NIE at all — art.
-    76.5 Ley 14/2013 explicitly foresees that case (norms/solicitud-inicial.md §5)
-    — so three `alta` N.I.E. rows come out empty and CORRECTLY so. The registry
+    a legitimate INITIAL application the applicant may have no NIE at all — no
+    rule requires one to file, and a representative signs instead (art. 5 Ley
+    39/2015; norms/solicitud-inicial.md §5) — so the `alta` N.I.E. rows come out
+    empty and CORRECTLY so. The registry
     already said this in `common_errors`, but nothing ever read that field: it was
     documentation for whoever opened the registry, not text the user sees. The
     report therefore said "обязательное поле пусто в профиле" and made a correct
@@ -265,9 +282,10 @@ def render(verdicts, applicability=None):
              "(`common_errors`), то есть **контекст, а не находка**: она объясняет, "
              "почему поле бывает пустым или что в нём путают. `MISSING` рядом с "
              "такой подсказкой может быть **корректным состоянием кейса** "
-             "(например, `N.I.E.` на первичной подаче: art. 76.5 Ley 14/2013 прямо "
-             "предусматривает заявителя без NIE). Выдумывать значение нельзя ни в "
-             "каком случае.", ""]
+             "(например, `N.I.E.` на первичной подаче: требования предъявить NIE "
+             "норма не устанавливает, а подачу подписывает представитель — "
+             "art. 5 Ley 39/2015). Выдумывать значение нельзя ни в каком случае.",
+             ""]
     inactive = sorted(f for f, (ok, _) in (applicability or {}).items() if not ok)
     if inactive:
         lines += ["> **Не применяются к этому кейсу в его текущем состоянии** "

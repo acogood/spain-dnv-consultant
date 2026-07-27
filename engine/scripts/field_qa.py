@@ -27,10 +27,19 @@ scored OK). Non-applicability now suspends the REQUIREDNESS gate only; the
 value checks above (domain, hallucination, mismatch) still run on every field of
 every form, applicable or not.
 
+REGISTRY GUIDANCE IN THE REASON: a MISSING/WRONG verdict carries the field's
+`common_errors` from the registry after a ` · реестр: ` separator. An empty field
+is not automatically a gap — on a legitimate INITIAL application there may be no
+NIE at all (art. 76.5 Ley 14/2013) — and the registry already explained that;
+nothing read it, so the report showed a bare "обязательное поле пусто в профиле".
+The hint is CONTEXT, not a finding. It changes no counter and no verdict.
+
 ISOLATION: `rederive_expected()` reads ONLY the profile + registry — it
 never looks at the draft. A separate step (`diff`) compares those expected values
 with the draft. This is the deterministic baseline; the LLM re-derivation lives
-in the field-qa-reviewer agent (two independent processes).
+in the field-qa-reviewer agent (two independent processes). The registry hint does
+not touch that: it is registry text, which the agent already gets in full, and
+what keeps the agent independent is that this report is never handed to it.
 
 Usage:
   python field_qa.py [profile.json] [registry.json] [drafts.json] [--out-dir DIR] [--allowed-root DIR]
@@ -132,6 +141,42 @@ def rederive_expected(profile, registry):
     return expected
 
 
+HINT_SEP = " · реестр: "
+
+
+def attach_hint(row, hint_of):
+    """Append the registry's `common_errors` to a MISSING/WRONG reason.
+
+    Why the report has to carry it: an empty field is not automatically a gap. On
+    a legitimate INITIAL application the applicant may have no NIE at all — art.
+    76.5 Ley 14/2013 explicitly foresees that case (norms/solicitud-inicial.md §5)
+    — so three `alta` N.I.E. rows come out empty and CORRECTLY so. The registry
+    already said this in `common_errors`, but nothing ever read that field: it was
+    documentation for whoever opened the registry, not text the user sees. The
+    report therefore said "обязательное поле пусто в профиле" and made a correct
+    case look like five omissions instead of two.
+
+    Every field with guidance benefits, not just NIE — the hint travels with the
+    verdict wherever the registry has something to say.
+
+    Only MISSING/WRONG get it. OK rows would drown the table, and UNCERTAIN means
+    the field is absent from the DRAFT (a generator bug), which registry guidance
+    about field CONTENT cannot speak to.
+
+    ISOLATION NOTE: the hint comes from the REGISTRY, which the field-qa-reviewer
+    subagent already receives in full. No draft content and no re-derived expected
+    value is added here, so the two-process isolation is untouched — what protects
+    it is that the subagent is never handed this report.
+    """
+    form_id, name, verdict, why = row
+    if verdict not in ("MISSING", "WRONG"):
+        return row
+    hint = (hint_of.get((form_id, name)) or "").strip()
+    if not hint:
+        return row
+    return (form_id, name, verdict, (why + HINT_SEP + hint) if why else hint)
+
+
 def diff(expected, registry, drafts, applicability=None):
     """Compare re-derived expectations with the draft.
 
@@ -141,11 +186,12 @@ def diff(expected, registry, drafts, applicability=None):
     """
     vocab = registry.get("controlled_vocabularies", {})
     applicability = applicability or {}
-    crit_of, domain_of = {}, {}
+    crit_of, domain_of, hint_of = {}, {}, {}
     for form_id, form in registry.get("forms", {}).items():
         for field in form.get("fields", []):
             crit_of[(form_id, field["name"])] = field.get("criticality", "media")
             domain_of[(form_id, field["name"])] = field.get("domain", "free")
+            hint_of[(form_id, field["name"])] = field.get("common_errors", "")
 
     actual = {}
     for form_id, rows in drafts.items():
@@ -194,7 +240,13 @@ def diff(expected, registry, drafts, applicability=None):
             verdicts.append((form_id, name, "OK", ""))
         else:
             verdicts.append((form_id, name, "WRONG", f"не совпадает: черновик '{act}' ≠ профиль '{exp}'"))
-    return verdicts
+    return [attach_hint(v, hint_of) for v in verdicts]
+
+
+def _cell(text) -> str:
+    """Make a value safe inside a markdown table cell. `common_errors` is prose
+    from the registry, and one `|` in it would silently break the whole row."""
+    return str(text).replace("|", "\\|")
 
 
 def render(verdicts, applicability=None):
@@ -204,7 +256,15 @@ def render(verdicts, applicability=None):
     lines = ["# Field-QA baseline (механический, исчерпывающий)", "",
              "> Один вердикт на КАЖДОЕ поле реестра (count==полей). Проверяется "
              "корректность, не правдоподобие. Это must-have baseline; независимая "
-             "ре-деривация и official-review — отдельные слои.", ""]
+             "ре-деривация и official-review — отдельные слои.", "",
+             "> **Как читать «Причина».** До «" + HINT_SEP.strip() + "» — вывод "
+             "механической проверки. После — подсказка из реестра полей "
+             "(`common_errors`), то есть **контекст, а не находка**: она объясняет, "
+             "почему поле бывает пустым или что в нём путают. `MISSING` рядом с "
+             "такой подсказкой может быть **корректным состоянием кейса** "
+             "(например, `N.I.E.` на первичной подаче: art. 76.5 Ley 14/2013 прямо "
+             "предусматривает заявителя без NIE). Выдумывать значение нельзя ни в "
+             "каком случае.", ""]
     inactive = sorted(f for f, (ok, _) in (applicability or {}).items() if not ok)
     if inactive:
         lines += ["> **Не применяются на этом этапе кейса** (`applies_when`): "
@@ -215,7 +275,7 @@ def render(verdicts, applicability=None):
     lines += ["| Форма | Поле | Вердикт | Причина |", "|---|---|---|---|"]
     for f, n, v, why in verdicts:
         mark = {"OK": "✅", "WRONG": "❌", "MISSING": "⚠️", "UNCERTAIN": "❔"}.get(v, "")
-        lines.append(f"| {f} | {n} | {mark} {v} | {why} |")
+        lines.append(f"| {_cell(f)} | {_cell(n)} | {mark} {v} | {_cell(why)} |")
     lines += ["", "## Сводка", "", "| Вердикт | Кол-во |", "|---|---|"]
     for v in ("OK", "WRONG", "MISSING", "UNCERTAIN"):
         lines.append(f"| {v} | {counts.get(v, 0)} |")

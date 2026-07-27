@@ -24,6 +24,15 @@ python engine/scripts/field_qa.py user/case-profile.json knowledge_base/forms/re
 галлюцинации (профиль пуст, а в черновике значение → WRONG). Отчёт:
 `user/drafts/field_qa_report.md`. Ненулевой выход = есть WRONG.
 
+**Читая «Причину»: до `· реестр:` — вывод механики, после — подсказка из реестра
+(`common_errors`), то есть контекст, а не находка.** Поэтому **`MISSING` ≠
+автоматически пробел пакета**: у части полей пусто — это корректное состояние
+кейса. Канонический случай — `N.I.E.` на **первичной** подаче: art. 76.5
+Ley 14/2013 прямо предусматривает заявителя без NIE (`norms/solicitud-inicial.md`
+§5), и тогда три `MISSING` по N.I.E. (MI-T, MI-F, tasa-790-038) — не пропуски.
+В сводке (шаг 3) разделяй такие `MISSING` от настоящих и **не предлагай
+заполнить**: выдумывать значение нельзя ни в каком случае.
+
 ## Слой 1B. Независимая ре-деривация (two-process)
 
 Механический baseline сравнивает строки. Ре-деривация добавляет смысловой слой и
@@ -51,7 +60,9 @@ python engine/scripts/field_qa.py user/case-profile.json knowledge_base/forms/re
 ## Шаг 3. Сводный отчёт + состояние
 
 Собери единый отчёт `user/drafts/review_summary.md`:
-- field-QA: счётчики OK/WRONG/MISSING/UNCERTAIN + список WRONG/MISSING;
+- field-QA: счётчики OK/WRONG/MISSING/UNCERTAIN + список WRONG/MISSING,
+  где `MISSING` разделены на **настоящие пропуски** и **корректные состояния
+  кейса** (см. подсказку реестра в «Причине», слой 1A);
 - ре-деривация: расхождения и межполевые замечания;
 - official: приоритизированные субстантивные замечания.
 Обнови `pipeline-state`: `steps["dnv-review"] = {status:"completed", ...}`.

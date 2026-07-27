@@ -24,7 +24,7 @@
 > familiares se presenten **simultáneamente** con la del titular, la autorización y,
 > en su caso, el visado, **se resolverán también de forma simultánea**. `[норма]`
 
-Три следствия, которые эта статья решает:
+Четыре следствия, которые эта статья решает:
 
 1. **Cónyuge и pareja** («análoga relación de afectividad») — оба основания стоят в
    норме, в одном перечне. `[норма]`

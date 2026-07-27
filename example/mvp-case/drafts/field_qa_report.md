@@ -30,10 +30,10 @@
 | MI-F | Parentesco con el titular | ✅ OK |  |
 | MI-F | Nº de registro de la solicitud del titular | ⚠️ MISSING | обязательное поле пусто в профиле |
 | MI-F | INICIAL / RENOVADA | ✅ OK |  |
-| tasa-790-052 | Apellidos y nombre / Razón social | ✅ OK |  |
-| tasa-790-052 | N.I.E. | ✅ OK |  |
-| tasa-790-052 | Epígrafe / autoliquidación | ⚠️ MISSING | обязательное поле пусто в профиле |
-| tasa-790-052 | Importe | ✅ OK | пусто в профиле и корректно помечено |
+| tasa-790-038 | Apellidos y nombre / Razón social | ✅ OK |  |
+| tasa-790-038 | N.I.E. | ✅ OK |  |
+| tasa-790-038 | Epígrafe / autoliquidación | ⚠️ MISSING | обязательное поле пусто в профиле |
+| tasa-790-038 | Importe | ✅ OK | пусто в профиле и корректно помечено |
 | tasa-790-012 | Apellidos y nombre | ✅ OK |  |
 | tasa-790-012 | N.I.E. | ✅ OK |  |
 | tasa-790-012 | Domicilio | ✅ OK |  |

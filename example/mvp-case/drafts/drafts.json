@@ -211,7 +211,7 @@
    "present": true
   }
  ],
- "tasa-790-052": [
+ "tasa-790-038": [
   {
    "name": "Apellidos y nombre / Razón social",
    "profile_key": "applicant.full_name",
@@ -230,7 +230,7 @@
   },
   {
    "name": "Epígrafe / autoliquidación",
-   "profile_key": "tasa.epigrafe_052",
+   "profile_key": "tasa.epigrafe_038",
    "domain": "free",
    "criticality": "alta",
    "value": "[ТРЕБУЕТСЯ: Epígrafe / autoliquidación]",
@@ -238,7 +238,7 @@
   },
   {
    "name": "Importe",
-   "profile_key": "tasa.importe_052",
+   "profile_key": "tasa.importe_038",
    "domain": "free",
    "criticality": "media",
    "value": "[ТРЕБУЕТСЯ: Importe]",

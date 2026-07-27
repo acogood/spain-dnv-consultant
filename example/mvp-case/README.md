@@ -43,7 +43,7 @@ python engine/scripts/field_qa.py example/mvp-case/case-profile.json \
 | Поле | Почему пусто |
 |---|---|
 | MI-F · Nº de registro de la solicitud del titular | REGAGE титулара появляется **после** его подачи — выдумывать нельзя |
-| tasa-790-052 · Epígrafe | ищется вживую на дату подачи (сумма меняется) |
+| tasa-790-038 · Epígrafe | ищется вживую на дату подачи (сумма меняется) |
 | tasa-790-012 · Epígrafe | то же; и строки renovación / primera concesión — **разные** |
 
 > Формы `EX-17`, `EX-17-familiar` и `tasa-790-012` относятся к этапу **после**

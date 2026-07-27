@@ -156,25 +156,25 @@
   "reason": ""
  },
  {
-  "form": "tasa-790-052",
+  "form": "tasa-790-038",
   "field": "Apellidos y nombre / Razón social",
   "verdict": "OK",
   "reason": ""
  },
  {
-  "form": "tasa-790-052",
+  "form": "tasa-790-038",
   "field": "N.I.E.",
   "verdict": "OK",
   "reason": ""
  },
  {
-  "form": "tasa-790-052",
+  "form": "tasa-790-038",
   "field": "Epígrafe / autoliquidación",
   "verdict": "MISSING",
   "reason": "обязательное поле пусто в профиле"
  },
  {
-  "form": "tasa-790-052",
+  "form": "tasa-790-038",
   "field": "Importe",
   "verdict": "OK",
   "reason": "пусто в профиле и корректно помечено"

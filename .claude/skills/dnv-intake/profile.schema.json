@@ -74,8 +74,8 @@
     "family.father_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя отца члена семьи (поле EX-17)"},
     "family.mother_name": {"type": "text", "required": false, "branch": "tie", "label": "Имя матери члена семьи (поле EX-17)"},
 
-    "tasa.epigrafe_052": {"type": "text", "required": false, "derived": true, "branch": "both", "label": "Эпиграф tasa 790-052 (проверить вживую)"},
-    "tasa.importe_052": {"type": "number", "required": false, "derived": true, "branch": "both", "label": "Сумма tasa 790-052 (проверить вживую)"},
+    "tasa.epigrafe_038": {"type": "text", "required": false, "derived": true, "branch": "both", "label": "Эпиграф tasa 790-038 — авторизация через UGE-CE (проверить вживую)"},
+    "tasa.importe_038": {"type": "number", "required": false, "derived": true, "branch": "both", "label": "Сумма tasa 790-038 (проверить вживую)"},
     "tasa.epigrafe_012": {"type": "text", "required": false, "derived": true, "branch": "tie", "label": "Эпиграф tasa 790-012 (renovación и primera concesión — РАЗНЫЕ строки; проверить вживую)"},
     "tasa.importe_012": {"type": "number", "required": false, "derived": true, "branch": "tie", "label": "Сумма tasa 790-012/TIE (проверить вживую)"}
   }

@@ -8,7 +8,7 @@
 > `case_derived` = поле выведено из архетипа v1 (autónomo/контрактор + cónyuge);
 > `generic` = применимо ко всем кейсам.
 
-**Когда какая форма.** MI-T/MI-F, tasa 790-052 и memoria — на подачу
+**Когда какая форма.** MI-T/MI-F, tasa 790-038 и memoria — на подачу
 (`/dnv-documents`). EX-17 и tasa 790-012 — уже **после** одобрения, на сдачу
 отпечатков (`/dnv-tie`): до concesión заполнять их нечем и незачем.
 
@@ -182,12 +182,26 @@
 
 | Форма | Поле | profile_key | Примечание |
 |---|---|---|---|
-| 790-052 (autorización) | Apellidos y nombre | applicant.full_name | плательщик = заявитель |
-| 790-052 | N.I.E. | applicant.nie | |
-| 790-052 | Epígrafe / Importe | tasa.epigrafe_052 / tasa.importe_052 | сумма меняется — проверить вживую |
+| **790-038** (autorización, movilidad internacional Ley 14/2013) | Apellidos y nombre | applicant.full_name | плательщик = **каждый** заявитель, включая cónyuge |
+| 790-038 | N.I.E. | applicant.nie | на первичной подаче NIE может отсутствовать → `[ТРЕБУЕТСЯ]`, не выдумка |
+| 790-038 | Epígrafe / Importe | tasa.epigrafe_038 / tasa.importe_038 | сумма меняется — проверить вживую |
 | 790-012 (TIE, после concesión) | Apellidos y nombre / N.I.E. / Domicilio | applicant.full_name / applicant.nie / applicant.address_full | какой адрес — практика расходится, сверить с отделением |
 | 790-012 | **Epígrafe** | tasa.epigrafe_012 | **RENOVACIÓN и primera concesión — разные строки с разными суммами**; подставленная формой сумма это и проверяет |
 | 790-012 | Importe | tasa.importe_012 | сумма меняется — проверить вживую |
+
+> ⚠️ **038, а не 052 — и это не опечатка.** Код tasa определяется тем, **какой
+> орган трамитирует**, а не типом разрешения. Авторизацию по **Ley 14/2013**
+> (movilidad internacional) резолвит **UGE-CE** → код **790-038**, платится через
+> `sede.inclusion.gob.es`. Код **790-052** — общая экстранхерия через **Oficinas de
+> Extranjería / Delegaciones del Gobierno**; в этом пайплайне он легитимен **только
+> для `autorización de regreso`** (см. `../norms/tie-huellas.md`). Карта кодов с
+> официальными якорями — `../sources/primary/tasas-790.md`.
+>
+> До 2026-07 реестр называл авторизационную tasa `790-052`. Это было неверно.
+> Ключи профиля переименованы `tasa.epigrafe_052` / `tasa.importe_052` →
+> **`tasa.epigrafe_038` / `tasa.importe_038`** — **ломающее переименование без
+> алиаса**: если у вас есть заполненный `user/case-profile.json` прежней версии,
+> переименуйте эти два ключа руками, иначе `dnv-documents` не найдёт значения.
 
 ## Memoria / carta explicativa (свободный текст)
 

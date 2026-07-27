@@ -1,6 +1,6 @@
 {
   "as_of": "2026-07",
-  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge). MI-T/MI-F/790-052/memoria — на подачу (/dnv-documents); EX-17 и 790-012 — после concesión, на сдачу отпечатков (/dnv-tie).",
+  "note": "Машиночитаемый реестр полей форм DNV. profile_key — канонический namespace, общий со схемой профиля (user/case-profile.json). ВСЕГДА сверяйте ярлыки/эпиграфы с ТЕКУЩИМИ чистыми бланками — формы меняются. origin=case_derived помечает поля, выведенные из архетипа v1 (autónomo/контрактор + cónyuge). MI-T/MI-F/790-038/memoria — на подачу (/dnv-documents); EX-17 и 790-012 — после concesión, на сдачу отпечатков (/dnv-tie). Код авторизационной tasa — 038, а НЕ 052: 038 платится там, где трамит резолвит UGE-CE (Ley 14/2013), 052 — в общей экстранхерии через Oficinas de Extranjería, и в этом пайплайне 052 легитимна только для autorización de regreso. Карта кодов — knowledge_base/sources/primary/tasas-790.md.",
   "applies_when_note": "applies_when — условие ПРИМЕНИМОСТИ формы на текущем этапе кейса: имя ключа профиля (или список ключей, объединяемых по И). Форма применяется, когда все перечисленные ключи непусты; форма БЕЗ applies_when применяется всегда. Зачем: criticality статична, а обязательность поля зависит от состояния кейса. Раньше формы этапа TIE занижали criticality до media, чтобы до резолюции не сыпать ложными MISSING, — и этим МАСКИРОВАЛИ настоящие пропуски (пустой паспорт члена семьи давал OK). Теперь criticality честная, а этап гейтит applies_when: форма неприменима → пустое поле с [ТРЕБУЕТСЯ] это OK; форма применима → alta + пусто это MISSING. Проверка значений (домены, галлюцинации, несовпадение с профилем) работает в ОБОИХ случаях: неприменимость снимает гейт обязательности, но не корректности. Читают: engine/scripts/field_qa.py, engine/scripts/fill_forms.py.",
   "archetype": "autonomo_contractor + conyuge",
   "controlled_vocabularies": {
@@ -48,14 +48,14 @@
         {"name": "INICIAL / RENOVADA", "type": "enum", "domain": "tipo_solicitud", "profile_key": "family.tipo_solicitud", "criticality": "alta", "common_errors": "", "origin": "generic"}
       ]
     },
-    "tasa-790-052": {
-      "title": "Tasa Modelo 790 código 052 — autorización (epígrafe según tipo)",
+    "tasa-790-038": {
+      "title": "Tasa Modelo 790 código 038 — autorización por movilidad internacional (Ley 14/2013), epígrafe según tipo",
       "applies_to": "ambos",
       "fields": [
         {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "имя плательщика = заявитель", "origin": "generic"},
         {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
-        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_052", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую", "origin": "generic"},
-        {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_052", "criticality": "media", "common_errors": "сумма tasa меняется ежегодно — проверить актуальную", "origin": "generic"}
+        {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_038", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую. Код 038 (НЕ 052): авторизацию по Ley 14/2013 резолвит UGE-CE", "origin": "generic"},
+        {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_038", "criticality": "media", "common_errors": "сумма tasa меняется ежегодно — проверить актуальную", "origin": "generic"}
       ]
     },
     "tasa-790-012": {

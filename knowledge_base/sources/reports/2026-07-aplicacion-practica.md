@@ -276,19 +276,41 @@ provenientes del trabajo**». [официальное разъяснение] (a
 → Порог 20 % количественный и при продлении виден по декларациям. Превышение или
 переквалификация отношений в трудовые ломает основание разрешения.
 
-**Для autónomo импорт соцстраха по двустороннему соглашению не работает.** Сводка
-UGE-CE: «La afiliación a **RETA es obligatoria** para autónomos o asimilados **no
-teniendo cabida la importación del derecho** en base a acuerdo bilateral» —
-замена альты сертификатом страны происхождения доступна только `por cuenta ajena`.
-[официальное разъяснение] (as-of 2026-07)
+**Для autónomo импорт соцстраха по двустороннему соглашению не работает.**
+FAQ UGE-CE, вопрос 6 — дословно: замена альты «importación del derecho» доступна
+только `en el caso de trabajadores **por cuenta ajena**`, и далее: «La afiliación a
+**RETA es obligatoria** para autónomos o asimilados **no teniendo cabida la
+importación del derecho** en base a acuerdo bilateral».
+[официальное разъяснение] — FAQ UGE-CE (as-of: retrieval 2026-07-27):
+https://www.inclusion.gob.es/documents/d/unidadgrandesempresas/nomadas-digitales-faqs-espanol
 
-> ⚠️ **Расхождение, которое до сих пор циркулирует в сообществах.** В 2024-08 на
-> письменный вопрос орган ответил, что ИП, платящий взносы в своей стране по норме
-> координации, регистрироваться в Испании **не обязан** (`[практика —
-> консультант]`, дайджест §12). Действующая сводка UGE-CE говорит обратное.
-> Побеждает **более позднее опубликованное** официальное разъяснение; опираться в
-> 2026-м на письмо 2024 года **нельзя** — а с учётом §2.5 цена ошибки здесь
-> `extinción`.
+> ⚠️ **Это третье расхождение текста с текстом — и самое дорогое.**
+> **Сводка UGE-CE** (тот же орган, документ из §1.2) в блоке про соцстрах даёт
+> маршрут сертификата **без оговорки о типе отношений**: «Los teletrabajadores que
+> quieran mantener la inclusión en el sistema de Seguridad Social del Estado de
+> origen… se acompañará del certificado de legislación aplicable», и прямо:
+> «**este certificado exime de la obligación de darse de alta** en la Seguridad
+> Social española». По букве сводки маршрут открыт и подрядчику; по букве FAQ —
+> закрыт. Оба документа **действующие и оба недатированные**.
+> [официальное разъяснение] × 2 — противоречие внутри публикаций одного органа.
+>
+> **Как разрешать — не по старшинству, а по асимметрии риска.** Какой из двух
+> документов новее, **установить нельзя**: даты нет ни в одном, и версия
+> «побеждает более поздний» ничем не подтверждена. Зато последствия ошибки
+> несимметричны: пойти по сводке, если применяется FAQ, — это `extinción`
+> разрешения вместе с семейной ветвью (§2.5); пойти по FAQ, если применяется
+> сводка, — это переплаченные взносы RETA. Поэтому **консервативное чтение —
+> альта в RETA обязательна** для архетипа `por cuenta propia`, и именно этот
+> вопрос надо задать органу письменно **до** подачи.
+> **[не подтверждено]** — какой из двух текстов орган применяет на практике к
+> подрядчику. (проверить вживую)
+>
+> **Что до сих пор циркулирует в сообществах.** В 2024-08 на письменный вопрос
+> орган ответил, что ИП, платящий взносы в своей стране, регистрироваться в
+> Испании не обязан (`[практика — консультант]`, дайджест §4.5). Это **письмо
+> 2024 года, пересказанное каналом**, — слабейший из трёх источников: не
+> опубликованный критерий, уровень не поднимается, и на него в 2026-м опираться
+> **нельзя**.
 
 ---
 
@@ -752,6 +774,13 @@ REA для заявителя без NIE на 2026-07 **не установле�
    требует, Instrucción — нет (§3.3).
 8. Точная формулировка срока `declaración de entrada` — «три дня» vs «три
    рабочих дня» (§1.4).
+9. **Самое дорогое из списка.** Может ли подрядчик (`por cuenta propia`) заменить
+   альту в RETA сертификатом соцстраха страны происхождения. **FAQ UGE-CE
+   (вопрос 6) говорит нет; сводка UGE-CE по букве говорит да** — оба документа
+   действующие, оба недатированные, старшинство не устанавливается (§2.6).
+   Ошибка в пользу сводки стоит `extinción` разрешения вместе с семейной ветвью
+   (§2.5), поэтому до подачи нужен **письменный запрос в орган**, а рабочее
+   допущение — консервативное (альта обязательна).
 
 **Снято из этого списка при сведении с `../primary/` (2026-07-27)** — было
 `[не подтверждено]`, стало `[норма]`:
@@ -787,8 +816,13 @@ REA для заявителя без NIE на 2026-07 **не установле�
 - Сводка UGE-CE «Solicitudes iniciales… teletrabajadores de carácter
   internacional» (недатированный веб-документ, версия `titular-v2`):
   https://www.inclusion.gob.es/documents/d/unidadgrandesempresas/informacion-documentacion-pagina-web-titular-v2
+- **FAQ UGE-CE** «Preguntas frecuentes. Autorizaciones de Residencia y Trabajo de
+  Teletrabajadores Internacionales» (недатированный веб-документ; источник цитат
+  §2.5 вопрос 7 и §2.6 вопрос 6):
+  https://www.inclusion.gob.es/documents/d/unidadgrandesempresas/nomadas-digitales-faqs-espanol
 - UGE-CE, раздел teletrabajadores:
-  https://www.inclusion.gob.es/web/unidadgrandesempresas/solicitudes
+  https://www.inclusion.gob.es/web/unidadgrandesempresas/teletrabajadores
+  · https://www.inclusion.gob.es/web/unidadgrandesempresas/solicitudes
 - MAEUEC, легализация и апостиль (изъятия, п. 2.6):
   https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Legalizacion-y-apostilla.aspx
 - Ministerio del Interior, вход в Испанию и `declaración de entrada`:

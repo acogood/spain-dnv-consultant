@@ -23,7 +23,7 @@
         {"name": "País de nacimiento", "type": "text", "domain": "free", "profile_key": "applicant.birth_country", "criticality": "media", "common_errors": "", "origin": "generic"},
         {"name": "Nacionalidad", "type": "text", "domain": "free", "profile_key": "applicant.nationality", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "Estado civil", "type": "enum", "domain": "estado_civil", "profile_key": "applicant.marital_status", "criticality": "media", "common_errors": "должно соответствовать семейному статусу (Casado/a при cónyuge)", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "формат [XYZ]NNNNNNN[letra]; транспонированные цифры — частая правдоподобная ошибка. НА ПЕРВИЧНОЙ ПОДАЧЕ NIE может законно отсутствовать (art. 76.5 Ley 14/2013 прямо предусматривает заявителя без NIE) — тогда пусто + [ТРЕБУЕТСЯ] это состояние кейса, а НЕ ошибка заполнения; подаёт представитель, см. norms/solicitud-inicial.md §5. Выдумывать NIE нельзя ни в каком случае.", "origin": "generic"},
         {"name": "Nº pasaporte", "type": "text", "domain": "free", "profile_key": "applicant.passport_number", "criticality": "alta", "common_errors": "", "origin": "generic"},
         {"name": "Domicilio en España", "type": "text", "domain": "free", "profile_key": "applicant.address_full", "criticality": "alta", "common_errors": "совпадение с empadronamiento", "origin": "generic"},
         {"name": "Tipo de autorización: TELETRABAJADOR DE CARÁCTER INTERNACIONAL", "type": "checkbox", "domain": "fixed_checked", "profile_key": "applicant.permit_type", "criticality": "alta", "common_errors": "должна стоять именно эта галочка", "origin": "case_derived"},
@@ -53,7 +53,7 @@
       "applies_to": "ambos",
       "fields": [
         {"name": "Apellidos y nombre / Razón social", "type": "text", "domain": "free", "profile_key": "applicant.full_name", "criticality": "alta", "common_errors": "имя плательщика = заявитель", "origin": "generic"},
-        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "", "origin": "generic"},
+        {"name": "N.I.E.", "type": "text", "domain": "free", "profile_key": "applicant.nie", "criticality": "alta", "common_errors": "на первичной подаче NIE может законно отсутствовать — пусто + [ТРЕБУЕТСЯ] это состояние кейса, не ошибка (art. 76.5 Ley 14/2013)", "origin": "generic"},
         {"name": "Epígrafe / autoliquidación", "type": "text", "domain": "free", "profile_key": "tasa.epigrafe_038", "criticality": "alta", "common_errors": "выбрать верный эпиграф; сумма меняется — проверить вживую. Код 038 (НЕ 052): авторизацию по Ley 14/2013 резолвит UGE-CE", "origin": "generic"},
         {"name": "Importe", "type": "number", "domain": "free", "profile_key": "tasa.importe_038", "criticality": "media", "common_errors": "сумма tasa меняется ежегодно — проверить актуальную", "origin": "generic"}
       ]

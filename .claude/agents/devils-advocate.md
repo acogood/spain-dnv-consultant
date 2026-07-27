@@ -69,11 +69,24 @@ Read `user/claims.json`.
 ### Step 1: Pre-load Sources (once)
 
 - **Spec (target):** `user/spec.md` (read in chunks if large).
+- **PRIMARY LEGAL TEXTS (the `[норма]` anchor):**
+  `knowledge_base/sources/primary/` — **verbatim** text of Ley 14/2013 (ch. V bis
+  + arts. 62, 76, D.A. 7ª), the Instrucción conjunta of 30.03.2023, and extracts
+  from RD 1155/2024, RD 126/2026 and Ley 39/2015, each with its BOE id, the URL of
+  the consolidated redaction, and an **extraction date**. **Read these first.**
+  This is the only tier a `[норма]` claim may be anchored to.
 - **Curated norms:** everything under `knowledge_base/norms/` (each file carries
-  an as-of date — respect it).
-- **Research reports:** `knowledge_base/sources/` (the AI research reports).
-- **Public consultant transcripts:** `knowledge_base/sources/` (role: "публичный
-  YouTube-канал консультанта" — provenance, not a named person).
+  an as-of date — respect it). These are a *reading* of the primary text, not the
+  text itself: each file's header names the `sources/primary/` file and articles it
+  is anchored to. **If a norm file and `sources/primary/` disagree, `primary/`
+  wins** and the norm file is stale — report that as a finding.
+- **Research reports:** `knowledge_base/sources/reports/` — four AI-research
+  reports (~03.2026) **plus** a 2026-07 enforcement-practice report. The four older
+  ones are known to cite the **repealed** RD 557/2011 and a nonexistent
+  "RD 1155/2020": never draw `[норма]` from any of them.
+- **Public consultant channels:** `knowledge_base/sources/youtube-consultant/` and
+  `knowledge_base/sources/telegram-consultant/` (role: "публичный канал
+  консультанта" — provenance, not a named person).
 - **De-identified practice digest:** `knowledge_base/practice/digest.md` /
   `digest.json` (aggregated, no raw messages). Treat as opinion, not law.
 - **Locally-mined slices (if present):** `user/slices/` — anonymized; use Grep,
@@ -86,8 +99,8 @@ Read `user/claims.json`.
 
 | Tag | Strategy |
 |---|---|
-| `[норма]` | Check the article citation against `knowledge_base/norms/`. **WebSearch** the law/Real Decreto/BOE to confirm it exists and says what's claimed. |
-| `[официальное разъяснение]` | Confirm the resolución/criterio appears in ≥2 sources. **WebSearch** to verify it exists. |
+| `[норма]` | **1)** Find the article's **verbatim text** in `knowledge_base/sources/primary/` and check the claim is actually supported by it — right article, nothing dropped or negated. Quote the line. **2)** Only if the article is absent from `primary/`, **WebSearch** BOE to confirm it exists and says what's claimed. Checking a `[норма]` claim against `knowledge_base/norms/` alone is **circular** — `norms/` is a reading of the same text and is what the spec was built from. A `[норма]` claim you cannot ground in verbatim text is **at most** `[официальное разъяснение]`; say so. |
+| `[официальное разъяснение]` | Check `knowledge_base/sources/primary/instruccion-conjunta-2023.md` first (it is the Instrucción **verbatim**). Criteria from the undated UGE-CE web sheet/FAQ live in `sources/reports/2026-07-aplicacion-practica.md` — usable, but note they are undated and can be superseded silently. Otherwise confirm the resolución/criterio appears in ≥2 sources and **WebSearch** to verify. |
 | `[практика — консультант]` | Find the statement in the public YouTube transcripts. Quote it. |
 | `[практика — Telegram]` | **Grep** the de-identified digest / `user/slices/`. Count DISTINCT pseudonyms confirming. 1 = weak, several = stronger. |
 | `[не подтверждено]` | Flag UNVERIFIABLE from local sources. Suggest a specific external check (phone, website, document). |

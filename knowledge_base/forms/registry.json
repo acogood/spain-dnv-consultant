@@ -155,7 +155,7 @@
       "fields": [
         {"name": "Основание (teletrabajo, Ley 14/2013)", "type": "text", "domain": "free", "profile_key": "applicant.permit_type", "criticality": "alta", "common_errors": "сослаться на art. 74 bis–quinquies", "origin": "case_derived"},
         {"name": "Описание работы и роли", "type": "text", "domain": "free", "profile_key": "work.role", "criticality": "media", "common_errors": "согласовать с Certificate of services", "origin": "case_derived"},
-        {"name": "Обоснование дохода (gross, EUR-эквивалент)", "type": "text", "domain": "free", "profile_key": "work.income_amount", "criticality": "alta", "common_errors": "USD: указать курс по каждому платежу и €-эквивалент; выше порога", "origin": "case_derived"},
+        {"name": "Обоснование дохода (gross, EUR-эквивалент)", "type": "text", "domain": "free", "profile_key": "work.income_eur_equiv", "criticality": "alta", "common_errors": "указать исходную валюту, курс по каждому платежу и €-эквивалент; выше порога", "origin": "case_derived"},
         {"name": "Работодатель/заказчик", "type": "text", "domain": "free", "profile_key": "work.company_name", "criticality": "alta", "common_errors": "при смене названия — пояснить amendment", "origin": "case_derived"}
       ]
     }

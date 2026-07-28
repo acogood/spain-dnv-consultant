@@ -6,5 +6,5 @@
 |---|---|---|---|
 | Основание (teletrabajo, Ley 14/2013) | teletrabajador de carácter internacional | free | alta |
 | Описание работы и роли | Marketing Manager | free | media |
-| Обоснование дохода (gross, EUR-эквивалент) | 6000 | free | alta |
+| Обоснование дохода (gross, EUR-эквивалент) | 5500 | free | alta |
 | Работодатель/заказчик | Acme Remote LLC | free | alta |

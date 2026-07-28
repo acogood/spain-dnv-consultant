@@ -738,11 +738,11 @@
   },
   {
    "name": "Обоснование дохода (gross, EUR-эквивалент)",
-   "profile_key": "work.income_amount",
+   "profile_key": "work.income_eur_equiv",
    "type": "text",
    "domain": "free",
    "criticality": "alta",
-   "value": "6000",
+   "value": "5500",
    "present": true
   },
   {

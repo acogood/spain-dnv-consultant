@@ -320,7 +320,7 @@ def main(argv=None):
     try:
         for p in (args.profile, args.registry, args.drafts):
             if not Path(p).is_file():
-                raise SafeIOError(f"Не найдено: {p}. Сначала /dnv-intake и /dnv-documents.")
+                raise SafeIOError(f"Не найдено: {p}. Сначала соберите профиль и черновики форм.")
         profile = json.loads(Path(args.profile).read_text(encoding="utf-8"))
         registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))
         drafts = json.loads(Path(args.drafts).read_text(encoding="utf-8"))

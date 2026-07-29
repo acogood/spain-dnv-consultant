@@ -46,7 +46,7 @@ A claim may use supporting_ids, match, or both. At least one is required.
     shipped `knowledge_base/practice/curation.json` carries refs, and resolving
     them REQUIRES --salt-file. Hash new ids with `_private/hash_curation_ids.py`.
   * RAW ids (integers) — for a LOCAL, unpublished curation over your own corpus
-    (the /dnv-chat-mining path). Resolved without a salt.
+    (the chat-mining path). Resolved without a salt.
 Fail-closed either way: refs without --salt-file, raw ids WITH --salt-file, and
 any file that mixes the two are hard errors, never a silently empty resolution.
 

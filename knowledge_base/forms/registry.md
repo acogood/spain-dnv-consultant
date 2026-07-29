@@ -9,9 +9,9 @@
 > `generic` = применимо ко всем кейсам.
 
 **Когда какая форма.** MI-T/MI-F, tasa 790-038 (+ `-familiar`) и memoria — на
-подачу (`/dnv-documents`). EX-17 (+ `-familiar`) и tasa 790-012 (+ `-familiar`) —
-уже **после** одобрения, на сдачу отпечатков (`/dnv-tie`): до concesión заполнять
-их нечем и незачем.
+подачу (при заполнении форм). EX-17 (+ `-familiar`) и tasa 790-012 (+ `-familiar`)
+— уже **после** одобрения, на сдачу отпечатков (на этапе TIE): до concesión
+заполнять их нечем и незачем.
 
 **Рендер значения задаёт `type` поля.** Реестр не только называет `profile_key`,
 но и говорит, **как** значение попадает в ячейку листа
@@ -92,7 +92,7 @@
 > зависит от **состояния кейса**; смешивать их — значит терять одно из двух.
 > Теперь критичность честная, а состояние решает `applies_when`.
 
-> `case.resolution_notified` записывает `/dnv-tie` — он и так спрашивает дату
+> `case.resolution_notified` записывается на этапе TIE — там и так спрашивают дату
 > уведомления, нового вопроса не появилось. Инвариант «ключ `applies_when`
 > объявлен в схеме профиля» проверяет `engine/scripts/check_namespace.py`:
 > гейт на необъявленном ключе не сработал бы никогда, и это хуже отсутствия
@@ -167,8 +167,8 @@
 
 ## EX-17 (TIE — titular; заполняется ПОСЛЕ concesión)
 
-Форма последней мили: с ней идут сдавать отпечатки. Заполняется не в
-`/dnv-documents`, а в `/dnv-tie`, когда одобрение уже получено.
+Форма последней мили: с ней идут сдавать отпечатки. Заполняется не при
+заполнении форм на подачу, а на этапе TIE, когда одобрение уже получено.
 
 > `applies_when: case.resolution_notified` — до резолюции форма не применяется.
 
@@ -186,7 +186,7 @@
 | Fecha de nacimiento | date | free | applicant.birth_date | alta | DD/MM/AAAA | generic |
 | Lugar de nacimiento | text | free | applicant.birth_place | media | **реальная ошибка прогона: вписан телефон** — соседнее поле бланка | generic |
 | País de nacimiento | text | free | applicant.birth_country | media | | generic |
-| **Nombre del padre** | text | free | applicant.father_name | **alta** | в MI-T поля не было → в профиле может быть пусто; добирается в `/dnv-tie`. Пусто до резолюции не штрафуется (`applies_when`), после — штрафуется | generic |
+| **Nombre del padre** | text | free | applicant.father_name | **alta** | в MI-T поля не было → в профиле может быть пусто; добирается на этапе TIE. Пусто до резолюции не штрафуется (`applies_when`), после — штрафуется | generic |
 | **Nombre de la madre** | text | free | applicant.mother_name | **alta** | то же | generic |
 | Nacionalidad | text | free | applicant.nationality | alta | форма страны vs форма гражданства — держать одинаково во всех формах пакета | generic |
 | Estado civil | enum | estado_civil | applicant.marital_status | media | см. Sexo (отрисовка галочки) | generic |
@@ -279,7 +279,7 @@
 > орган трамитирует**, а не типом разрешения. Авторизацию по **Ley 14/2013**
 > (movilidad internacional) резолвит **UGE-CE** → код **790-038**, платится через
 > `sede.inclusion.gob.es`. Код **790-052** — общая экстранхерия через **Oficinas de
-> Extranjería / Delegaciones del Gobierno**; в этом пайплайне он легитимен **только
+> Extranjería / Delegaciones del Gobierno**; в этом проекте он легитимен **только
 > для `autorización de regreso`** (см. `../norms/tie-huellas.md`). Карта кодов с
 > официальными якорями — `../sources/primary/tasas-790.md`.
 >
@@ -287,7 +287,7 @@
 > Ключи профиля переименованы `tasa.epigrafe_052` / `tasa.importe_052` →
 > **`tasa.epigrafe_038` / `tasa.importe_038`** — **ломающее переименование без
 > алиаса**: если у вас есть заполненный `user/case-profile.json` прежней версии,
-> переименуйте эти два ключа руками, иначе `dnv-documents` не найдёт значения.
+> переименуйте эти два ключа руками, иначе генератор форм не найдёт значения.
 
 ## Memoria / carta explicativa (свободный текст)
 

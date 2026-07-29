@@ -16,7 +16,7 @@
 |---|---|---|
 | `norms/` | Разбор норм (Ley 14/2013 и др.) с **as-of** датами, **переякоренный на `sources/primary/`** | вход для `dnv-research` / `dnv-synthesis`; вживую сверяются суммы и процедуры |
 | `practice/` | **Обезличенный агрегированный дайджест** Telegram-сообществ (без сырых сообщений, имён и псевдо-ключей) | вход для синтеза + верификации (мнение, не норма) |
-| `sources/` | **`primary/`** — дословные тексты законов и Instrucción (BOE); `reports/` — 4 AI-отчёта + отчёт по правоприменению; `youtube-consultant/` и `telegram-consultant/` — публичные каналы (провенанс → роль, без имён) | `primary/` — якорь `[норма]`; остальное — вход для верификации `devils-advocate` |
+| `sources/` | **`primary/`** — дословные тексты законов и Instrucción (BOE). `reports/`, `youtube-consultant/` и `telegram-consultant/` перенесены в `_private/sources/` (maintainer-only, gitignored) | `primary/` — якорь `[норма]`; остальное — вход для верификации `devils-advocate` |
 | `forms/` | Реестр полей форм MI-T/MI-F/tasa (`registry.json`) — общий namespace с профилем | питает `dnv-documents` (генерация) и `dnv-review` (field-QA) |
 
 > 🔎 **С 2026-07 у базы есть первичный апстрим.** Раньше `norms/` был дистиллятом
@@ -32,8 +32,8 @@
 | Тег | Значение | Где живёт первоисточник |
 |---|---|---|
 | `[норма]` | Текст закона / нормативного акта (Ley, Real Decreto, BOE) | **`sources/primary/`** — дословно |
-| `[официальное разъяснение]` | Разъяснение/критерий гос. органа (UGE-CE, DGM, Instrucción) | `sources/primary/instruccion-conjunta-2023.md`; сводка и FAQ UGE-CE — через `sources/reports/2026-07-aplicacion-practica.md` |
-| `[практика — консультант]` | Публичные каналы консультанта | `sources/youtube-consultant/`, `sources/telegram-consultant/` |
+| `[официальное разъяснение]` | Разъяснение/критерий гос. органа (UGE-CE, DGM, Instrucción) | `sources/primary/instruccion-conjunta-2023.md`; сводка и FAQ UGE-CE — через `_private/sources/reports/2026-07-aplicacion-practica.md` (maintainer-only) |
+| `[практика — консультант]` | Публичные каналы консультанта | `_private/sources/youtube-consultant/`, `_private/sources/telegram-consultant/` (maintainer-only) |
 | `[практика — Telegram]` | Обезличенный дайджест сообществ (`practice/`) — **мнение, не норма** | `practice/digest.md` |
 | `[не подтверждено]` | Корроборации не найдено — нужна внешняя проверка | — |
 
@@ -79,6 +79,6 @@ cónyuge) vs **`generic`** (применимо ко всем кейсам DNV). 
 - `practice/` — **только** агрегированный дайджест: тегированные утверждения +
   band по числу *разных* людей + период. **Нет** сырых сообщений, имён,
   идентификаторов, псевдо-ключей; единичные авторы подавлены (k-анонимность).
-- `sources/youtube-consultant/` — **публичные** транскрипты; имя ведущей снято,
+- `_private/sources/youtube-consultant/` (maintainer-only) — **публичные** транскрипты; имя ведущей снято,
   роль = «публичный YouTube-канал консультанта».
 - **Приватные консультантские чаты не входят как источник в любом виде** (R5).

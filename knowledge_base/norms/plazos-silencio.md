@@ -60,7 +60,7 @@ entrada en el registro electrónico». Практически это **дата 
 > то, как его увидят на этапе отпечатков, требуют внешней проверки. Эскалация
 > (agilización → Defensor del Pueblo → recurso) — см. `dnv-submission` и
 > `templates/escrito_*`. Фактические сроки UGE-CE от 20 дней **отличаются** — см.
-> `../sources/reports/2026-07-aplicacion-practica.md` и дайджест практики.
+> `_private/sources/reports/2026-07-aplicacion-practica.md` (maintainer-only) и дайджест практики.
 
 ### Подача продлевает законность пребывания
 

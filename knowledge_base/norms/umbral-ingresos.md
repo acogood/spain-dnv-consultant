@@ -4,7 +4,7 @@
 > Якоря: `../sources/primary/instruccion-conjunta-2023.md` (инструкция Tercera —
 > формула) и `../sources/primary/smi-vigente.md` (RD 126/2026 — суммы SMI).
 > Независимое подтверждение цифр —
-> `../sources/youtube-consultant/vyros-trebuemyj-dohod.md`.
+> `_private/sources/youtube-consultant/vyros-trebuemyj-dohod.md` (maintainer-only).
 >
 > ⚠️ **Сумма SMI меняется ЕЖЕГОДНО** → итоговые пороги тоже. **(проверить вживую
 > на дату подачи.)** Формула при этом стабильна — см. «Два уровня датированности».
@@ -69,7 +69,7 @@ Tercera**, дословно:
 
 **Независимое подтверждение.** Публичный консультант (запись 2026-03-30) называет
 **2.850 / 3.920 / +356 / 4.275** — те же величины, округлённые вверх до десятков
-(`../sources/youtube-consultant/vyros-trebuemyj-dohod.md`, раздел с суммами).
+(`_private/sources/youtube-consultant/vyros-trebuemyj-dohod.md` (maintainer-only), раздел с суммами).
 Совпадение с двух независимых сторон — это и есть подтверждение, что база
 берётся годовая ÷ 12, а не месячная цифра art. 1. `[практика — консультант]`
 

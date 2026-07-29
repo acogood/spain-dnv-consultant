@@ -40,8 +40,8 @@ condiciones que justificaron la concesión»*. `[официальное разъ
 > налоговых деклараций в испанскую налоговую за два периода, а через неделю орган
 > стал прописывать в дозапросах именно **годовые** декларации, тогда как до этого
 > проходили квартальные. `[практика — консультант]` — разбор в
-> `../sources/reports/2026-07-aplicacion-practica.md` §3.7 и
-`../sources/telegram-consultant/digest-2026-07.md` §11.
+> `_private/sources/reports/2026-07-aplicacion-practica.md` (maintainer-only) §3.7 и
+`_private/sources/telegram-consultant/digest-2026-07.md` (maintainer-only) §11.
 >
 > Практический вывод: **отсутствие документа в списке обязательных не означает, что
 > его не дозапросят.** В прежнем перечне не было ни банковских выписок, ни справки
